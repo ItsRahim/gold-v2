@@ -14,6 +14,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+
 class PriceServicer(price_pb2_grpc.GoldPriceServiceServicer):
     def GetGoldPrice(self, request, context):
         response = price_pb2.GoldPriceResponse()
