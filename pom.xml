@@ -30,7 +30,19 @@
     </properties>
 
     <modules>
-        <module>common</module>
+        <module>rgts-proto-messages</module>
+        <module>rgts-kafka</module>
+        <module>rgts-common</module>
+        <module>rgts-proto-service</module>
+        <module>rgts-eureka-server</module>
+        <module>rgts-config-server</module>
+        <module>rgts-gateway-service</module>
+        <module>rgts-user-service</module>
+        <module>rgts-holdings-service</module>
+        <module>rgts-pricing-service</module>
+        <module>rgts-notification-service</module>
+        <module>rgts-email-service</module>
+        <module>rgts-database</module>
     </modules>
 
     <dependencyManagement>
