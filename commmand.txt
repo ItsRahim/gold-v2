@@ -1,1 +1,0 @@
-protoc -I=./rgts-proto-messages --python_out=./rgts-python-api/proto ./rgts-proto-messages/price.proto
