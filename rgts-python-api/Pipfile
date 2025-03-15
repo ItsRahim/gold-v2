@@ -8,6 +8,8 @@ grpcio-tools = "*"
 requests = "*"
 beautifulsoup4 = "*"
 fake-useragent = "*"
+grpcio = "*"
+protobuf = "*"
 
 [dev-packages]
 
