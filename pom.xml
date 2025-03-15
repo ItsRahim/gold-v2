@@ -31,7 +31,7 @@
 
     <modules>
         <module>rgts-proto-messages</module>
-        <module>rgts-kafka</module>
+        <module>rgts-kafka-service</module>
         <module>rgts-common</module>
         <module>rgts-proto-service</module>
         <module>rgts-eureka-server</module>
