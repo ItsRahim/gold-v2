@@ -14,7 +14,7 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <rgts.version>0.0.1-SNAPSHOT</rgts.version>
+        <rgts.version>1.0-SNAPSHOT</rgts.version>
         <spring.version>3.4.2</spring.version>
         <spring-cloud.version>2024.0.0</spring-cloud.version>
         <spring-grpc.version>0.5.0</spring-grpc.version>
@@ -47,6 +47,12 @@
 
     <dependencyManagement>
         <dependencies>
+            <!-- Internal Dependencies -->
+            <dependency>
+                <groupId>com.rahim</groupId>
+                <artifactId>rgts-proto-service</artifactId>
+                <version>${rgts.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter</artifactId>
