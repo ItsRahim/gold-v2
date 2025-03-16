@@ -1,6 +1,5 @@
 package com.rahim.pricingservice.controller;
 
-import com.rahim.proto.service.IGrpcClientService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,5 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class PriceController {
     private static final Logger logger = LoggerFactory.getLogger(PriceController.class);
-    private final IGrpcClientService grpcClientService;
+
+    /**
+     *  GoldPriceResponse goldPriceResponse = grpcClientService.sendRequest(
+     *                     GoldPriceServiceGrpc::newBlockingStub,
+     *                     getEmptyRequest(),
+     *                     GoldPriceServiceGrpc.GoldPriceServiceBlockingStub::getGoldPrice
+     *             );
+     */
 }
