@@ -1,0 +1,1 @@
+protoc --proto_path=../rgts-proto-messages --java_out=./src/main/java ../rgts-proto-messages/price.proto

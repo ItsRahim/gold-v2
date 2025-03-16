@@ -17,7 +17,7 @@
         <rgts.version>0.0.1-SNAPSHOT</rgts.version>
         <spring.version>3.4.2</spring.version>
         <spring-cloud.version>2024.0.0</spring-cloud.version>
-        <spring-grpc.version>0.3.0</spring-grpc.version>
+        <spring-grpc.version>0.5.0</spring-grpc.version>
         <protobuf-java.version>4.29.3</protobuf-java.version>
         <grpc.version>1.69.0</grpc.version>
         <apache.version>3.17.0</apache.version>
@@ -30,7 +30,6 @@
     </properties>
 
     <modules>
-        <module>rgts-proto-messages</module>
         <module>rgts-kafka-service</module>
         <module>rgts-common</module>
         <module>rgts-proto-service</module>
@@ -96,6 +95,16 @@
             <dependency>
                 <groupId>io.grpc</groupId>
                 <artifactId>grpc-services</artifactId>
+                <version>${grpc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.grpc</groupId>
+                <artifactId>grpc-protobuf</artifactId>
+                <version>${grpc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.grpc</groupId>
+                <artifactId>grpc-stub</artifactId>
                 <version>${grpc.version}</version>
             </dependency>
             <dependency>
