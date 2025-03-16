@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author Rahim Ahmed
  * @created 16/03/2025
@@ -20,24 +23,27 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class PriceController {
     private static final Logger logger = LoggerFactory.getLogger(PriceController.class);
-
     private final IGrpcClientService grpcClientService;
 
     @GetMapping("/test")
-    public String test() {
+    public Map<String, Object> test() {
         try {
-            GoldPriceResponse response = grpcClientService.sendRequest(
+            GoldPriceResponse goldPriceResponse = grpcClientService.sendRequest(
                     GoldPriceServiceGrpc::newBlockingStub,
                     getEmptyRequest(),
                     GoldPriceServiceGrpc.GoldPriceServiceBlockingStub::getGoldPrice
             );
-            logger.debug("Received response from gRPC: {}", response);
+            logger.debug("Received response from gRPC: {}", goldPriceResponse);
 
-            return String.format("Source: %s, Price: %f, Datetime: %s",
-                    response.getSource(), response.getPrice(), response.getDatetime());
+            Map<String, Object> response = new HashMap<>();
+            response.put("Source", goldPriceResponse.getSource());
+            response.put("Price", goldPriceResponse.getPrice());
+            response.put("Request Time", goldPriceResponse.getDatetime());
+
+            return response;
         } catch (Exception e) {
-            logger.error(e.getMessage());
-            return "Some error occurred";
+            logger.error("Error occurred: {}", e.getMessage());
+            return null;
         }
     }
 

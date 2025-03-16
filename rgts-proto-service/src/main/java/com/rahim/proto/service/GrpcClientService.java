@@ -1,5 +1,7 @@
 package com.rahim.proto.service;
 
+import com.google.protobuf.Message;
+import com.google.protobuf.util.JsonFormat;
 import io.grpc.ManagedChannel;
 import io.grpc.stub.AbstractStub;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,33 @@ public class GrpcClientService implements IGrpcClientService {
         logger.debug("Received gRPC response: {}", response);
 
         return response;
+    }
+
+    public <S extends AbstractStub<S>, T> String sendRequestAndReturnJson(StubCreator<S> stubCreator, T request, GrpcCall<S, T, Message> call) {
+        try {
+            Message response = sendRequest(stubCreator, request, call);
+            return protoToJson(response);
+        } catch (Exception e) {
+            logger.error("An error occurred while sending gRPC request and converting to JSON", e);
+            return null;
+        }
+    }
+
+    /**
+     * Converts a Protocol Buffer message to a JSON string
+     *
+     * @param protoMessage The Protocol Buffer message to convert
+     * @return JSON string representation of the message
+     */
+    private String protoToJson(Message protoMessage) {
+        try {
+            return JsonFormat.printer()
+                    .alwaysPrintFieldsWithNoPresence()
+                    .print(protoMessage);
+        } catch (Exception e) {
+            logger.error("An error occurred while converting protobuf object to JSON", e);
+            return null;
+        }
     }
 
     @FunctionalInterface
