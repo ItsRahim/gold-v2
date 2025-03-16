@@ -2,7 +2,9 @@ package com.rahim.proto.service;
 
 import com.google.protobuf.Message;
 import com.google.protobuf.util.JsonFormat;
+import com.rahim.proto.exception.GrpcRequestException;
 import io.grpc.ManagedChannel;
+import io.grpc.StatusRuntimeException;
 import io.grpc.stub.AbstractStub;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -23,19 +25,28 @@ public class GrpcClientService implements IGrpcClientService {
     public <S extends AbstractStub<S>, T, R> R sendRequest(StubCreator<S> stubCreator, T request, GrpcCall<S, T, R> call) {
         logger.debug("Sending gRPC request: {}", request);
         S stub = stubCreator.create(channel);
-
-        R response = call.execute(stub, request);
-        logger.debug("Received gRPC response: {}", response);
-
-        return response;
+        try {
+            R response = call.execute(stub, request);
+            logger.debug("Received gRPC response: {}", response);
+            return response;
+        } catch (StatusRuntimeException e) {
+            logger.error("gRPC request failed: {}. Status: {}", e.getStatus(), e.getMessage());
+            throw new GrpcRequestException("gRPC request failed", e);
+        } catch (Exception e) {
+            logger.error("An error occurred while sending gRPC request: {}", e.getMessage(), e);
+            throw new GrpcRequestException("An unexpected error occurred while sending gRPC request", e);
+        }
     }
 
     public <S extends AbstractStub<S>, T> String sendRequestAndReturnJson(StubCreator<S> stubCreator, T request, GrpcCall<S, T, Message> call) {
         try {
             Message response = sendRequest(stubCreator, request, call);
             return protoToJson(response);
+        } catch (GrpcRequestException e) {
+            logger.error("Error occurred during gRPC request execution: {}", e.getMessage(), e);
+            return null;
         } catch (Exception e) {
-            logger.error("An error occurred while sending gRPC request and converting to JSON", e);
+            logger.error("Unexpected error during gRPC request and JSON conversion: {}", e.getMessage(), e);
             return null;
         }
     }
@@ -52,8 +63,8 @@ public class GrpcClientService implements IGrpcClientService {
                     .alwaysPrintFieldsWithNoPresence()
                     .print(protoMessage);
         } catch (Exception e) {
-            logger.error("An error occurred while converting protobuf object to JSON", e);
-            return null;
+            logger.error("An error occurred while converting protobuf object to JSON: {}", e.getMessage(), e);
+            throw new GrpcRequestException("An error occurred while converting protobuf object to JSON", e);
         }
     }
 
