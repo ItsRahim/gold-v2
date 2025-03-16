@@ -6,7 +6,7 @@ package com.rahim.proto.protobuf;
 option java_multiple_files = true;
 
 service GoldPriceService {
-  rpc GetGoldPrice (google.protobuf.Empty) returns (GoldPriceResponse);
+  rpc StreamGoldPrice (google.protobuf.Empty) returns (GoldPriceResponse);
 }
 
 message GoldPriceResponse {

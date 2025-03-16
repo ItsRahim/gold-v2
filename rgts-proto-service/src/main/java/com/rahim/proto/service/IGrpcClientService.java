@@ -1,6 +1,7 @@
 package com.rahim.proto.service;
 
 import com.google.protobuf.Message;
+import io.grpc.ManagedChannel;
 import io.grpc.stub.AbstractStub;
 
 /**
@@ -32,4 +33,6 @@ public interface IGrpcClientService {
      * @throws Exception if conversion fails
      */
     <S extends AbstractStub<S>, T> String sendRequestAndReturnJson(GrpcClientService.StubCreator<S> stubCreator, T request, GrpcClientService.GrpcCall<S, T, Message> call);
+
+    ManagedChannel getChannel();
 }

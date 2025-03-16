@@ -4,7 +4,7 @@ import grpc
 import warnings
 
 from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
-from . import price_pb2 as price__pb2
+import price_pb2 as price__pb2
 
 GRPC_GENERATED_VERSION = '1.71.0'
 GRPC_VERSION = grpc.__version__
@@ -35,8 +35,8 @@ class GoldPriceServiceStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.GetGoldPrice = channel.unary_unary(
-                '/com.rahim.proto.protobuf.GoldPriceService/GetGoldPrice',
+        self.StreamGoldPrice = channel.unary_unary(
+                '/com.rahim.proto.protobuf.GoldPriceService/StreamGoldPrice',
                 request_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
                 response_deserializer=price__pb2.GoldPriceResponse.FromString,
                 _registered_method=True)
@@ -45,7 +45,7 @@ class GoldPriceServiceStub(object):
 class GoldPriceServiceServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def GetGoldPrice(self, request, context):
+    def StreamGoldPrice(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -54,8 +54,8 @@ class GoldPriceServiceServicer(object):
 
 def add_GoldPriceServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'GetGoldPrice': grpc.unary_unary_rpc_method_handler(
-                    servicer.GetGoldPrice,
+            'StreamGoldPrice': grpc.unary_unary_rpc_method_handler(
+                    servicer.StreamGoldPrice,
                     request_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                     response_serializer=price__pb2.GoldPriceResponse.SerializeToString,
             ),
@@ -71,7 +71,7 @@ class GoldPriceService(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def GetGoldPrice(request,
+    def StreamGoldPrice(request,
             target,
             options=(),
             channel_credentials=None,
@@ -84,7 +84,7 @@ class GoldPriceService(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/com.rahim.proto.protobuf.GoldPriceService/GetGoldPrice',
+            '/com.rahim.proto.protobuf.GoldPriceService/StreamGoldPrice',
             google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             price__pb2.GoldPriceResponse.FromString,
             options,

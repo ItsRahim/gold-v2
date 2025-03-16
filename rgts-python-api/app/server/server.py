@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 
 class PriceServicer(price_pb2_grpc.GoldPriceServiceServicer):
-    def GetGoldPrice(self, request, context):
+    def StreamGoldPrice(self, request, context):
         response = price_pb2.GoldPriceResponse()
         response.price = 1850.75
         response.source = "RGTS Gold Price API"

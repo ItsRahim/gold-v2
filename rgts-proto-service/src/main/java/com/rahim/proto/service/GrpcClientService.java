@@ -51,6 +51,11 @@ public class GrpcClientService implements IGrpcClientService {
         }
     }
 
+    @Override
+    public ManagedChannel getChannel() {
+        return channel;
+    }
+
     /**
      * Converts a Protocol Buffer message to a JSON string
      *
