@@ -2,7 +2,8 @@ syntax = "proto3";
 
 import "google/protobuf/empty.proto";
 
-package price;
+package com.rahim.proto.protobuf;
+option java_multiple_files = true;
 
 service GoldPriceService {
   rpc GetGoldPrice (google.protobuf.Empty) returns (GoldPriceResponse);

@@ -1,1 +1,2 @@
-python -m grpc_tools.protoc -I=../rgts-proto-messages --python_out=./proto_messages --grpc_python_out=./proto_messages ../rgts-proto-messages/price.proto
+python -m grpc_tools.protoc -I=../rgts-proto-service/src/main/proto --python_out=./app/proto --grpc_python_out=./app/proto ../rgts-proto-service/src/main/proto/price.proto
+python -m grpc_tools.protoc -I=../rgts-proto-service/src/main/proto --python_out=./app/proto --grpc_python_out=./app/proto --proto_path=../rgts-proto-service/src/main/proto price.proto

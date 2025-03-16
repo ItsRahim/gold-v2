@@ -12,7 +12,6 @@ _version_not_supported = False
 
 try:
     from grpc._utilities import first_version_is_lower
-
     _version_not_supported = first_version_is_lower(GRPC_VERSION, GRPC_GENERATED_VERSION)
 except ImportError:
     _version_not_supported = True
@@ -37,10 +36,10 @@ class GoldPriceServiceStub(object):
             channel: A grpc.Channel.
         """
         self.GetGoldPrice = channel.unary_unary(
-            '/price.GoldPriceService/GetGoldPrice',
-            request_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
-            response_deserializer=price__pb2.GoldPriceResponse.FromString,
-            _registered_method=True)
+                '/com.rahim.proto.protobuf.GoldPriceService/GetGoldPrice',
+                request_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+                response_deserializer=price__pb2.GoldPriceResponse.FromString,
+                _registered_method=True)
 
 
 class GoldPriceServiceServicer(object):
@@ -55,37 +54,37 @@ class GoldPriceServiceServicer(object):
 
 def add_GoldPriceServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
-        'GetGoldPrice': grpc.unary_unary_rpc_method_handler(
-            servicer.GetGoldPrice,
-            request_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
-            response_serializer=price__pb2.GoldPriceResponse.SerializeToString,
-        ),
+            'GetGoldPrice': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetGoldPrice,
+                    request_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+                    response_serializer=price__pb2.GoldPriceResponse.SerializeToString,
+            ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-        'price.GoldPriceService', rpc_method_handlers)
+            'com.rahim.proto.protobuf.GoldPriceService', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
-    server.add_registered_method_handlers('price.GoldPriceService', rpc_method_handlers)
+    server.add_registered_method_handlers('com.rahim.proto.protobuf.GoldPriceService', rpc_method_handlers)
 
 
-# This class is part of an EXPERIMENTAL API.
+ # This class is part of an EXPERIMENTAL API.
 class GoldPriceService(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
     def GetGoldPrice(request,
-                     target,
-                     options=(),
-                     channel_credentials=None,
-                     call_credentials=None,
-                     insecure=False,
-                     compression=None,
-                     wait_for_ready=None,
-                     timeout=None,
-                     metadata=None):
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/price.GoldPriceService/GetGoldPrice',
+            '/com.rahim.proto.protobuf.GoldPriceService/GetGoldPrice',
             google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             price__pb2.GoldPriceResponse.FromString,
             options,
