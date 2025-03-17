@@ -1,5 +1,6 @@
 package com.rahim.kafkaservice.service;
 
+import com.rahim.proto.util.SerDerUtil;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +27,7 @@ public class ProtobufKafkaService implements IKafkaService {
     @Override
     public <T> void sendMessage(String topic, T data) {
         if (data instanceof com.google.protobuf.Message messageData) {
-            byte[] serializedData = serializeProtobufToByteArray(messageData);
+            byte[] serializedData = SerDerUtil.serializeProtobufToByteArray(messageData);
 
             Message<byte[]> message = generateMessage(topic, serializedData);
 
@@ -36,14 +37,9 @@ public class ProtobufKafkaService implements IKafkaService {
                     logger.error("Error sending message to topic '{}': {}", topic, ex.getMessage());
                 }
             });
-
         } else {
             logger.error("Message data is not of type Google Protobuf: {}", data.getClass().getName());
         }
-    }
-
-    private byte[] serializeProtobufToByteArray(com.google.protobuf.Message data) {
-        return data.toByteArray();
     }
 
     private Message<byte[]> generateMessage(String topic, byte[] data) {
