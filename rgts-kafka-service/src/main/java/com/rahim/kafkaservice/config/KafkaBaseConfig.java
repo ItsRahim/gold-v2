@@ -1,5 +1,7 @@
 package com.rahim.kafkaservice.config;
 
+import com.rahim.kafkaservice.config.property.KafkaProperties;
+import com.rahim.kafkaservice.config.property.KafkaSSLProperties;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

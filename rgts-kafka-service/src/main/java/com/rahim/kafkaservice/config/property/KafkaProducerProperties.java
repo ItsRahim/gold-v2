@@ -1,4 +1,4 @@
-package com.rahim.kafkaservice.config;
+package com.rahim.kafkaservice.config.property;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,4 +1,4 @@
-package com.rahim.kafkaservice.config;
+package com.rahim.kafkaservice.config.property;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 @Getter
 @Setter
 @Component
-@ConfigurationProperties(prefix = "kafka")
-public class KafkaProperties {
-    private String securityProtocol;
-    private String bootstrapServers;
+@ConfigurationProperties(prefix = "kafka.consumer")
+public class KafkaConsumerProperties {
+    private String keyDeserializer;
+    private String valueDeserializer;
 }

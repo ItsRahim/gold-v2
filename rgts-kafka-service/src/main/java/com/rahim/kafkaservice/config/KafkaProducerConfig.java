@@ -1,5 +1,8 @@
 package com.rahim.kafkaservice.config;
 
+import com.rahim.kafkaservice.config.property.KafkaProducerProperties;
+import com.rahim.kafkaservice.config.property.KafkaProperties;
+import com.rahim.kafkaservice.config.property.KafkaSSLProperties;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.config.SslConfigs;
