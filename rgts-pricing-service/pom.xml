@@ -19,7 +19,7 @@
     <dependencies>
         <dependency>
             <groupId>com.rahim</groupId>
-            <artifactId>rgts-proto-service</artifactId>
+            <artifactId>rgts-kafka-service</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -28,14 +28,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.grpc</groupId>
-            <artifactId>spring-grpc-spring-boot-starter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.grpc</groupId>
-            <artifactId>grpc-services</artifactId>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>

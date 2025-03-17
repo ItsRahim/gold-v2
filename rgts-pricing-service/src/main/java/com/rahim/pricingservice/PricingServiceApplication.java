@@ -9,7 +9,7 @@ import org.springframework.context.annotation.ComponentScan;
  * @created 16/03/2025
  */
 @SpringBootApplication
-@ComponentScan(basePackages = {"com.rahim.pricingservice", "com.rahim.proto"})
+@ComponentScan(basePackages = {"com.rahim.pricingservice", "com.rahim.kafkaservice"})
  class PricingServiceApplication {
     public static void main(String[] args) {
         SpringApplication.run(PricingServiceApplication.class, args);
