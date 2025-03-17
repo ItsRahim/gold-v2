@@ -22,5 +22,13 @@
             <groupId>com.rahim</groupId>
             <artifactId>rgts-proto-service</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka-test</artifactId>
+        </dependency>
     </dependencies>
 </project>
