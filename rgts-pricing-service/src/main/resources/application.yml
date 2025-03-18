@@ -7,3 +7,18 @@ grpc:
   server:
     host: ${GRPC_SERVER_HOST:localhost}
     port: ${GRPC_SERVER_PORT:50051}
+kafka:
+  security-protocol: PLAINTEXT
+  bootstrap-servers: localhost:9093
+  #  ssl:
+  #    key-store-location: ${kafka.keystore.file}
+  #    key-password: '{cipher}password'
+  #    trust-store-location: ${kafka.truststore.file}
+  #    trust-store-password: '{cipher}password'
+  #    protocol: TLSv1.2
+  producer:
+    key-serializer: org.apache.kafka.common.serialization.StringSerializer
+    value-serializer: org.apache.kafka.common.serialization.ByteArraySerializer
+  consumer:
+    key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
