@@ -3,6 +3,7 @@ package com.rahim.kafkaservice.config;
 import com.rahim.kafkaservice.config.property.KafkaConsumerProperties;
 import com.rahim.kafkaservice.config.property.KafkaProperties;
 import com.rahim.kafkaservice.config.property.KafkaSSLProperties;
+import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.config.SslConfigs;
@@ -23,45 +24,38 @@ import java.util.Map;
  * @created 17/03/2025
  */
 @Configuration
-public class KafkaConsumerConfig extends KafkaBaseConfig {
-
+@RequiredArgsConstructor
+public class KafkaConsumerConfig {
     private static final Logger logger = LoggerFactory.getLogger(KafkaConsumerConfig.class);
     private final KafkaConsumerProperties kafkaConsumerProperties;
-
-    public KafkaConsumerConfig(KafkaProperties kafkaProperties, KafkaSSLProperties kafkaSSLProperties, KafkaConsumerProperties kafkaConsumerProperties) {
-        super(kafkaSSLProperties, kafkaProperties);
-        this.kafkaConsumerProperties = kafkaConsumerProperties;
-    }
+    private final KafkaSSLProperties kafkaSSLProperties;
+    private final KafkaProperties kafkaProperties;
 
     @Bean
-    public ConsumerFactory<String, String> consumerFactory() {
+    public ConsumerFactory<String, byte[]> consumerFactory() {
         Map<String, Object> consumerProps = new HashMap<>();
         consumerProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaProperties.getBootstrapServers());
+
         consumerProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, kafkaConsumerProperties.getKeyDeserializer());
         consumerProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, kafkaConsumerProperties.getValueDeserializer());
 
-        if (isSSLEnabled()) {
+        if ("SSL".equalsIgnoreCase(kafkaProperties.getSecurityProtocol())) {
             logger.info("SSL Protocol Detected. Configuring Kafka Consumer Factory in SSL");
-            configureSSLProps(consumerProps);
-            validateSSLProps(consumerProps);
+            consumerProps.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, kafkaProperties.getSecurityProtocol());
+            consumerProps.put(SslConfigs.SSL_PROTOCOL_CONFIG, kafkaSSLProperties.getProtocol());
+            consumerProps.put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, kafkaSSLProperties.getTruststoreFile());
+            consumerProps.put(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, kafkaSSLProperties.getTruststorePassword());
         } else {
-            consumerProps.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "PLAINTEXT");
+            consumerProps.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, kafkaProperties.getSecurityProtocol());
         }
 
         logger.debug("Initialised Kafka Consumer Factory with: {}", consumerProps);
         return new DefaultKafkaConsumerFactory<>(consumerProps);
     }
 
-    private void configureSSLProps(Map<String, Object> consumerProps) {
-        consumerProps.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, kafkaProperties.getSecurityProtocol());
-        consumerProps.put(SslConfigs.SSL_PROTOCOL_CONFIG, kafkaSSLProperties.getProtocol());
-        consumerProps.put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, kafkaSSLProperties.getTruststoreFile());
-        consumerProps.put(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, kafkaSSLProperties.getTruststorePassword());
-    }
-
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    public ConcurrentKafkaListenerContainerFactory<String, byte[]> kafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, byte[]> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL);
 

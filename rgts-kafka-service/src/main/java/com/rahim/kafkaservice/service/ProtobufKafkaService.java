@@ -1,13 +1,13 @@
 package com.rahim.kafkaservice.service;
 
-import com.rahim.proto.util.SerDerUtil;
+import com.google.protobuf.Message;
+import com.rahim.proto.util.ProtobufBuilder;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.kafka.support.SendResult;
-import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 
@@ -25,24 +25,24 @@ public class ProtobufKafkaService implements IKafkaService {
     private final KafkaTemplate<String, byte[]> kafkaTemplate;
 
     @Override
-    public <T> void sendMessage(String topic, T data) {
-        if (data instanceof com.google.protobuf.Message messageData) {
-            byte[] serializedData = SerDerUtil.serializeProtobufToByteArray(messageData);
-
-            Message<byte[]> message = generateMessage(topic, serializedData);
-
-            CompletableFuture<SendResult<String, byte[]>> future = kafkaTemplate.send(message);
-            future.whenComplete((result, ex) -> {
-                if (ex != null) {
-                    logger.error("Error sending message to topic '{}': {}", topic, ex.getMessage());
-                }
-            });
-        } else {
-            logger.error("Message data is not of type Google Protobuf: {}", data.getClass().getName());
+    public void sendMessage(String topic, Message protobufMessage) {
+        if (protobufMessage == null) {
+            logger.error("Protobuf message is null");
+            return;
         }
+
+        byte[] serializedData = ProtobufBuilder.serializeProtobufToByteArray(protobufMessage);
+        org.springframework.messaging.Message<byte[]> message = generateMessage(topic, serializedData);
+
+        CompletableFuture<SendResult<String, byte[]>> future = kafkaTemplate.send(message);
+        future.whenComplete((result, ex) -> {
+            if (ex != null) {
+                logger.error("Error sending message to topic '{}': {}", topic, ex.getMessage());
+            }
+        });
     }
 
-    private Message<byte[]> generateMessage(String topic, byte[] data) {
+    private org.springframework.messaging.Message<byte[]> generateMessage(String topic, byte[] data) {
         return MessageBuilder
                 .withPayload(data)
                 .setHeader(KafkaHeaders.TOPIC, topic)

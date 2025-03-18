@@ -1,5 +1,7 @@
 package com.rahim.kafkaservice.config.property;
 
+import com.rahim.kafkaservice.exception.InvalidKafkaConfigurationException;
+import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -16,4 +18,15 @@ import org.springframework.stereotype.Component;
 public class KafkaProducerProperties {
     private String keySerializer;
     private String valueSerializer;
+
+    @PostConstruct
+    public void validateProducerProperties() {
+        if (keySerializer == null || keySerializer.isEmpty()) {
+            throw new InvalidKafkaConfigurationException("Kafka Producer Properties missing required property 'kafka.producer.key-serializer'");
+        }
+
+        if (valueSerializer == null || valueSerializer.isEmpty()) {
+            throw new InvalidKafkaConfigurationException("Kafka Producer Properties missing required property 'kafka.producer.value-serializer'");
+        }
+    }
 }

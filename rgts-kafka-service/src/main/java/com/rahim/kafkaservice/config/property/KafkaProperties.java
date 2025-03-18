@@ -1,5 +1,7 @@
 package com.rahim.kafkaservice.config.property;
 
+import com.rahim.kafkaservice.exception.InvalidKafkaConfigurationException;
+import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -16,4 +18,15 @@ import org.springframework.stereotype.Component;
 public class KafkaProperties {
     private String securityProtocol;
     private String bootstrapServers;
+
+    @PostConstruct
+    public void init() {
+        if (securityProtocol == null) {
+            throw new InvalidKafkaConfigurationException("Kafka Properties missing required property 'kafka.security-protocol'");
+        }
+
+        if (bootstrapServers == null) {
+            throw new InvalidKafkaConfigurationException("Kafka Properties missing required property 'kafka.bootstrap-servers'");
+        }
+    }
 }
