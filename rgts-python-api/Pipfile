@@ -12,6 +12,9 @@ kafka-python = "*"
 crython = "*"
 six = "*"
 dotenv = "*"
+fake-useragent = "*"
+sqlalchemy = "*"
+psycopg2 = "*"
 
 [dev-packages]
 
