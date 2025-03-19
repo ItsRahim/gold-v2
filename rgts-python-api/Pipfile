@@ -8,6 +8,9 @@ beautifulsoup4 = "*"
 requests = "*"
 grpcio = "*"
 grpcio-tools = "*"
+kafka-python = "*"
+crython = "*"
+six = "*"
 
 [dev-packages]
 

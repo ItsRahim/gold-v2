@@ -1,13 +1,8 @@
 syntax = "proto3";
 
-import "google/protobuf/empty.proto";
-
 package com.rahim.proto.protobuf;
-option java_multiple_files = true;
 
-service GoldPriceService {
-  rpc GetGoldPrice (google.protobuf.Empty) returns (GoldPriceInfo);
-}
+option java_multiple_files = true;
 
 message GoldPriceInfo {
   string source = 1;
