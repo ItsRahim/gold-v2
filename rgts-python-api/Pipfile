@@ -11,6 +11,7 @@ grpcio-tools = "*"
 kafka-python = "*"
 crython = "*"
 six = "*"
+dotenv = "*"
 
 [dev-packages]
 
