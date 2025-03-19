@@ -2,7 +2,6 @@ package com.rahim.proto.util;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
-import com.rahim.proto.protobuf.GoldPriceInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,11 +12,13 @@ import org.slf4j.LoggerFactory;
 public class ProtobufBuilder {
     private static final Logger logger = LoggerFactory.getLogger(ProtobufBuilder.class);
 
-    public static GoldPriceInfo parseGoldPriceInfo(byte[] data) {
+    public static <T extends Message> T parseProtobuf(byte[] data, T defaultInstance) {
         try {
-            return GoldPriceInfo.parseFrom(data);
+            @SuppressWarnings("unchecked")
+            T parsedOject = (T) defaultInstance.getParserForType().parseFrom(data);
+            return parsedOject;
         } catch (InvalidProtocolBufferException e) {
-            logger.error("Failed to parse byte array to GoldPriceInfo", e);
+            logger.error("Failed to parse byte array to Protobuf object of type: {}", defaultInstance.getClass().getSimpleName());
             return null;
         }
     }
