@@ -9,10 +9,10 @@ import org.slf4j.LoggerFactory;
  * @author Rahim Ahmed
  * @created 17/03/2025
  */
-public class ProtobufBuilder {
-    private static final Logger logger = LoggerFactory.getLogger(ProtobufBuilder.class);
+public class ProtobufDerSerUtil {
+    private static final Logger logger = LoggerFactory.getLogger(ProtobufDerSerUtil.class);
 
-    public static <T extends Message> T parseProtobuf(byte[] data, T defaultInstance) {
+    public static <T extends Message> T deserialiseByteToProtobuf(byte[] data, T defaultInstance) {
         try {
             @SuppressWarnings("unchecked")
             T parsedOject = (T) defaultInstance.getParserForType().parseFrom(data);
@@ -23,7 +23,7 @@ public class ProtobufBuilder {
         }
     }
 
-    public static byte[] serializeProtobufToByteArray(Message data) {
+    public static byte[] serialiseProtobufToByteArray(Message data) {
         return data.toByteArray();
     }
 }

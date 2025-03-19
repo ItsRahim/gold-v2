@@ -1,7 +1,7 @@
 package com.rahim.kafkaservice.service;
 
 import com.google.protobuf.Message;
-import com.rahim.proto.util.ProtobufBuilder;
+import com.rahim.proto.util.ProtobufDerSerUtil;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +31,7 @@ public class ProtobufKafkaService implements IKafkaService {
             return;
         }
 
-        byte[] serializedData = ProtobufBuilder.serializeProtobufToByteArray(protobufMessage);
+        byte[] serializedData = ProtobufDerSerUtil.serialiseProtobufToByteArray(protobufMessage);
         org.springframework.messaging.Message<byte[]> message = generateMessage(topic, serializedData);
 
         CompletableFuture<SendResult<String, byte[]>> future = kafkaTemplate.send(message);
