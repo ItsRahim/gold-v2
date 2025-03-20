@@ -4,12 +4,15 @@ from datetime import datetime, UTC
 
 import crython
 
+from src.config import Config
 from src.proto.price_pb2 import GoldPriceInfo
 from src.kafka_handler.KafkaHandler import KafkaHandler
 from src.scraper.scraper import get_gold_price
 
 logger = logging.getLogger(__name__)
 kafka_handler = KafkaHandler()
+gold_price_update_topic = Config.get('GOLD_PRICE_UPDATE_TOPIC', 'gold.price.update')
+
 
 @crython.job(expr='@minutely')
 def fetch_gold_price():
@@ -27,7 +30,7 @@ def fetch_gold_price():
 
         message_data = gold_price_info.SerializeToString()
 
-        kafka_handler.send_message(topic='gold', message=message_data, delete_cached=True)
+        kafka_handler.send_message(topic=gold_price_update_topic, message=message_data, delete_cached=True)
         logger.info(f"Sent gold price to Kafka: {price_data} at {request_time}")
     else:
         logger.warning("Failed to fetch gold price.")
