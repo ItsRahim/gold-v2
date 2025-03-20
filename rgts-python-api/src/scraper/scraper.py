@@ -1,6 +1,6 @@
 import json
 import logging
-from typing import Optional
+from typing import Optional, Any
 import requests
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
@@ -16,7 +16,7 @@ user_agent = {'User-Agent': ua}
 FALLBACK_SOURCE_NAME = Config.get('FALLBACK_GOLD_SRC', 'uk-investing')
 
 
-def get_gold_price() -> Optional[float]:
+def get_gold_price() -> tuple[str, float] | None:
     """Fetch and parse the gold price from the source."""
     source = get_source()
     if not source:
@@ -37,7 +37,7 @@ def get_gold_price() -> Optional[float]:
 
         if price_element:
             price = price_element.text.strip().replace(',', '')
-            return round(float(price), 2)
+            return source_name, round(float(price), 2)
         else:
             logger.warning(f"No price found for {source_name} using {source_element}")
             return None

@@ -71,6 +71,3 @@ class KafkaHandler:
 @crython.job(expr='@minutely')
 def schedule_retry():
     KafkaHandler.retry_failed_messages()
-
-
-crython.start()
