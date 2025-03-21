@@ -1,0 +1,1 @@
+INSERT INTO price_sources (name, endpoint, url, element, is_active) VALUES (:name, :endpoint, :url, :element, :is_active)

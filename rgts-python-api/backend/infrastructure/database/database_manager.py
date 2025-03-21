@@ -32,7 +32,11 @@ class DatabaseManager:
         try:
             with self.engine.connect() as conn:
                 result = conn.execute(text(query), params or {})
-                return result.fetchall()
+                if result.returns_rows:
+                    return result.fetchall()
+                else:
+                    conn.commit()
+                    return result.rowcount
         except SQLAlchemyError as e:
             logger.error(f"Database query execution failed: {e}")
             raise

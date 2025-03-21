@@ -19,8 +19,11 @@ class GETPriceSourcesResponse(BaseModel):
     price_sources: List[PriceSource]
 
 
-class POSTPriceSourceRequest(PriceSource):
-    pass
+class POSTPriceSourceRequest(BaseModel):
+    name: str
+    endpoint: str
+    url: HttpUrl
+    element: str
 
 
 class POSTPriceSourceUpdateRequest(BaseModel):

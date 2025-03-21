@@ -1,13 +1,15 @@
-from fastapi import APIRouter, Depends, HTTPException
-from backend.infrastructure.database.database_manager import DatabaseManager
-from backend.schemas import PriceSource, GETPriceSourcesResponse
-import logging
 import json
+import logging
 
+from fastapi import APIRouter, Depends, HTTPException
+
+from backend.infrastructure.database.database_manager import DatabaseManager
+from backend.schemas import PriceSource, GETPriceSourcesResponse, POSTPriceSourceRequest
 from backend.util.config import Config
-from backend.util.exceptions import raise_not_found_exception
+from backend.util.exceptions import raise_not_found_exception, raise_internal_server_exception, \
+    raise_bad_request_exception
 
-router = APIRouter(prefix="/api/v1/price-sources", tags=["price-sources"])
+router = APIRouter(prefix="/api/v2/price-sources", tags=["price-sources"])
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +19,7 @@ def get_db_manager() -> DatabaseManager:
 
 
 @router.get("", response_model=GETPriceSourcesResponse)
-def get_price_sources(db_manager: DatabaseManager = Depends(get_db_manager)):
+async def get_price_sources(db_manager: DatabaseManager = Depends(get_db_manager)):
     try:
         query = Config.load_sql_from_file("queries/get_all_price_sources.sql")
         price_sources = db_manager.execute_query(query)
@@ -40,4 +42,56 @@ def get_price_sources(db_manager: DatabaseManager = Depends(get_db_manager)):
 
     except Exception as e:
         logger.error(f"Failed to retrieve price sources: {str(e)}", exc_info=True)
-        raise HTTPException(status_code=500, detail="Internal Server Error")
+        raise_internal_server_exception("Failed to retrieve price sources")
+
+
+@router.post("", response_model=None)
+async def add_price_source(request: POSTPriceSourceRequest, db_manager: DatabaseManager = Depends(get_db_manager)):
+    try:
+        # Access attributes directly instead of destructuring
+        name = request.name
+        endpoint = request.endpoint
+        url = str(request.url)
+        element = request.element.replace("'", '"')
+
+        if not await check_if_price_source_exists(name, db_manager):
+            await add_new_price_source(name, endpoint, url, element, db_manager)
+            return {"message": "Price source added successfully."}
+        else:
+            raise_bad_request_exception(detail=f"Price source with name '{name}' already exists.")
+
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        logger.error(f"Failed to add price source: {str(e)}", exc_info=True)
+        raise_internal_server_exception("Failed to add price source")
+
+
+async def check_if_price_source_exists(name: str, db_manager: DatabaseManager) -> bool | None:
+    try:
+        source_exists_query = Config.load_sql_from_file("queries/price_source_exists_by_name.sql")
+        source_exists_params = {'name': name}
+        result = db_manager.execute_query(source_exists_query, source_exists_params)
+        return bool(result)
+    except Exception as e:
+        logger.error(f"Error checking if price source exists: {str(e)}", exc_info=True)
+        raise_internal_server_exception("Error checking if price source exists")
+
+
+async def add_new_price_source(name: str, endpoint: str, url: str, element: str, db_manager: DatabaseManager) -> None:
+    try:
+        add_price_source_query = Config.load_sql_from_file("queries/add_price_source_query.sql")
+        add_price_source_params = {
+            'name': name,
+            'endpoint': endpoint,
+            'url': url,
+            'element': element,
+            'is_active': False
+        }
+        affected_rows = db_manager.execute_query(add_price_source_query, add_price_source_params)
+        if not affected_rows:
+            raise_bad_request_exception(detail="Failed to add price source")
+        logger.info(f"Number of rows affected by the insert: {affected_rows}")
+    except Exception as e:
+        logger.error(f"Error adding price source: {str(e)}", exc_info=True)
+        raise_internal_server_exception("Failed to add price source")
