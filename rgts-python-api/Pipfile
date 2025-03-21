@@ -9,7 +9,6 @@ requests = "*"
 grpcio = "*"
 grpcio-tools = "*"
 kafka-python = "*"
-crython = "*"
 six = "*"
 dotenv = "*"
 fake-useragent = "*"
@@ -20,6 +19,7 @@ pydantic = "*"
 fastapi = "*"
 uvicorn = "*"
 asyncpg = "*"
+apscheduler = "*"
 
 [dev-packages]
 

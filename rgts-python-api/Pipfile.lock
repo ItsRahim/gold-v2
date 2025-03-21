@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "abfab237d1904c6dd9390901bdd0759c19d2b87a8dedc0ee1bdf893aef74cba8"
+            "sha256": "fa6eb8951298ce151f5429bbf8aaa022a65cad9d040aa20e6bed6dea78c392d1"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -40,6 +40,15 @@
             ],
             "markers": "python_version >= '3.9'",
             "version": "==4.9.0"
+        },
+        "apscheduler": {
+            "hashes": [
+                "sha256:4c622d250b0955a65d5d0eb91c33e6d43fd879834bf541e0a18661ae60460133",
+                "sha256:fc134ca32e50f5eadcc4938e3a4545ab19131435e851abb40b34d63d5141c6da"
+            ],
+            "index": "pypi",
+            "markers": "python_version >= '3.8'",
+            "version": "==3.11.0"
         },
         "asyncpg": {
             "hashes": [
@@ -227,14 +236,6 @@
             ],
             "markers": "platform_system == 'Windows'",
             "version": "==0.4.6"
-        },
-        "crython": {
-            "hashes": [
-                "sha256:002e74a0895411571fd4e9ce89f8f674daaeff7072f05dfd5d97cfa6d91a7aa3",
-                "sha256:27adb886ad3f87aaa257c8b947a5578eea05df619dff8bbabdced680971313ce"
-            ],
-            "index": "pypi",
-            "version": "==0.2.0"
         },
         "dotenv": {
             "hashes": [
@@ -833,6 +834,22 @@
             ],
             "markers": "python_version >= '3.8'",
             "version": "==4.12.2"
+        },
+        "tzdata": {
+            "hashes": [
+                "sha256:24894909e88cdb28bd1636c6887801df64cb485bd593f2fd83ef29075a81d694",
+                "sha256:7e127113816800496f027041c570f50bcd464a020098a3b6b199517772303639"
+            ],
+            "markers": "platform_system == 'Windows'",
+            "version": "==2025.1"
+        },
+        "tzlocal": {
+            "hashes": [
+                "sha256:cceffc7edecefea1f595541dbd6e990cb1ea3d19bf01b2809f362a03dd7921fd",
+                "sha256:eb1a66c3ef5847adf7a834f1be0800581b683b5608e74f86ecbcef8ab91bb85d"
+            ],
+            "markers": "python_version >= '3.9'",
+            "version": "==5.3.1"
         },
         "urllib3": {
             "hashes": [
