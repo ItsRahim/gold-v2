@@ -1,7 +1,6 @@
 import logging
 from collections import deque
 
-import crython
 from kafka import KafkaProducer
 
 from backend.util.config import Config
@@ -69,7 +68,6 @@ class KafkaHandler:
             KafkaHandler._message_cache.append((topic, message))
 
 
-@crython.job(expr='@minutely')
 def schedule_retry():
     KafkaHandler.retry_failed_messages()
 
