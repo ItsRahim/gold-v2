@@ -19,6 +19,7 @@ alembic = "*"
 pydantic = "*"
 fastapi = "*"
 uvicorn = "*"
+asyncpg = "*"
 
 [dev-packages]
 

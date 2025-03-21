@@ -4,6 +4,7 @@ from pydantic import BaseModel, HttpUrl, Field
 
 
 class PriceSource(BaseModel):
+    id: int
     name: str
     endpoint: str
     url: HttpUrl

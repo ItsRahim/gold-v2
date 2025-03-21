@@ -1,0 +1,1 @@
+UPDATE price_sources SET is_active = TRUE WHERE id = :id

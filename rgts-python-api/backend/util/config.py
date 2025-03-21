@@ -17,7 +17,7 @@ class Config:
         user = Config.get('DATABASE_USER', 'postgres')
         password = Config.get('DATABASE_PASSWORD', 'password')
 
-        return f'postgresql://{user}:{password}@{host}:{port}/{db_name}'
+        return f'postgresql+asyncpg://{user}:{password}@{host}:{port}/{db_name}'
 
     @staticmethod
     def load_sql_from_file(file_path: str) -> str:

@@ -1,5 +1,6 @@
 import json
 import logging
+from typing import Any, Coroutine
 
 from fastapi import APIRouter, Depends, HTTPException
 
@@ -22,13 +23,14 @@ def get_db_manager() -> DatabaseManager:
 async def get_price_sources(db_manager: DatabaseManager = Depends(get_db_manager)):
     try:
         query = Config.load_sql_from_file("queries/get_all_price_sources.sql")
-        price_sources = db_manager.execute_query(query)
+        price_sources = await db_manager.execute_query(query)
 
         if not price_sources:
             raise_not_found_exception(detail="No price sources found")
 
         structured_sources = [
             PriceSource(
+                id=source[0],
                 name=source[1],
                 endpoint=source[2],
                 url=source[3],
@@ -48,7 +50,6 @@ async def get_price_sources(db_manager: DatabaseManager = Depends(get_db_manager
 @router.post("", response_model=None)
 async def add_price_source(request: POSTPriceSourceRequest, db_manager: DatabaseManager = Depends(get_db_manager)):
     try:
-        # Access attributes directly instead of destructuring
         name = request.name
         endpoint = request.endpoint
         url = str(request.url)
@@ -95,3 +96,49 @@ async def add_new_price_source(name: str, endpoint: str, url: str, element: str,
     except Exception as e:
         logger.error(f"Error adding price source: {str(e)}", exc_info=True)
         raise_internal_server_exception("Failed to add price source")
+
+
+@router.post("/{source_id}/activate", response_model=None)
+async def activate_source(source_id: str, db_manager: DatabaseManager = Depends(get_db_manager)):
+    try:
+        async with db_manager.session_scope() as session:
+            if await deactivate_sources(db_manager, session):
+                try:
+                    int_id = int(source_id)
+                except ValueError:
+                    raise_bad_request_exception(detail="Invalid source ID. Must be an integer.")
+
+                await activate_new_source(int_id, db_manager, session)
+                return {"message": "Activated source successfully."}
+            else:
+                raise_bad_request_exception(detail="Failed to activate source")
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        logger.error(f"Failed to activate price source: {str(e)}", exc_info=True)
+        raise_internal_server_exception("Failed to activate price source")
+
+
+
+async def deactivate_sources(db_manager: DatabaseManager, session) -> bool | None:
+    try:
+        query = Config.load_sql_from_file("queries/deactivate_all_price_sources.sql")
+        affected_rows = await db_manager.execute_query(query, session=session)
+        if affected_rows == 0:
+            raise_internal_server_exception("Failed to deactivate price source")
+        return True
+    except Exception as e:
+        logger.error(f"Failed to deactivate price source: {str(e)}", exc_info=True)
+        raise_internal_server_exception("Failed to deactivate price source")
+
+
+async def activate_new_source(int_id: int, db_manager: DatabaseManager, session) -> None:
+    try:
+        query = Config.load_sql_from_file("queries/activate_price_source.sql")
+        params = {'id': int_id}
+        affected_rows = await db_manager.execute_query(query, params=params,session=session)
+        if affected_rows == 0:
+            raise_internal_server_exception("Failed to activate the price source")
+    except Exception as e:
+        logger.error(f"Failed to activate new price source: {str(e)}", exc_info=True)
+        raise_internal_server_exception("Failed to activate price source")

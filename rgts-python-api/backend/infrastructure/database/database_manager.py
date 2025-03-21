@@ -1,13 +1,16 @@
 import logging
-from contextlib import contextmanager
+from contextlib import asynccontextmanager
 
-from sqlalchemy import create_engine, text
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import text
 
 from backend.util.config import Config
 
 logger = logging.getLogger(__name__)
+
 
 class DatabaseManager:
     _instance = None
@@ -19,51 +22,45 @@ class DatabaseManager:
         return cls._instance
 
     def _initialize_db(self):
-        logger.info("Initialising database")
+        logger.info("Initializing database")
         self.connection_url = Config.get_db_credentials()
-        self.engine = create_engine(self.connection_url, pool_size=10, max_overflow=0, pool_pre_ping=True,
-                                    pool_recycle=1800)
-        self.Session = sessionmaker(bind=self.engine)
+
+        self.engine = create_async_engine(self.connection_url, pool_size=10, max_overflow=0, pool_pre_ping=True,pool_recycle=1800)
+
+        self.Session = sessionmaker(self.engine, class_=AsyncSession, expire_on_commit=False)
         logger.info("Database connection initialized")
 
-    def execute_query(self, query: str, params: dict[str, object] | None = None):
-        if not hasattr(self, "engine"):
-            self._initialize_db()
-        try:
-            with self.engine.connect() as conn:
-                result = conn.execute(text(query), params or {})
-                if result.returns_rows:
-                    return result.fetchall()
-                else:
-                    conn.commit()
-                    return result.rowcount
-        except SQLAlchemyError as e:
-            logger.error(f"Database query execution failed: {e}")
-            raise
-
-    @contextmanager
-    def session_scope(self):
+    @asynccontextmanager
+    async def session_scope(self):
         """Provides a transactional scope around a series of operations."""
         session = self.Session()
         try:
             yield session
-            session.commit()
+            await session.commit()
         except SQLAlchemyError as e:
-            session.rollback()
+            await session.rollback()
             logger.error(f"Database transaction error: {e}")
             raise
         except Exception as e:
-            session.rollback()
+            await session.rollback()
             logger.error(f"Unexpected session error: {e}")
             raise
         finally:
-            session.close()
+            await session.close()
 
-    def close_connection(self):
-        """Closes the database connection and disposes of the engine."""
+    async def execute_query(self, query: str, params: dict[str, object] | None = None, session=None):
+        if not hasattr(self, "engine"):
+            self._initialize_db()
         try:
-            self.engine.dispose()
-            logger.info("Database connection closed successfully.")
-        except Exception as e:
-            logger.error(f"Error closing database connection: {e}")
+            if session:
+                result = await session.execute(text(query), params or {})
+            else:
+                async with self.engine.connect() as conn:
+                    result = await conn.execute(text(query), params or {})
+            if result.returns_rows:
+                return result.fetchall()
+            else:
+                return result.rowcount
+        except SQLAlchemyError as e:
+            logger.error(f"Database query execution failed: {e}")
             raise
