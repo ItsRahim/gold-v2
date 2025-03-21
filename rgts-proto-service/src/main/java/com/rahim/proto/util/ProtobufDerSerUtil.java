@@ -13,6 +13,11 @@ public class ProtobufDerSerUtil {
     private static final Logger logger = LoggerFactory.getLogger(ProtobufDerSerUtil.class);
 
     public static <T extends Message> T deserialiseByteToProtobuf(byte[] data, T defaultInstance) {
+        if (data == null) {
+            logger.error("Received null byte array for deserialisation.");
+            return null;
+        }
+
         try {
             @SuppressWarnings("unchecked")
             T parsedOject = (T) defaultInstance.getParserForType().parseFrom(data);
@@ -24,6 +29,10 @@ public class ProtobufDerSerUtil {
     }
 
     public static byte[] serialiseProtobufToByteArray(Message data) {
+        if (data == null) {
+            logger.error("Cannot serialize null Protobuf object.");
+            return new byte[0];
+        }
         return data.toByteArray();
     }
 }

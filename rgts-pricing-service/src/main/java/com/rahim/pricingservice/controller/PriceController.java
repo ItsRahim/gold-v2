@@ -15,12 +15,4 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class PriceController {
     private static final Logger logger = LoggerFactory.getLogger(PriceController.class);
-
-    /**
-     *  GoldPriceResponse goldPriceResponse = grpcClientService.sendRequest(
-     *                     GoldPriceServiceGrpc::newBlockingStub,
-     *                     getEmptyRequest(),
-     *                     GoldPriceServiceGrpc.GoldPriceServiceBlockingStub::getGoldPrice
-     *             );
-     */
 }
