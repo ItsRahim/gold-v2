@@ -10,14 +10,22 @@ class Config:
         return os.getenv(key, default)
 
     @staticmethod
-    def get_db_credentials():
+    def _get_db_url(driver: str) -> str:
         db_name = Config.get('DATABASE_NAME', 'gold')
         host = Config.get('DATABASE_HOST', 'localhost')
         port = Config.get('DATABASE_PORT', '5432')
         user = Config.get('DATABASE_USER', 'postgres')
         password = Config.get('DATABASE_PASSWORD', 'password')
 
-        return f'postgresql+asyncpg://{user}:{password}@{host}:{port}/{db_name}'
+        return f'{driver}://{user}:{password}@{host}:{port}/{db_name}'
+
+    @staticmethod
+    def get_alembic_db_credentials() -> str:
+        return Config._get_db_url('postgresql')
+
+    @staticmethod
+    def get_db_credentials() -> str:
+        return Config._get_db_url('postgresql+asyncpg')
 
     @staticmethod
     def load_sql_from_file(file_path: str) -> str:

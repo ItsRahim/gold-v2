@@ -23,7 +23,7 @@ if config.config_file_name is not None:
 target_metadata = None
 
 # Create the SQLAlchemy URL
-sqlalchemy_url = Config.get_db_credentials()
+sqlalchemy_url = Config.get_alembic_db_credentials()
 
 # Override the sqlalchemy.url in the Alembic config
 config.set_main_option("sqlalchemy.url", sqlalchemy_url)
