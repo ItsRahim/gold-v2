@@ -3,29 +3,24 @@ from contextlib import contextmanager
 
 from sqlalchemy import create_engine, text
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.orm import sessionmaker, Query
+from sqlalchemy.orm import sessionmaker
 
-from src.config import Config
+from backend.util.config import Config
 
 logger = logging.getLogger(__name__)
-
 
 class DatabaseManager:
     _instance = None
 
-    def __init__(self):
-        if not hasattr(self, "engine"):
-            self._initialize_db()
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super(DatabaseManager, cls).__new__(cls)
+            cls._instance._initialize_db()
+        return cls._instance
 
     def _initialize_db(self):
         logger.info("Initialising database")
-        db_name = Config.get('DATABASE_NAME', 'gold')
-        host = Config.get('DATABASE_HOST', 'localhost')
-        port = Config.get('DATABASE_PORT', '5432')
-        user = Config.get('DATABASE_USER', 'postgres')
-        password = Config.get('DATABASE_PASSWORD', 'password')
-
-        self.connection_url = f'postgresql://{user}:{password}@{host}:{port}/{db_name}'
+        self.connection_url = Config.get_db_credentials()
         self.engine = create_engine(self.connection_url, pool_size=10, max_overflow=0, pool_pre_ping=True,
                                     pool_recycle=1800)
         self.Session = sessionmaker(bind=self.engine)

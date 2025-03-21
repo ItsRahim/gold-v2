@@ -4,7 +4,7 @@ from collections import deque
 import crython
 from kafka import KafkaProducer
 
-from src.config import Config
+from backend.util.config import Config
 
 logger = logging.getLogger(__name__)
 

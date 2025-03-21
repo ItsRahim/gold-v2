@@ -15,6 +15,10 @@ dotenv = "*"
 fake-useragent = "*"
 sqlalchemy = "*"
 psycopg2 = "*"
+alembic = "*"
+pydantic = "*"
+fastapi = "*"
+uvicorn = "*"
 
 [dev-packages]
 

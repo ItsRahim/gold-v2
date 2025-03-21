@@ -1,13 +1,13 @@
 import json
 import logging
-from typing import Optional, Any
+from typing import Optional
 import requests
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
 from sqlalchemy.exc import SQLAlchemyError
 
-from src.config import Config
-from src.database.database_manager import DatabaseManager
+from backend.util.config import Config
+from backend.infrastructure.database.database_manager import DatabaseManager
 
 logger = logging.getLogger(__name__)
 

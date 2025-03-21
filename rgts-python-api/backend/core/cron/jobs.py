@@ -1,15 +1,15 @@
 import logging
-import time
 from datetime import datetime, UTC
 
 import crython
 
-from src.config import Config
-from src.proto.price_pb2 import GoldPriceInfo
-from src.kafka_handler.KafkaHandler import KafkaHandler
-from src.scraper.scraper import get_gold_price
+from backend.util.config import Config
+from backend.infrastructure.kafka_handler import KafkaHandler
+from backend.core.scraper.scraper import get_gold_price
+from backend.proto.price_pb2 import GoldPriceInfo
 
 logger = logging.getLogger(__name__)
+
 kafka_handler = KafkaHandler()
 gold_price_update_topic = Config.get('GOLD_PRICE_UPDATE_TOPIC', 'gold.price.update')
 
@@ -34,16 +34,3 @@ def fetch_gold_price():
         logger.info(f"Sent gold price to Kafka: {price_data} at {request_time}")
     else:
         logger.warning("Failed to fetch gold price.")
-
-
-if __name__ == '__main__':
-    logger.info("Starting gold price scraper...")
-    fetch_gold_price()
-    crython.start()
-
-    try:
-        while True:
-            time.sleep(1)
-    except KeyboardInterrupt:
-        logger.info("Stopping scheduler...")
-        crython.stop()
