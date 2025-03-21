@@ -5,7 +5,7 @@ import crython
 import uvicorn
 from fastapi import FastAPI
 
-from backend.core.routes.source import router as price_source_router
+from backend.core.api.source import router as price_source_router
 
 logger = logging.getLogger(__name__)
 
