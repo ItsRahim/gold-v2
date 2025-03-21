@@ -69,9 +69,9 @@ async def add_price_source(request: POSTPriceSourceRequest, db_manager: Database
 
 async def check_if_price_source_exists(name: str, db_manager: DatabaseManager) -> bool | None:
     try:
-        source_exists_query = Config.load_sql_from_file("queries/price_source_exists_by_name.sql")
-        source_exists_params = {'name': name}
-        result = db_manager.execute_query(source_exists_query, source_exists_params)
+        query = Config.load_sql_from_file("queries/price_source_exists_by_name.sql")
+        params = {'name': name}
+        result = db_manager.execute_query(query, params)
         return bool(result)
     except Exception as e:
         logger.error(f"Error checking if price source exists: {str(e)}", exc_info=True)
@@ -80,15 +80,15 @@ async def check_if_price_source_exists(name: str, db_manager: DatabaseManager) -
 
 async def add_new_price_source(name: str, endpoint: str, url: str, element: str, db_manager: DatabaseManager) -> None:
     try:
-        add_price_source_query = Config.load_sql_from_file("queries/add_price_source_query.sql")
-        add_price_source_params = {
+        query = Config.load_sql_from_file("queries/add_price_source_query.sql")
+        params = {
             'name': name,
             'endpoint': endpoint,
             'url': url,
             'element': element,
             'is_active': False
         }
-        affected_rows = db_manager.execute_query(add_price_source_query, add_price_source_params)
+        affected_rows = db_manager.execute_query(query, params)
         if not affected_rows:
             raise_bad_request_exception(detail="Failed to add price source")
         logger.info(f"Number of rows affected by the insert: {affected_rows}")
