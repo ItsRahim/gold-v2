@@ -19,7 +19,7 @@ def get_db_manager() -> DatabaseManager:
 @router.get("", response_model=GETPriceSourcesResponse)
 def get_price_sources(db_manager: DatabaseManager = Depends(get_db_manager)):
     try:
-        query = Config.load_sql_from_file("queries/get_all_sources.sql")
+        query = Config.load_sql_from_file("queries/get_all_price_sources.sql")
         price_sources = db_manager.execute_query(query)
 
         if not price_sources:
