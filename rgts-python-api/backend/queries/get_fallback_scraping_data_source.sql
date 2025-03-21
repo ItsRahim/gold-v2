@@ -1,0 +1,1 @@
+SELECT name, url, element FROM price_sources WHERE endpoint =:endpoint

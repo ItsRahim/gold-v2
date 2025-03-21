@@ -4,7 +4,7 @@ from collections import deque
 import crython
 from kafka import KafkaProducer
 
-from src.config import Config
+from backend.util.config import Config
 
 logger = logging.getLogger(__name__)
 
@@ -45,9 +45,10 @@ class KafkaHandler:
                 cls._message_cache.appendleft((topic, message))
                 break
 
-    def send_message(self, topic: str, message: bytes, delete_cached: bool = False) -> None:
+    @classmethod
+    def send_message(cls, topic: str, message: bytes, delete_cached: bool = False) -> None:
         """Attempts to send a message to Kafka. If it fails, caches the message for retry."""
-        producer = self.get_producer()
+        producer = cls.get_producer()
         if producer:
             try:
                 future = producer.send(topic, message)
@@ -71,3 +72,7 @@ class KafkaHandler:
 @crython.job(expr='@minutely')
 def schedule_retry():
     KafkaHandler.retry_failed_messages()
+
+
+def send_message(topic, message, delete_cached):
+    KafkaHandler.send_message(topic, message, delete_cached)
