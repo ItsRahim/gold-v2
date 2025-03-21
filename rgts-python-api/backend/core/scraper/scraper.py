@@ -1,13 +1,14 @@
 import json
 import logging
-from typing import Optional
+from typing import Any, Coroutine
+
 import requests
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
 from sqlalchemy.exc import SQLAlchemyError
 
-from backend.util.config import Config
 from backend.infrastructure.database.database_manager import DatabaseManager
+from backend.util.config import Config
 
 logger = logging.getLogger(__name__)
 
@@ -16,9 +17,9 @@ user_agent = {'User-Agent': ua}
 FALLBACK_SOURCE_NAME = Config.get('FALLBACK_GOLD_SRC', 'uk-investing')
 
 
-def get_gold_price() -> tuple[str, float] | None:
+async def get_gold_price() -> tuple[str, float] | None:
     """Fetch and parse the gold price from the source."""
-    source = get_source()
+    source = await get_source()
     if not source:
         return None
 
@@ -49,52 +50,44 @@ def get_gold_price() -> tuple[str, float] | None:
     return None
 
 
-def get_source() -> Optional[dict]:
+async def get_source() -> tuple[str, str, str] | Coroutine[Any, Any, tuple[str, str, str] | None] | None:
     """
     Retrieve a source from the database.
     Returns:
         dict or None: A dictionary containing the source details if found, None otherwise.
     """
-    query = (
-        "SELECT source_name, source_url, source_element_data "
-        "FROM price_sources "
-        "WHERE source_is_active = :active"
-    )
+    query = Config.load_sql_from_file("queries/get_scraping_data_source.sql")
 
-    fallback_query = (
-        "SELECT source_name, source_url, source_element_data "
-        "FROM price_sources "
-        "WHERE source_endpoint = :fallback_source"
-    )
+    fallback_query = Config.load_sql_from_file("queries/get_fallback_scraping_data_source.sql")
 
     connection = DatabaseManager()
 
     try:
-        source_data = get_active_source(connection, query)
+        source_data = await get_active_source(connection, query)
         if source_data:
             return source_data
         else:
             logger.warning(
                 f"Multiple active sources found or none available. Using fallback source: '{FALLBACK_SOURCE_NAME}'")
-            return get_fallback_source(connection, fallback_query)
+            return await get_fallback_source(connection, fallback_query)
     except SQLAlchemyError as e:
         logger.error(f"Database query failed while retrieving source: {e}")
     return None
 
 
-def get_active_source(connection: DatabaseManager, query: str) -> Optional[dict]:
+async def get_active_source(connection: DatabaseManager, query: str) -> tuple[str, str, str] | None:
     """Fetch the active source from the database."""
     params = {'active': 'true'}
-    source = connection.execute_query(query, params)
-    if source and len(source) == 1:
+    source = await connection.execute_select_query(query, params)
+    if source:
         return source[0]
     return None
 
 
-def get_fallback_source(connection: DatabaseManager, query: str) -> Optional[dict]:
+async def get_fallback_source(connection: DatabaseManager, query: str) -> tuple[str, str, str] | None:
     """Fetch the fallback source if no active source is found."""
     params = {'fallback_source': FALLBACK_SOURCE_NAME}
-    fallback_source = connection.execute_query(query, params)
+    fallback_source = await connection.execute_select_query(query, params)
     if fallback_source:
         return fallback_source[0]
     logger.warning(f"Fallback source '{FALLBACK_SOURCE_NAME}' not found.")

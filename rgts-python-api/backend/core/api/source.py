@@ -135,7 +135,7 @@ async def deactivate_sources(db_manager: DatabaseManager, session) -> bool | Non
 
 async def activate_new_source(int_id: int, db_manager: DatabaseManager, session) -> None:
     try:
-        query = Config.load_sql_from_file("queries/activate_price_source.sql")
+        query = Config.load_sql_from_file("queries/update_active_price_source.sql")
         params = {'id': int_id}
         affected_rows = await db_manager.execute_update_query(query, params=params, session=session)
         if affected_rows == 0:
