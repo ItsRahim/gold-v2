@@ -6,6 +6,7 @@ from apscheduler.triggers.date import DateTrigger
 from apscheduler.triggers.interval import IntervalTrigger
 
 from backend.core.scheduler.jobs import fetch_and_send
+from backend.infrastructure.database.redis_manager import initialise_cache
 from backend.infrastructure.kafka_handler.KafkaHandler import schedule_retry
 
 logger = logging.getLogger(__name__)
@@ -24,6 +25,12 @@ async def initialise_cron_jobs():
         logger.info("Stopping scheduler...")
         scheduler.shutdown()
 
-if __name__ == "__main__":
+
+async def main():
     logger.info("Starting the scheduler...")
-    asyncio.run(initialise_cron_jobs())
+
+    await initialise_cache()
+    await initialise_cron_jobs()
+
+if __name__ == "__main__":
+    asyncio.run(main())

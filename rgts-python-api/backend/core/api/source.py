@@ -1,3 +1,4 @@
+import asyncio
 import json
 import logging
 
@@ -5,6 +6,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from psycopg2 import IntegrityError
 
 from backend.infrastructure.database.database_manager import DatabaseManager
+from backend.infrastructure.database.redis_manager import update_cache
 from backend.schemas import PriceSource, GETPriceSourcesResponse, POSTPriceSourceRequest
 from backend.util.config import Config
 from backend.util.exceptions import raise_not_found_exception, raise_internal_server_exception, \
@@ -94,7 +96,8 @@ async def add_new_price_source(name: str, endpoint: str, url: str, element: str,
             raise_bad_request_exception(detail="Failed to add price source")
         logger.info(f"Number of rows affected by the insert: {affected_rows}")
     except IntegrityError:
-        raise_internal_server_exception(detail=f"Failed to add price source. Price source with name '{name}' already exists.")
+        raise_internal_server_exception(
+            detail=f"Failed to add price source. Price source with name '{name}' already exists.")
     except Exception as e:
         logger.error(f"Error adding price source: {str(e)}", exc_info=True)
         raise_internal_server_exception("Failed to add price source")
@@ -111,6 +114,9 @@ async def activate_source(source_id: str, db_manager: DatabaseManager = Depends(
                     raise_bad_request_exception(detail="Invalid source ID. Must be an integer.")
 
                 await activate_new_source(int_id, db_manager, session)
+
+                asyncio.create_task(update_cache())
+
                 return {"message": "Activated source successfully."}
             else:
                 raise_bad_request_exception(detail="Failed to activate source")

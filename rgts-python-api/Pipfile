@@ -20,6 +20,7 @@ fastapi = "*"
 uvicorn = "*"
 asyncpg = "*"
 apscheduler = "*"
+redis = "*"
 
 [dev-packages]
 

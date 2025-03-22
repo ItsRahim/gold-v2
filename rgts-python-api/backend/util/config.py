@@ -28,6 +28,12 @@ class Config:
         return Config._get_db_url('postgresql+asyncpg')
 
     @staticmethod
+    def get_redis_credentials() -> str:
+        host =  Config.get('REDIS_HOST', 'localhost')
+        port = Config.get('REDIS_PORT','6379')
+        return f'redis://{host}:{port}'
+
+    @staticmethod
     def load_sql_from_file(file_path: str) -> str:
         """Read SQL query from a file."""
         path = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..', file_path))
