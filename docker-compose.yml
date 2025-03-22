@@ -54,6 +54,25 @@ services:
     networks:
       - my-network
 
+  python-api:
+    image: rgts-python-api:latest
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_NAME=gold
+      - DATABASE_HOST=postgres
+      - DATABASE_PORT=5432
+      - DATABASE_USER=postgres
+      - DATABASE_PASSWORD=password
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - my-network
+
 networks:
   my-network:
     driver: bridge
