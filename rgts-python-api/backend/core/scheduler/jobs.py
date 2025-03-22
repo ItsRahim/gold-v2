@@ -2,7 +2,7 @@ import asyncio
 import logging
 from datetime import datetime, UTC
 
-from backend.core.scraper.scraper import get_gold_price
+from backend.core.service.scraper import get_gold_price
 from backend.infrastructure.kafka_handler import KafkaHandler
 from backend.proto.price_pb2 import GoldPriceInfo
 from backend.util.config import Config
