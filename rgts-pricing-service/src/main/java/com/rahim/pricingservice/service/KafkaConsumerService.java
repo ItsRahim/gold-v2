@@ -1,6 +1,6 @@
 package com.rahim.pricingservice.service;
 
-import com.rahim.pricingservice.dto.GoldPriceUpdateDTO;
+import com.rahim.pricingservice.dto.grpc.GoldPriceUpdateDTO;
 import com.rahim.proto.protobuf.GoldPriceInfo;
 import com.rahim.proto.util.ProtobufDerSerUtil;
 import org.slf4j.Logger;

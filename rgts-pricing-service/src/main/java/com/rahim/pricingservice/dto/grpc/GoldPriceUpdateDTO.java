@@ -1,4 +1,4 @@
-package com.rahim.pricingservice.dto;
+package com.rahim.pricingservice.dto.grpc;
 
 import com.rahim.proto.protobuf.GoldPriceInfo;
 import lombok.*;
