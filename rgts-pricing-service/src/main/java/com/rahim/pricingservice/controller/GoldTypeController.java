@@ -1,7 +1,7 @@
 package com.rahim.pricingservice.controller;
 
-import com.rahim.common.exception.BadRequestException;
 import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
+import com.rahim.pricingservice.service.IGoldTypeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class GoldTypeController {
     private static final Logger logger = LoggerFactory.getLogger(GoldTypeController.class);
+    private final IGoldTypeService goldTypeService;
 
     @Operation(summary = "Add a new gold type")
     @ApiResponses(value = {
@@ -36,6 +37,7 @@ public class GoldTypeController {
     })
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> addGoldType(@Parameter(description = "Details of the gold type to be added", required = true) @RequestBody AddGoldTypeRequest request) {
-        return ResponseEntity.status(HttpStatus.OK).body("Gold type added successfully");
+        goldTypeService.addGoldType(request);
+        return ResponseEntity.status(HttpStatus.OK).body("Successfully added gold type");
     }
 }

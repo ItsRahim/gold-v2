@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
  * @created 23/03/2025
  */
 public class GoldCaratUtil {
-    private final Map<Integer, Double> caratToPurity = new HashMap<>();
+    private static final Map<Integer, Double> caratToPurity = new HashMap<>();
     private static final String CARAT_REGEX = "^([1-9]|1[0-9]|2[0-4])[Kk]?$";
     private static final Pattern pattern = Pattern.compile(CARAT_REGEX);
 
@@ -23,7 +23,7 @@ public class GoldCaratUtil {
         }
     }
 
-    public Double getPurity(String input) {
+    public static Double getPurity(String input) {
         if (!isValidGoldCarat(input)) {
             throw new IllegalArgumentException("Invalid carat input: " + input);
         }
@@ -36,7 +36,7 @@ public class GoldCaratUtil {
         }
     }
 
-    private boolean isValidGoldCarat(String input) {
+    public static boolean isValidGoldCarat(String input) {
         if (input == null) {
             return false;
         }
