@@ -34,6 +34,6 @@ public class GoldTypeController {
     })
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> addGoldType(@Parameter(description = "Details of the gold type to be added", required = true) @RequestBody AddGoldTypeRequest request) {
-
+        return ResponseEntity.ok(addGoldType(request));
     }
 }
