@@ -19,7 +19,7 @@ depends_on: Union[str, Sequence[str], None] = None
 
 def upgrade():
     op.execute("""
-    INSERT INTO price_sources (name, endpoint, url, element, is_active)
+    INSERT INTO rgts.price_sources (name, endpoint, url, element, is_active)
     VALUES 
     ('UK Investing', 'uk-investing', 'https://uk.investing.com/currencies/xau-gbp', '["div", {"data-test": "instrument-price-last"}]', TRUE),
     ('Bloomberg', 'bloomberg', 'https://www.bloomberg.com/quote/XAUGBP:CUR', '["div", {"data-component": "sized-price", "class": "sized-price SizedPrice_extraLarge-05pKbJRbUH8-"}]', FALSE),
@@ -31,4 +31,4 @@ def upgrade():
 
 def downgrade():
     op.execute(
-        """DELETE FROM price_sources WHERE name IN ('UK Investing', 'Bloomberg', 'CNBC', 'Forbes', 'Gold UK');""")
+        """DELETE FROM rgts.price_sources WHERE name IN ('UK Investing', 'Bloomberg', 'CNBC', 'Forbes', 'Gold UK');""")
