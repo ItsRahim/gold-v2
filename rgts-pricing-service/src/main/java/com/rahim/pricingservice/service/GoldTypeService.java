@@ -27,28 +27,32 @@ public class GoldTypeService implements IGoldTypeService {
     @Transactional(rollbackFor = Exception.class)
     public void addGoldType(AddGoldTypeRequest request) {
         if (request == null) {
-            throw new IllegalArgumentException("Request body is null");
+            logger.error("[addGoldType] Request body is null");
+            throw new BadRequestException("Request body is null");
         }
 
         String name = request.getName();
         if (name == null || goldTypeRepository.existsGoldTypeByName(name)) {
-            logger.error("Some Error");
+            logger.error("[addGoldType] Gold type with name '{}' already exists or is null", name);
             throw new BadRequestException("Gold type with name '" + name + "' already exists");
         }
 
         String carat = request.getCarat();
         if (!GoldCaratUtil.isValidGoldCarat(carat)) {
+            logger.error("[addGoldType] Invalid gold carat provided: '{}'.", carat);
             throw new BadRequestException("Gold carat '" + carat + "' is invalid");
         }
 
         BigDecimal weight = request.getWeight();
         if (weight == null || weight.compareTo(BigDecimal.ZERO) < 0) {
-            throw new BadRequestException("Gold weight is negative");
+            logger.error("[addGoldType] Invalid weight provided: '{}'. Weight must be non-negative.", weight);
+            throw new BadRequestException("Gold weight must be non-negative");
         }
 
         String description = request.getDescription();
         if (description == null || description.isEmpty()) {
-            throw new BadRequestException("Gold description is empty");
+            logger.error("[addGoldType] Empty or null description provided.");
+            throw new BadRequestException("Gold description is required");
         }
 
         GoldType goldType = GoldType.builder()
@@ -59,5 +63,6 @@ public class GoldTypeService implements IGoldTypeService {
                 .build();
 
         goldTypeRepository.save(goldType);
+        logger.info("[addGoldType] Successfully added gold type: Name='{}', Carat='{}', Weight='{}'", name, carat, weight);
     }
 }
