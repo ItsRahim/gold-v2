@@ -17,22 +17,14 @@ public class KafkaConsumerService {
 
     @KafkaListener(topics = "gold.price.update", groupId = "gold-price-group")
     public void listen(byte[] data) {
-        if (data == null) {
-            logger.error("Received null data from Kafka.");
-            return;
-        }
-
         try {
-            logger.debug("Received data: {}", data);
             GoldPriceInfo goldPriceInfo = deserialiseProtobuf(data);
-
             if (goldPriceInfo == null) {
                 logger.error("Failed to deserialise data into GoldPriceInfo");
                 return;
             }
 
             GoldPriceUpdateDTO goldPriceUpdateDTO = GoldPriceUpdateDTO.fromProtobuf(goldPriceInfo);
-
             if (goldPriceUpdateDTO == null) {
                 logger.error("Failed to convert GoldPriceInfo to GoldPriceUpdateDTO.");
                 return;

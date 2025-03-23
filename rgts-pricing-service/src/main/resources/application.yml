@@ -51,6 +51,5 @@ kafka:
 
 logging:
   level:
-    org.flywaydb: DEBUG
-    org.hibernate: INFO
+    com.rahim: DEBUG
     org.springframework: INFO
