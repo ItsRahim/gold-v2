@@ -8,10 +8,18 @@ on:
       - main
     paths:
       - 'rgts-common/**'
+      # - 'rgts-config-server/**'
+      # - 'rgts-database/**'
+      # - 'rgts-email-service/**'
+      # - 'rgts-eureka-server/**'
+      # - 'rgts-gateway-service/**'
+      # - 'rgts-holdings-service/**'
       - 'rgts-kafka-service/**'
       - 'rgts-pricing-service/**'
       - 'rgts-proto-service/**'
-
+      # - 'rgts-python-api/**'
+      # - 'rgts-scheduler-service/**'
+      # - 'rgts-user-service/**'
 env:
   DOCKER_USERNAME: rahimahmed
   JAVA_VERSION: 17
@@ -23,9 +31,19 @@ jobs:
       matrix:
         folder: [
           "rgts-common",
+          # "rgts-config-server",
+          # "rgts-database",
+          # "rgts-email-service",
+          # "rgts-eureka-server",
+          # "rgts-gateway-service",
+          # "rgts-holdings-service",
           "rgts-kafka-service",
+          # "rgts-notification-service",
           "rgts-pricing-service",
-          "rgts-proto-service"
+          "rgts-proto-service",
+          # "rgts-python-api",
+          # "rgts-scheduler-service",
+          # "rgts-user-service"
         ]
 
     steps:
@@ -52,22 +70,27 @@ jobs:
         run: mvn clean install
         working-directory: ${{ matrix.folder }}
 
-#      - name: Build and Push Docker Image
-#        if: github.ref == 'refs/heads/main'
-#        run: |
-#          # Login to Docker Hub
-#          echo "${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
-#
-#          # Build Docker image
-#          docker build \
-#            -t ${{ env.DOCKER_USERNAME }}/${{ matrix.folder }}:${{ github.sha }} \
-#            -t ${{ env.DOCKER_USERNAME }}/${{ matrix.folder }}:latest \
-#            -f ${{ matrix.folder }}/Dockerfile .
-#
-#          # Push images
-#          docker push ${{ env.DOCKER_USERNAME }}/${{ matrix.folder }}:${{ github.sha }}
-#          docker push ${{ env.DOCKER_USERNAME }}/${{ matrix.folder }}:latest
-#        working-directory: .
+      # - name: Log in to Docker Hub
+      #   if: env.ENABLE_BUILD != 'false'
+      #   run: echo "${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
+
+      - name: Check if folder has changes
+        id: check_changes
+        run: |
+          changes=$(git diff --name-only HEAD^ HEAD "${{ matrix.folder }}")
+          if [ -n "$changes" ]; then
+            echo "changed=true" >> $GITHUB_ENV
+          else
+            echo "changed=false" >> $GITHUB_ENV
+          fi
+        env:
+          ENABLE_BUILD: ${{ secrets.ENABLE_BUILD || 'true' }}
+
+      # - name: Build and push Docker image
+      #   if: env.changed == 'true' && env.ENABLE_BUILD != 'false'
+      #   run: |
+      #     docker build -t rahimahmed/${{ matrix.folder }} -f ${{ matrix.folder }}/Dockerfile .
+      #     docker push rahimahmed/${{ matrix.folder }}
 
 permissions:
   contents: read
