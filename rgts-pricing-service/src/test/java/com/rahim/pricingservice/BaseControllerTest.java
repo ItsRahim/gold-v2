@@ -30,7 +30,7 @@ public abstract class BaseControllerTest {
         String[] tables = {"gold_types", "gold_prices"};
 
         for (String table : tables) {
-            jdbcTemplate.execute("TRUNCATE TABLE IF EXISTS" + schema + "." + table);
+            jdbcTemplate.execute("TRUNCATE TABLE IF EXISTS " + schema + "." + table);
         }
     }
 }
