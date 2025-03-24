@@ -21,16 +21,15 @@ import org.springframework.test.context.TestPropertySource;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public abstract class BaseControllerTest {
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+  @Autowired private JdbcTemplate jdbcTemplate;
 
-    @BeforeEach
-    public void clearDatabase() {
-        String schema = "rgts";
-        String[] tables = {"gold_types"};
+  @BeforeEach
+  public void clearDatabase() {
+    String schema = "rgts";
+    String[] tables = {"gold_types"};
 
-        for (String table : tables) {
-            jdbcTemplate.execute("TRUNCATE TABLE " + schema + "." + table);
-        }
+    for (String table : tables) {
+      jdbcTemplate.execute("TRUNCATE TABLE " + schema + "." + table);
     }
+  }
 }

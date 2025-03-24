@@ -14,6 +14,6 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class QueryGoldTypeService implements IQueryGoldTypeService {
-    private static final Logger logger = LoggerFactory.getLogger(QueryGoldTypeService.class);
-    private final GoldTypeRepository goldTypeRepository;
+  private static final Logger logger = LoggerFactory.getLogger(QueryGoldTypeService.class);
+  private final GoldTypeRepository goldTypeRepository;
 }

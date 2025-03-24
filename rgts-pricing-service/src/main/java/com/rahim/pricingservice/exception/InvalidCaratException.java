@@ -7,7 +7,7 @@ import com.rahim.common.exception.base.BadRequestException;
  * @created 24/03/2025
  */
 public class InvalidCaratException extends BadRequestException {
-    public InvalidCaratException(String message) {
-        super(message);
-    }
+  public InvalidCaratException(String message) {
+    super(message);
+  }
 }
