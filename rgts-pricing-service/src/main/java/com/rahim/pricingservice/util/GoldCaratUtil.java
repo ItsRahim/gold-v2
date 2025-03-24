@@ -1,5 +1,6 @@
 package com.rahim.pricingservice.util;
 
+import com.rahim.pricingservice.exception.InvalidCaratException;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import org.springframework.stereotype.Service;
@@ -32,14 +33,14 @@ public class GoldCaratUtil {
 
     public BigDecimal getPurity(String input) {
         if (!isValidGoldCarat(input)) {
-            throw new IllegalArgumentException("Invalid carat input: " + input);
+            throw new InvalidCaratException("Invalid carat input: " + input);
         }
         try {
             String cleanInput = input.replaceAll("(?i)k", "").trim();
             int carat = Integer.parseInt(cleanInput);
             return caratToPurity.getOrDefault(carat, null);
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Invalid carat: " + input);
+            throw new InvalidCaratException("Invalid carat: " + input);
         }
     }
 

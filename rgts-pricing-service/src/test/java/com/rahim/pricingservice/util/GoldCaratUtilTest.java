@@ -1,20 +1,20 @@
 package com.rahim.pricingservice.util;
 
-import com.rahim.pricingservice.BaseTest;
+import com.rahim.pricingservice.BaseUnitTest;
+import com.rahim.pricingservice.exception.InvalidCaratException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.util.Map;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.assertj.core.api.AssertionsForClassTypes.*;
 
 /**
  * @author Rahim Ahmed
  * @created 24/03/2025
  */
-public class GoldCaratUtilTest extends BaseTest {
+public class GoldCaratUtilTest extends BaseUnitTest {
 
     @Autowired
     private GoldCaratUtil goldCaratUtil;
@@ -50,16 +50,19 @@ public class GoldCaratUtilTest extends BaseTest {
     @Test
     public void shouldThrowExceptionForInvalidCaratInput() {
         assertThatThrownBy(() -> goldCaratUtil.getPurity("INVALID"))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(InvalidCaratException.class);
 
         assertThatThrownBy(() -> goldCaratUtil.getPurity("2.5K"))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(InvalidCaratException.class);
 
         assertThatThrownBy(() -> goldCaratUtil.getPurity("25K"))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(InvalidCaratException.class);
 
         assertThatThrownBy(() -> goldCaratUtil.getPurity("-24K"))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(InvalidCaratException.class);
+
+        assertThatCode(() -> goldCaratUtil.getPurity("24K"))
+                .doesNotThrowAnyException();
     }
 
     @Test

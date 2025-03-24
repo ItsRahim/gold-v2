@@ -11,8 +11,8 @@ import org.springframework.test.context.TestPropertySource;
  * @created 24/03/2025
  */
 @SpringBootTest
-@TestPropertySource("classpath:application-test.yml")
-public abstract class BaseTest {
+@TestPropertySource("classpath:application.yml")
+public abstract class BaseUnitTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;

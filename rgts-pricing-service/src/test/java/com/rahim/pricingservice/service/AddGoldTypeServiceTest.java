@@ -1,7 +1,7 @@
 package com.rahim.pricingservice.service;
 
 import com.rahim.common.exception.BadRequestException;
-import com.rahim.pricingservice.BaseTest;
+import com.rahim.pricingservice.BaseUnitTest;
 import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
 import com.rahim.pricingservice.repository.GoldTypeRepository;
 import org.junit.jupiter.api.Test;
@@ -15,7 +15,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.*;
  * @author Rahim Ahmed
  * @created 24/03/2025
  */
-public class AddGoldTypeServiceTest extends BaseTest {
+public class AddGoldTypeServiceTest extends BaseUnitTest {
 
     @Autowired
     private IAddGoldTypeService addGoldTypeService;
