@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
  * @created 23/03/2025
  */
 public class ServiceException extends ApiException {
-
     public ServiceException(String message) {
         super(message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
