@@ -15,7 +15,6 @@ on:
 env:
   DOCKER_USERNAME: rahimahmed
   JAVA_VERSION: 17
-  MAVEN_ARGS: -B -ntp
 
 jobs:
   build:
@@ -51,7 +50,7 @@ jobs:
       # Build and test
       - name: Build with Maven
         run: |
-          mvn clean verify ${{ env.MAVEN_ARGS }}
+          mvn clean install
         working-directory: ${{ matrix.folder }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
