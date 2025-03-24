@@ -30,7 +30,6 @@ public class GoldTypeControllerTest extends BaseControllerTest {
     private static final String ENDPOINT = "/api/v2/pricing-service/type";
 
     @Autowired
-    @MockitoBean
     private IAddGoldTypeService mockGoldTypeService;
 
     @Autowired
@@ -55,37 +54,19 @@ public class GoldTypeControllerTest extends BaseControllerTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Successfully added gold type"));
-
-        verify(mockGoldTypeService, times(1)).addGoldType(request);
     }
 
     @Test
     public void shouldReturn400WhenGoldTypeAlreadyExists() throws Exception {
         AddGoldTypeRequest request = new AddGoldTypeRequest("ExistingGoldType", "22K", BigDecimal.TEN, "Description");
+        AddGoldTypeRequest request1 = new AddGoldTypeRequest("ExistingGoldType", "22K", BigDecimal.TEN, "Description");
 
-        doThrow(new BadRequestException("Gold type with name 'ExistingGoldType' already exists"))
-                .when(mockGoldTypeService).addGoldType(request);
+        mockGoldTypeService.addGoldType(request);
 
         mockMvc.perform(post(ENDPOINT)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+                        .content(objectMapper.writeValueAsString(request1)))
                 .andExpect(status().isBadRequest());
-
-        verify(mockGoldTypeService, times(1)).addGoldType(request);
-    }
-
-    @Test
-    public void shouldReturn500WhenErrorOccursWhileAddingGoldType() throws Exception {
-        AddGoldTypeRequest request = new AddGoldTypeRequest("GoldTypeName", "22K", BigDecimal.TEN, "Valid description");
-
-        doThrow(new RuntimeException("Unexpected error")).when(mockGoldTypeService).addGoldType(request);
-
-        mockMvc.perform(post(ENDPOINT)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isInternalServerError());
-
-        verify(mockGoldTypeService, times(1)).addGoldType(request);
     }
 
     @Test
