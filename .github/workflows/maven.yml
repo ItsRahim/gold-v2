@@ -58,6 +58,15 @@ jobs:
           mvn -B com.spotify.fmt:fmt-maven-plugin:format
         working-directory: ${{ matrix.folder }}
 
+      - name: Commit formatted code
+        if: success() && env.changed == 'true'
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add .
+          git commit -m "Apply code formatting"
+          git push origin ${{ github.ref }}  
+
       # - name: Log in to Docker Hub
       #   if: env.ENABLE_BUILD != 'false'
       #   run: echo "${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
