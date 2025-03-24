@@ -4,8 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rahim.common.exception.ApiExceptionHandler;
 import com.rahim.pricingservice.BaseControllerTest;
 import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
+import com.rahim.pricingservice.repository.GoldTypeRepository;
 import com.rahim.pricingservice.service.IAddGoldTypeService;
-import com.rahim.pricingservice.service.IGoldTypeQueryService;
+import com.rahim.pricingservice.service.IQueryGoldTypeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,58 +26,67 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 public class GoldTypeControllerTest extends BaseControllerTest {
 
-    private static final String ENDPOINT = "/api/v2/pricing-service/type";
+  private static final String ENDPOINT = "/api/v2/pricing-service/type";
 
-    @Autowired
-    private IAddGoldTypeService addGoldTypeService;
+  @Autowired private IAddGoldTypeService addGoldTypeService;
 
-    @Autowired
-    private IGoldTypeQueryService goldTypeQueryService;
+  @Autowired private GoldTypeRepository goldTypeRepository;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+  @Autowired private ObjectMapper objectMapper;
 
-    private MockMvc mockMvc;
+  private MockMvc mockMvc;
 
-    @BeforeEach
-    public void setUp() {
-        GoldTypeController goldTypeController = new GoldTypeController(addGoldTypeService, goldTypeQueryService);
-        mockMvc = MockMvcBuilders.standaloneSetup(goldTypeController)
-                .setControllerAdvice(new ApiExceptionHandler())
-                .build();
-    }
+  @BeforeEach
+  public void setUp() {
+    GoldTypeController goldTypeController =
+        new GoldTypeController(addGoldTypeService, goldTypeRepository);
+    mockMvc =
+        MockMvcBuilders.standaloneSetup(goldTypeController)
+            .setControllerAdvice(new ApiExceptionHandler())
+            .build();
+  }
 
-    @Test
-    public void shouldReturn200WhenGoldTypeAddedSuccessfully() throws Exception {
-        AddGoldTypeRequest request = new AddGoldTypeRequest("GoldTypeName", "22K", BigDecimal.TEN, "Valid description");
+  @Test
+  public void shouldReturn200WhenGoldTypeAddedSuccessfully() throws Exception {
+    AddGoldTypeRequest request =
+        new AddGoldTypeRequest("GoldTypeName", "22K", BigDecimal.TEN, "Valid description");
 
-        mockMvc.perform(post(ENDPOINT)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Successfully added gold type"));
-    }
+    mockMvc
+        .perform(
+            post(ENDPOINT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+        .andExpect(status().isOk())
+        .andExpect(content().string("Successfully added gold type"));
+  }
 
-    @Test
-    public void shouldReturn400WhenGoldTypeAlreadyExists() throws Exception {
-        AddGoldTypeRequest request = new AddGoldTypeRequest("ExistingGoldType", "22K", BigDecimal.TEN, "Description");
-        AddGoldTypeRequest request1 = new AddGoldTypeRequest("ExistingGoldType", "22K", BigDecimal.TEN, "Description");
+  @Test
+  public void shouldReturn400WhenGoldTypeAlreadyExists() throws Exception {
+    AddGoldTypeRequest request =
+        new AddGoldTypeRequest("ExistingGoldType", "22K", BigDecimal.TEN, "Description");
+    AddGoldTypeRequest request1 =
+        new AddGoldTypeRequest("ExistingGoldType", "22K", BigDecimal.TEN, "Description");
 
-        addGoldTypeService.addGoldType(request);
+    addGoldTypeService.addGoldType(request);
 
-        mockMvc.perform(post(ENDPOINT)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request1)))
-                .andExpect(status().isBadRequest());
-    }
+    mockMvc
+        .perform(
+            post(ENDPOINT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request1)))
+        .andExpect(status().isBadRequest());
+  }
 
-    @Test
-    public void shouldReturn400WhenGoldTypeRequestIsInvalid() throws Exception {
-        AddGoldTypeRequest invalidRequest = new AddGoldTypeRequest(null, "22K", BigDecimal.TEN, "Valid description");
+  @Test
+  public void shouldReturn400WhenGoldTypeRequestIsInvalid() throws Exception {
+    AddGoldTypeRequest invalidRequest =
+        new AddGoldTypeRequest(null, "22K", BigDecimal.TEN, "Valid description");
 
-        mockMvc.perform(post(ENDPOINT)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(invalidRequest)))
-                .andExpect(status().isBadRequest());
-    }
+    mockMvc
+        .perform(
+            post(ENDPOINT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(invalidRequest)))
+        .andExpect(status().isBadRequest());
+  }
 }

@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# Exit on first error
+set -e
+
+# Run formatting
+if [ -f "pom.xml" ]; then
+    # Maven project
+    mvn spotless:apply
+elif [ -f "build.gradle" ]; then
+    # Gradle project
+    ./gradlew spotlessApply
+else
+    echo "No Maven (pom.xml) or Gradle (build.gradle) file found"
+    exit 1
+fi
+
+# Stage formatted files
+git add .
+
+exit 0
