@@ -31,7 +31,6 @@ public class GoldCaratUtil {
         }
     }
 
-    //TODO: Might need re-work of how and when I throw exceptions. Change required in test and service level
     public BigDecimal getPurity(String input) {
         if (!isValidGoldCarat(input)) {
             throw new InvalidCaratException("Invalid carat input: " + input);
