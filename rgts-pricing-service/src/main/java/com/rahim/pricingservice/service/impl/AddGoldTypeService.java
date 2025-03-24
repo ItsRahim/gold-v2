@@ -1,5 +1,6 @@
 package com.rahim.pricingservice.service.impl;
 
+import com.rahim.common.exception.DuplicateEntityException;
 import com.rahim.common.exception.base.BadRequestException;
 import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
 import com.rahim.pricingservice.entity.GoldType;
@@ -41,7 +42,7 @@ public class AddGoldTypeService implements IAddGoldTypeService {
 
         if (goldTypeRepository.existsGoldTypeByName(name)) {
             logger.error("Gold type with name {}}' already exists", name);
-            throw new BadRequestException("Gold type with name '" + name + "' already exists");
+            throw new DuplicateEntityException("Gold type with name '" + name + "' already exists");
         }
 
         String carat = request.getCarat();
