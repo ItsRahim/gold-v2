@@ -27,10 +27,10 @@ public abstract class BaseControllerTest {
     @BeforeEach
     public void clearDatabase() {
         String schema = "rgts";
-        String[] tables = {"gold_types"};
+        String[] tables = {"gold_types", "gold_prices"};
 
         for (String table : tables) {
-            jdbcTemplate.execute("TRUNCATE TABLE " + schema + "." + table);
+            jdbcTemplate.execute("TRUNCATE TABLE IF EXISTS" + schema + "." + table);
         }
     }
 }
