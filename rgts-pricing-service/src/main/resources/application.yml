@@ -1,12 +1,38 @@
+server:
+  port: 8080
+
 spring:
   application:
     name: pricing-service
-server:
-  port: 8080
-grpc:
-  server:
-    host: ${GRPC_SERVER_HOST:localhost}
-    port: ${GRPC_SERVER_PORT:50051}
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/gold}
+    username: ${DATABASE_USERNAME:postgres}
+    password: ${DATABASE_PASSWORD:password}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-timeout: 20000
+      minimum-idle: 2
+      maximum-pool-size: 5
+      idle-timeout: 10000
+      max-lifetime: 30000
+      auto-commit: true
+      pool-name: HikariCP
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: false
+  flyway:
+    enabled: true
+    baseline-version: 0
+    clean-disabled: false
+    baseline-on-migrate: true
+    table: ${spring.application.name}_history
+
 kafka:
   security-protocol: PLAINTEXT
   bootstrap-servers: localhost:9093
@@ -22,3 +48,8 @@ kafka:
   consumer:
     key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
     value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
+
+logging:
+  level:
+    com.rahim: DEBUG
+    org.springframework: INFO

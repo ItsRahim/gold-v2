@@ -18,6 +18,8 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade():
+    op.execute('CREATE SCHEMA IF NOT EXISTS rgts')
+
     op.create_table(
         'price_sources',
         sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
@@ -26,16 +28,17 @@ def upgrade():
         sa.Column('url', sa.String(length=255), nullable=True),
         sa.Column('element', sa.String(length=500), nullable=True),
         sa.Column('is_active', sa.Boolean(), nullable=False),
-        sa.PrimaryKeyConstraint('id')
+        sa.PrimaryKeyConstraint('id'),
+        schema='rgts'
     )
-    op.execute("COMMENT ON TABLE price_sources IS 'Table to store information about price sources'")
-    op.execute("COMMENT ON COLUMN price_sources.id IS 'Unique identifier for each source'")
-    op.execute("COMMENT ON COLUMN price_sources.name IS 'Name of the price source'")
-    op.execute("COMMENT ON COLUMN price_sources.endpoint IS 'Endpoint of the price source'")
-    op.execute("COMMENT ON COLUMN price_sources.url IS 'URL of the price source'")
-    op.execute("COMMENT ON COLUMN price_sources.element IS 'Data related to the HTML element for extracting prices'")
-    op.execute("COMMENT ON COLUMN price_sources.is_active IS 'Flag to determine if source is being used by API call'")
+    op.execute("COMMENT ON TABLE rgts.price_sources IS 'Table to store information about price sources'")
+    op.execute("COMMENT ON COLUMN rgts.price_sources.id IS 'Unique identifier for each source'")
+    op.execute("COMMENT ON COLUMN rgts.price_sources.name IS 'Name of the price source'")
+    op.execute("COMMENT ON COLUMN rgts.price_sources.endpoint IS 'Endpoint of the price source'")
+    op.execute("COMMENT ON COLUMN rgts.price_sources.url IS 'URL of the price source'")
+    op.execute("COMMENT ON COLUMN rgts.price_sources.element IS 'Data related to the HTML element for extracting prices'")
+    op.execute("COMMENT ON COLUMN rgts.price_sources.is_active IS 'Flag to determine if source is being used by API call'")
 
 
 def downgrade():
-    op.drop_table('price_sources')
+    op.drop_table('price_sources', schema='rgts')
