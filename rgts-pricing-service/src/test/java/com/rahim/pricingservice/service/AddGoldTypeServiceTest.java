@@ -1,6 +1,6 @@
 package com.rahim.pricingservice.service;
 
-import com.rahim.common.exception.BadRequestException;
+import com.rahim.common.exception.base.BadRequestException;
 import com.rahim.pricingservice.BaseUnitTest;
 import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
 import com.rahim.pricingservice.repository.GoldTypeRepository;

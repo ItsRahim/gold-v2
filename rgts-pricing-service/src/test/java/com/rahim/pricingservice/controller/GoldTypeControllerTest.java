@@ -2,7 +2,7 @@ package com.rahim.pricingservice.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rahim.common.exception.ApiExceptionHandler;
-import com.rahim.common.exception.BadRequestException;
+import com.rahim.common.exception.base.BadRequestException;
 import com.rahim.pricingservice.BaseControllerTest;
 import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
 import com.rahim.pricingservice.service.IAddGoldTypeService;

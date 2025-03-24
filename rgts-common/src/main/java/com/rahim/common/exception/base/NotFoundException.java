@@ -1,4 +1,4 @@
-package com.rahim.common.exception;
+package com.rahim.common.exception.base;
 
 import org.springframework.http.HttpStatus;
 

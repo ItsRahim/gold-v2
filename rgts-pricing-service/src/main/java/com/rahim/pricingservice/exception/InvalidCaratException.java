@@ -1,6 +1,6 @@
 package com.rahim.pricingservice.exception;
 
-import com.rahim.common.exception.BadRequestException;
+import com.rahim.common.exception.base.BadRequestException;
 
 /**
  * @author Rahim Ahmed

@@ -1,5 +1,6 @@
 package com.rahim.common.exception;
 
+import com.rahim.common.exception.base.ApiException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
