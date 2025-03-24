@@ -1,15 +1,18 @@
 package com.rahim.pricingservice.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rahim.common.exception.ApiExceptionHandler;
 import com.rahim.common.exception.BadRequestException;
 import com.rahim.pricingservice.BaseControllerTest;
 import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
 import com.rahim.pricingservice.service.IAddGoldTypeService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.math.BigDecimal;
 
@@ -27,14 +30,21 @@ public class GoldTypeControllerTest extends BaseControllerTest {
     private static final String ENDPOINT = "/api/v2/pricing-service/type";
 
     @Autowired
-    private MockMvc mockMvc;
+    @MockitoBean
+    private IAddGoldTypeService mockGoldTypeService;
 
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Autowired
-    @MockitoBean
-    private IAddGoldTypeService mockGoldTypeService;
+    private MockMvc mockMvc;
+
+    @BeforeEach
+    public void setUp() {
+        GoldTypeController goldTypeController = new GoldTypeController(mockGoldTypeService);
+        mockMvc = MockMvcBuilders.standaloneSetup(goldTypeController)
+                .setControllerAdvice(new ApiExceptionHandler())
+                .build();
+    }
 
     @Test
     public void shouldReturn200WhenGoldTypeAddedSuccessfully() throws Exception {
@@ -74,6 +84,8 @@ public class GoldTypeControllerTest extends BaseControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isInternalServerError());
+
+        verify(mockGoldTypeService, times(1)).addGoldType(request);
     }
 
     @Test
