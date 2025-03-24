@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
@@ -23,6 +24,7 @@ import java.util.Map;
  * @created 17/03/2025
  */
 @Configuration
+@Profile("!test")
 @RequiredArgsConstructor
 public class KafkaProducerConfig {
     private static final Logger logger = LoggerFactory.getLogger(KafkaProducerConfig.class);
