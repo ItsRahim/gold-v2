@@ -29,13 +29,18 @@ public class AddGoldTypeService implements IAddGoldTypeService {
     @Transactional(rollbackFor = Exception.class)
     public void addGoldType(AddGoldTypeRequest request) {
         if (request == null) {
-            logger.error("Request body is null");
+            logger.error("AddGoldTypeRequest request body is null");
             throw new BadRequestException("Request body is null");
         }
 
         String name = request.getName();
-        if (name == null || goldTypeRepository.existsGoldTypeByName(name)) {
-            logger.error("Gold type with name '{}' already exists or is null", name);
+        if (name == null || name.isEmpty()) {
+            logger.error("Gold type name is null or empty");
+            throw new BadRequestException("Gold type name is null or empty");
+        }
+
+        if (goldTypeRepository.existsGoldTypeByName(name)) {
+            logger.error("Gold type with name {}}' already exists", name);
             throw new BadRequestException("Gold type with name '" + name + "' already exists");
         }
 
@@ -46,9 +51,9 @@ public class AddGoldTypeService implements IAddGoldTypeService {
         }
 
         BigDecimal weight = request.getWeight();
-        if (weight == null || weight.compareTo(BigDecimal.ZERO) < 0) {
+        if (weight == null || weight.compareTo(BigDecimal.ZERO) <= 0) {
             logger.error("Invalid weight provided: '{}'. Weight must be non-negative.", weight);
-            throw new BadRequestException("Gold weight must be non-negative");
+            throw new BadRequestException("Gold weight must be non-negative and greater than 0");
         }
 
         String description = request.getDescription();
