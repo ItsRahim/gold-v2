@@ -15,14 +15,12 @@ on:
       # - 'rgts-gateway-service/**'
       # - 'rgts-holdings-service/**'
       - 'rgts-kafka-service/**'
+      # - 'rgts-notification-service/**'
       - 'rgts-pricing-service/**'
       - 'rgts-proto-service/**'
       # - 'rgts-python-api/**'
       # - 'rgts-scheduler-service/**'
       # - 'rgts-user-service/**'
-env:
-  DOCKER_USERNAME: rahimahmed
-  JAVA_VERSION: 17
 
 jobs:
   build:
@@ -45,29 +43,19 @@ jobs:
           # "rgts-scheduler-service",
           # "rgts-user-service"
         ]
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          persist-credentials: false
 
-      - name: Set up Java
-        uses: actions/setup-java@v4
-        with:
-          java-version: ${{ env.JAVA_VERSION }}
-          distribution: 'temurin'
-          cache: 'maven'
+      - name: Build with Maven
+        if: env.ENABLE_BUILD != 'false'
+        run: mvn clean install
 
       - name: Format Java Code
         run: |
           mvn -B com.spotify.fmt:fmt-maven-plugin:format
-        working-directory: ${{ matrix.folder }}
-
-      # Build and test
-      - name: Build with Maven
-        run: mvn clean install
         working-directory: ${{ matrix.folder }}
 
       # - name: Log in to Docker Hub
@@ -91,7 +79,3 @@ jobs:
       #   run: |
       #     docker build -t rahimahmed/${{ matrix.folder }} -f ${{ matrix.folder }}/Dockerfile .
       #     docker push rahimahmed/${{ matrix.folder }}
-
-permissions:
-  contents: read
-  packages: write
