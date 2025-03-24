@@ -58,6 +58,18 @@ jobs:
           mvn -B com.spotify.fmt:fmt-maven-plugin:format
         working-directory: ${{ matrix.folder }}
 
+      - name: Check if folder has changes
+        id: check_changes
+        run: |
+          changes=$(git diff --name-only HEAD^ HEAD "${{ matrix.folder }}")
+          if [ -n "$changes" ]; then
+            echo "changed=true" >> $GITHUB_ENV
+          else
+            echo "changed=false" >> $GITHUB_ENV
+          fi
+        env:
+          ENABLE_BUILD: ${{ secrets.ENABLE_BUILD || 'true' }}
+
       - name: Commit formatted code
         if: success() && env.changed == 'true'
         run: |
@@ -70,18 +82,6 @@ jobs:
       # - name: Log in to Docker Hub
       #   if: env.ENABLE_BUILD != 'false'
       #   run: echo "${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
-
-      - name: Check if folder has changes
-        id: check_changes
-        run: |
-          changes=$(git diff --name-only HEAD^ HEAD "${{ matrix.folder }}")
-          if [ -n "$changes" ]; then
-            echo "changed=true" >> $GITHUB_ENV
-          else
-            echo "changed=false" >> $GITHUB_ENV
-          fi
-        env:
-          ENABLE_BUILD: ${{ secrets.ENABLE_BUILD || 'true' }}
 
       # - name: Build and push Docker image
       #   if: env.changed == 'true' && env.ENABLE_BUILD != 'false'
