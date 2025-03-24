@@ -1,0 +1,58 @@
+name: Build Code & Push to Docker
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'rgts-common/**'
+      - 'rgts-config-server/**'
+      - 'rgts-database/**'
+      - 'rgts-email-service/**'
+      - 'rgts-eureka-server/**'
+      - 'rgts-gateway-service/**'
+      - 'rgts-holdings-service/**'
+      - 'rgts-kafka-service/**'
+      - 'rgts-notification-service/**'
+      - 'rgts-pricing-service/**'
+      - 'rgts-proto-service/**'
+      - 'rgts-python-api/**'
+      - 'rgts-scheduler-service/**'
+      - 'rgts-user-service/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        folder: [
+          "rgts-common", "rgts-config-server", "rgts-database", "rgts-email-service", 
+          "rgts-eureka-server", "rgts-gateway-service", "rgts-holdings-service", 
+          "rgts-kafka-service", "rgts-notification-service", "rgts-pricing-service", 
+          "rgts-proto-service", "rgts-python-api", "rgts-scheduler-service", "rgts-user-service"
+        ]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # - name: Log in to Docker Hub
+      #   if: env.ENABLE_BUILD != 'false'
+      #   run: echo "${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
+
+      - name: Check if folder has changes
+        id: check_changes
+        run: |
+          changes=$(git diff --name-only HEAD^ HEAD "${{ matrix.folder }}")
+          if [ -n "$changes" ]; then
+            echo "changed=true" >> $GITHUB_ENV
+          else
+            echo "changed=false" >> $GITHUB_ENV
+        env:
+          ENABLE_BUILD: ${{ secrets.ENABLE_BUILD || 'true' }}
+
+      - name: Build and push Docker image
+        if: env.changed == 'true' && env.ENABLE_BUILD != 'false'
+        run: |
+          docker build -t rahimahmed/${{ matrix.folder }} -f ${{ matrix.folder }}/Dockerfile .
+          docker push rahimahmed/${{ matrix.folder }}
