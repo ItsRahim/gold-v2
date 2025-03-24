@@ -65,6 +65,7 @@ jobs:
             echo "changed=true" >> $GITHUB_ENV
           else
             echo "changed=false" >> $GITHUB_ENV
+          fi
         env:
           ENABLE_BUILD: ${{ secrets.ENABLE_BUILD || 'true' }}
 
