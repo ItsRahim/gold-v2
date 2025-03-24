@@ -81,7 +81,9 @@ jobs:
 
           git add .
           git commit -m "Apply code formatting"
-          git push origin ${{ github.head_ref }}
+
+          # Use the personal access token for authentication
+          git push https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }} ${{ github.head_ref }}
 
       # - name: Log in to Docker Hub
       #   if: env.ENABLE_BUILD != 'false'
