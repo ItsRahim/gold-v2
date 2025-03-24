@@ -1,9 +1,10 @@
-package com.rahim.pricingservice.service;
+package com.rahim.pricingservice.service.impl;
 
 import com.rahim.common.exception.BadRequestException;
 import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
 import com.rahim.pricingservice.entity.GoldType;
 import com.rahim.pricingservice.repository.GoldTypeRepository;
+import com.rahim.pricingservice.service.IAddGoldTypeService;
 import com.rahim.pricingservice.util.GoldCaratUtil;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -19,8 +20,8 @@ import java.math.BigDecimal;
  */
 @Service
 @RequiredArgsConstructor
-public class GoldTypeService implements IGoldTypeService {
-    private static final Logger logger = LoggerFactory.getLogger(GoldTypeService.class);
+public class AddGoldTypeService implements IAddGoldTypeService {
+    private static final Logger logger = LoggerFactory.getLogger(AddGoldTypeService.class);
     private final GoldTypeRepository goldTypeRepository;
     private final GoldCaratUtil goldCaratUtil;
 
@@ -28,31 +29,31 @@ public class GoldTypeService implements IGoldTypeService {
     @Transactional(rollbackFor = Exception.class)
     public void addGoldType(AddGoldTypeRequest request) {
         if (request == null) {
-            logger.error("[addGoldType] Request body is null");
+            logger.error("Request body is null");
             throw new BadRequestException("Request body is null");
         }
 
         String name = request.getName();
         if (name == null || goldTypeRepository.existsGoldTypeByName(name)) {
-            logger.error("[addGoldType] Gold type with name '{}' already exists or is null", name);
+            logger.error("Gold type with name '{}' already exists or is null", name);
             throw new BadRequestException("Gold type with name '" + name + "' already exists");
         }
 
         String carat = request.getCarat();
         if (!goldCaratUtil.isValidGoldCarat(carat)) {
-            logger.error("[addGoldType] Invalid gold carat provided: '{}'.", carat);
+            logger.error("Invalid gold carat provided: '{}'.", carat);
             throw new BadRequestException("Gold carat '" + carat + "' is invalid");
         }
 
         BigDecimal weight = request.getWeight();
         if (weight == null || weight.compareTo(BigDecimal.ZERO) < 0) {
-            logger.error("[addGoldType] Invalid weight provided: '{}'. Weight must be non-negative.", weight);
+            logger.error("Invalid weight provided: '{}'. Weight must be non-negative.", weight);
             throw new BadRequestException("Gold weight must be non-negative");
         }
 
         String description = request.getDescription();
         if (description == null || description.isEmpty()) {
-            logger.error("[addGoldType] Empty or null description provided.");
+            logger.error("Empty or null description provided.");
             throw new BadRequestException("Gold description is required");
         }
 
@@ -64,6 +65,6 @@ public class GoldTypeService implements IGoldTypeService {
                 .build();
 
         goldTypeRepository.save(goldType);
-        logger.info("[addGoldType] Successfully added gold type: Name='{}', Carat='{}', Weight='{}'", name, carat, weight);
+        logger.info("Successfully added gold type: Name='{}', Carat='{}', Weight='{}'", name, carat, weight);
     }
 }
