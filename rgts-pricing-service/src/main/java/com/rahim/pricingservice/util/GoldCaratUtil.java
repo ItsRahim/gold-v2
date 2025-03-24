@@ -1,7 +1,10 @@
 package com.rahim.pricingservice.util;
 
 import jakarta.annotation.PostConstruct;
+import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -11,19 +14,21 @@ import java.util.regex.Pattern;
  * @author Rahim Ahmed
  * @created 23/03/2025
  */
+@Service
 public class GoldCaratUtil {
-    private static final Map<Integer, Double> caratToPurity = new HashMap<>();
+    private final Map<Integer, BigDecimal> caratToPurity = new HashMap<>();
     private static final String CARAT_REGEX = "^([1-9]|1[0-9]|2[0-4])[Kk]?$";
     private static final Pattern pattern = Pattern.compile(CARAT_REGEX);
 
     @PostConstruct
     public void init() {
         for (int i = 1; i <= 24; i++) {
-            caratToPurity.put(i, i / 24.0);
+            BigDecimal purity = BigDecimal.valueOf(i).divide(BigDecimal.valueOf(24), 2, RoundingMode.HALF_UP);
+            caratToPurity.put(i, purity);
         }
     }
 
-    public static Double getPurity(String input) {
+    public BigDecimal getPurity(String input) {
         if (!isValidGoldCarat(input)) {
             throw new IllegalArgumentException("Invalid carat input: " + input);
         }
@@ -36,7 +41,7 @@ public class GoldCaratUtil {
         }
     }
 
-    public static boolean isValidGoldCarat(String input) {
+    public boolean isValidGoldCarat(String input) {
         if (input == null) {
             return false;
         }

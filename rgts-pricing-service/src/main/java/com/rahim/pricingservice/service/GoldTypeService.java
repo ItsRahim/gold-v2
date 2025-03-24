@@ -22,6 +22,7 @@ import java.math.BigDecimal;
 public class GoldTypeService implements IGoldTypeService {
     private static final Logger logger = LoggerFactory.getLogger(GoldTypeService.class);
     private final GoldTypeRepository goldTypeRepository;
+    private final GoldCaratUtil goldCaratUtil;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -38,7 +39,7 @@ public class GoldTypeService implements IGoldTypeService {
         }
 
         String carat = request.getCarat();
-        if (!GoldCaratUtil.isValidGoldCarat(carat)) {
+        if (!goldCaratUtil.isValidGoldCarat(carat)) {
             logger.error("[addGoldType] Invalid gold carat provided: '{}'.", carat);
             throw new BadRequestException("Gold carat '" + carat + "' is invalid");
         }
