@@ -8,19 +8,14 @@ on:
       - main
     paths:
       - 'rgts-common/**'
-      # - 'rgts-config-server/**'
-      # - 'rgts-database/**'
-      # - 'rgts-email-service/**'
-      # - 'rgts-eureka-server/**'
-      # - 'rgts-gateway-service/**'
-      # - 'rgts-holdings-service/**'
       - 'rgts-kafka-service/**'
-      # - 'rgts-notification-service/**'
       - 'rgts-pricing-service/**'
       - 'rgts-proto-service/**'
-      # - 'rgts-python-api/**'
-      # - 'rgts-scheduler-service/**'
-      # - 'rgts-user-service/**'
+
+env:
+  DOCKER_USERNAME: rahimahmed
+  JAVA_VERSION: 17
+  MAVEN_ARGS: -B -ntp
 
 jobs:
   build:
@@ -29,48 +24,55 @@ jobs:
       matrix:
         folder: [
           "rgts-common",
-          # "rgts-config-server", 
-          # "rgts-database", 
-          # "rgts-email-service", 
-          # "rgts-eureka-server", 
-          # "rgts-gateway-service", 
-          # "rgts-holdings-service", 
           "rgts-kafka-service",
-          # "rgts-notification-service", 
           "rgts-pricing-service",
-          "rgts-proto-service",
-          # "rgts-python-api", 
-          # "rgts-scheduler-service", 
-          # "rgts-user-service"
+          "rgts-proto-service"
         ]
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          persist-credentials: false
 
-      - name: Build with Maven
-        if: env.ENABLE_BUILD != 'false'
-        run: mvn clean install
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: 'temurin'
+          cache: 'maven'
 
-      # - name: Log in to Docker Hub
-      #   if: env.ENABLE_BUILD != 'false'
-      #   run: echo "${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
-
-      - name: Check if folder has changes
-        id: check_changes
+      - name: Format Java Code
         run: |
-          changes=$(git diff --name-only HEAD^ HEAD "${{ matrix.folder }}")
-          if [ -n "$changes" ]; then
-            echo "changed=true" >> $GITHUB_ENV
-          else
-            echo "changed=false" >> $GITHUB_ENV
-          fi
-        env:
-          ENABLE_BUILD: ${{ secrets.ENABLE_BUILD || 'true' }}
+          mvn -B com.spotify.fmt:fmt-maven-plugin:format
+        working-directory: ${{ matrix.folder }}
 
-      # - name: Build and push Docker image
-      #   if: env.changed == 'true' && env.ENABLE_BUILD != 'false'
-      #   run: |
-      #     docker build -t rahimahmed/${{ matrix.folder }} -f ${{ matrix.folder }}/Dockerfile .
-      #     docker push rahimahmed/${{ matrix.folder }}
+      # Build and test
+      - name: Build with Maven
+        run: |
+          mvn clean verify ${{ env.MAVEN_ARGS }}
+        working-directory: ${{ matrix.folder }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+#      - name: Build and Push Docker Image
+#        if: github.ref == 'refs/heads/main'
+#        run: |
+#          # Login to Docker Hub
+#          echo "${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
+#
+#          # Build Docker image
+#          docker build \
+#            -t ${{ env.DOCKER_USERNAME }}/${{ matrix.folder }}:${{ github.sha }} \
+#            -t ${{ env.DOCKER_USERNAME }}/${{ matrix.folder }}:latest \
+#            -f ${{ matrix.folder }}/Dockerfile .
+#
+#          # Push images
+#          docker push ${{ env.DOCKER_USERNAME }}/${{ matrix.folder }}:${{ github.sha }}
+#          docker push ${{ env.DOCKER_USERNAME }}/${{ matrix.folder }}:latest
+#        working-directory: .
+
+permissions:
+  contents: read
+  packages: write
