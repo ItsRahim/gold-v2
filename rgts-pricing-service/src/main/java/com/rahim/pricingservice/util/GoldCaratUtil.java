@@ -1,6 +1,7 @@
 package com.rahim.pricingservice.util;
 
 import jakarta.annotation.PostConstruct;
+import lombok.Getter;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -14,6 +15,7 @@ import java.util.regex.Pattern;
  * @author Rahim Ahmed
  * @created 23/03/2025
  */
+@Getter
 @Service
 public class GoldCaratUtil {
     private final Map<Integer, BigDecimal> caratToPurity = new HashMap<>();
