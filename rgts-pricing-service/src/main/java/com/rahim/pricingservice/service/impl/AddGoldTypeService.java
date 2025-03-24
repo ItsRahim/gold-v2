@@ -4,6 +4,7 @@ import com.rahim.common.exception.DuplicateEntityException;
 import com.rahim.common.exception.base.BadRequestException;
 import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
 import com.rahim.pricingservice.entity.GoldType;
+import com.rahim.pricingservice.exception.InvalidCaratException;
 import com.rahim.pricingservice.repository.GoldTypeRepository;
 import com.rahim.pricingservice.service.IAddGoldTypeService;
 import com.rahim.pricingservice.util.GoldCaratUtil;
@@ -48,7 +49,7 @@ public class AddGoldTypeService implements IAddGoldTypeService {
         String carat = request.getCarat();
         if (!goldCaratUtil.isValidGoldCarat(carat)) {
             logger.error("Invalid gold carat provided: '{}'.", carat);
-            throw new BadRequestException("Gold carat '" + carat + "' is invalid");
+            throw new InvalidCaratException("Gold carat '" + carat + "' is invalid");
         }
 
         BigDecimal weight = request.getWeight();
