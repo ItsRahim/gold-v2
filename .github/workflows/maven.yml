@@ -75,9 +75,13 @@ jobs:
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
+
+          # Checkout the branch from the pull request (github.head_ref)
+          git checkout ${{ github.head_ref }}
+
           git add .
           git commit -m "Apply code formatting"
-          git push origin ${{ github.head_ref }}  # Use github.head_ref for the correct PR branch
+          git push origin ${{ github.head_ref }}
 
       # - name: Log in to Docker Hub
       #   if: env.ENABLE_BUILD != 'false'
