@@ -51,7 +51,6 @@ jobs:
           git commit -m "Apply code formatting for ${{ matrix.folder }}" || echo "No changes to commit"
           git push https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }} ${{ github.head_ref || github.ref_name }}
 
-      # Docker build and push steps can be here (optional)
       # - name: Log in to Docker Hub
       #   if: env.ENABLE_BUILD != 'false'
       #   run: echo "${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
