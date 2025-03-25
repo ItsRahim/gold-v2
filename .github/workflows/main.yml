@@ -1,9 +1,6 @@
 name: Build Code & Push to Docker
 
 on:
-  pull_request:
-    branches:
-      - main
   push:
     branches:
       - main

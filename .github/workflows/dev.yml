@@ -1,0 +1,53 @@
+name: Build Code & Push to Docker
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'rgts-common/**'
+      # - 'rgts-config-server/**'
+      # - 'rgts-database/**'
+      # - 'rgts-email-service/**'
+      # - 'rgts-eureka-server/**'
+      # - 'rgts-gateway-service/**'
+      # - 'rgts-holdings-service/**'
+      - 'rgts-kafka-service/**'
+      # - 'rgts-notification-service/**'
+      - 'rgts-pricing-service/**'
+      - 'rgts-proto-service/**'
+      # - 'rgts-python-api/**'
+      # - 'rgts-scheduler-service/**'
+      # - 'rgts-user-service/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        folder: [
+          "rgts-common",
+          # "rgts-config-server",
+          # "rgts-database",
+          # "rgts-email-service",
+          # "rgts-eureka-server",
+          # "rgts-gateway-service",
+          # "rgts-holdings-service",
+          "rgts-kafka-service",
+          # "rgts-notification-service",
+          "rgts-pricing-service",
+          "rgts-proto-service",
+          # "rgts-python-api",
+          # "rgts-scheduler-service",
+          # "rgts-user-service"
+        ]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Build with Maven
+        if: env.ENABLE_BUILD != 'false'
+        run: mvn clean install
