@@ -3,6 +3,7 @@ repos:
     hooks:
       - id: mvn-fmt-plugin
         name: Run mvn fmt plugin in multiple directories
+        # Update git bash path to your system
         entry: "\"C:/Program Files/Git/bin/bash.exe\" ./run_mvn_format.sh"
         language: system
         types: [java]
