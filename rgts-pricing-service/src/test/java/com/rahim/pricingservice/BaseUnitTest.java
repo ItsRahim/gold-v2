@@ -11,5 +11,4 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @SpringBootTest
 @TestPropertySource("classpath:application.yml")
-public abstract class BaseUnitTest {
-}
+public abstract class BaseUnitTest {}
