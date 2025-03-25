@@ -6,11 +6,11 @@ package com.rahim.proto.exception;
  */
 public class GrpcRequestException extends RuntimeException {
 
-    public GrpcRequestException(String message, Throwable cause) {
-        super(message, cause);
-    }
+  public GrpcRequestException(String message, Throwable cause) {
+    super(message, cause);
+  }
 
-    public GrpcRequestException(String message) {
-        super(message);
-    }
+  public GrpcRequestException(String message) {
+    super(message);
+  }
 }

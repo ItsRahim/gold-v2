@@ -1,0 +1,8 @@
+repos:
+  - repo: local
+    hooks:
+      - id: mvn-fmt-plugin
+        name: Run mvn fmt plugin in multiple directories
+        entry: "\"C:/Program Files/Git/bin/bash.exe\" ./run_mvn_format.sh"
+        language: system
+        types: [java]
