@@ -1,4 +1,4 @@
-name: Build Code, Format, Commit and Push to Docker
+name: Build Code, Format, Commit and Push Image to Docker
 
 on:
   push:
