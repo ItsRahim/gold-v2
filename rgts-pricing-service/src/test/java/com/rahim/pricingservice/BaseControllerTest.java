@@ -18,5 +18,4 @@ import org.springframework.transaction.annotation.Transactional;
 @Import(ApiExceptionHandler.class)
 @TestPropertySource("classpath:application.yml")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public abstract class BaseControllerTest {
-}
+public abstract class BaseControllerTest {}
