@@ -93,7 +93,7 @@ public class GoldTypeControllerTest extends BaseControllerTest {
   }
 
   @Test
-  public void shouldReturn200AndListOfGoldTypes() throws Exception {
+  public void shouldReturn200AndInitialListOfGoldTypes() throws Exception {
     mockMvc
         .perform(get(ENDPOINT).contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
@@ -101,7 +101,10 @@ public class GoldTypeControllerTest extends BaseControllerTest {
         .andExpect(jsonPath("$", hasSize(24)))
         .andExpect(jsonPath("$[0].name").value("24 Carat"))
         .andExpect(jsonPath("$[1].name").value("23 Carat"));
+  }
 
+  @Test
+  public void shouldReturn200AndListOfGoldTypesAfterAddingNew() throws Exception {
     List<GoldType> goldTypes =
         List.of(
             new GoldType("GoldType1", "22K", BigDecimal.TEN, "Description1"),
@@ -114,12 +117,12 @@ public class GoldTypeControllerTest extends BaseControllerTest {
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$", hasSize(26)))
-        .andExpect(jsonPath("$[24].name").value("GoldType1"))
-        .andExpect(jsonPath("$[25].name").value("GoldType2"));
+        .andExpect(jsonPath("$[-2].name").value("GoldType1"))
+        .andExpect(jsonPath("$[-1].name").value("GoldType2"));
   }
 
   @Test
-  public void shouldReturn200AndCorrectListOfGoldTypesAfterDeleting() throws Exception {
+  public void shouldReturn200AndCorrectListAfterDeletingOneGoldType() throws Exception {
     goldTypeRepository.deleteById(1L);
 
     mockMvc
@@ -127,5 +130,16 @@ public class GoldTypeControllerTest extends BaseControllerTest {
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$", hasSize(23)));
+  }
+
+  @Test
+  public void shouldReturn200AndEmptyListAfterDeletingAllGoldTypes() throws Exception {
+    goldTypeRepository.deleteAll();
+
+    mockMvc
+        .perform(get(ENDPOINT).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$", hasSize(0)));
   }
 }
