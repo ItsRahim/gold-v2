@@ -7,7 +7,7 @@ import com.rahim.common.exception.base.BadRequestException;
  * @created 24/03/2025
  */
 public class DuplicateEntityException extends BadRequestException {
-    public DuplicateEntityException(String message) {
-        super(message);
-    }
+  public DuplicateEntityException(String message) {
+    super(message);
+  }
 }

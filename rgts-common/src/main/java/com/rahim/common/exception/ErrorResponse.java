@@ -1,10 +1,9 @@
 package com.rahim.common.exception;
 
-import lombok.Getter;
-import org.springframework.http.HttpStatus;
-
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import lombok.Getter;
+import org.springframework.http.HttpStatus;
 
 /**
  * @author Rahim Ahmed
@@ -12,13 +11,13 @@ import java.time.ZoneOffset;
  */
 @Getter
 public class ErrorResponse {
-    private final String message;
-    private final int status;
-    private final LocalDateTime timestamp;
+  private final String message;
+  private final int status;
+  private final LocalDateTime timestamp;
 
-    public ErrorResponse(String message, HttpStatus status) {
-        this.message = message;
-        this.status = status.value();
-        this.timestamp = LocalDateTime.now(ZoneOffset.UTC);
-    }
+  public ErrorResponse(String message, HttpStatus status) {
+    this.message = message;
+    this.status = status.value();
+    this.timestamp = LocalDateTime.now(ZoneOffset.UTC);
+  }
 }
