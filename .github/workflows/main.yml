@@ -57,21 +57,7 @@ jobs:
           mvn -B com.spotify.fmt:fmt-maven-plugin:format
         working-directory: ${{ matrix.folder }}
 
-      - name: Check if folder has changes
-        id: check_changes
-        run: |
-          changes=$(git diff --name-only HEAD^ HEAD "${{ matrix.folder }}")
-          if [ -n "$changes" ]; then
-            echo "changed=true" >> $GITHUB_ENV
-          else
-            echo "changed=false" >> $GITHUB_ENV
-          fi
-        env:
-          ENABLE_BUILD: ${{ secrets.ENABLE_BUILD || 'true' }}
-
-      # This step should only run on push to `main`
       - name: Commit formatted code
-        if: success() && env.changed == 'true' && github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
