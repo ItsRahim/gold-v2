@@ -16,7 +16,7 @@ jobs:
       matrix:
         folder: [
           "rgts-common",
-          "rgts-proto-service"
+          "rgts-proto-service",
           "rgts-kafka-service",
           "rgts-pricing-service",
         ]
