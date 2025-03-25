@@ -117,4 +117,15 @@ public class GoldTypeControllerTest extends BaseControllerTest {
         .andExpect(jsonPath("$[24].name").value("GoldType1"))
         .andExpect(jsonPath("$[25].name").value("GoldType2"));
   }
+
+  @Test
+  public void shouldReturn200AndCorrectListOfGoldTypesAfterDeleting() throws Exception {
+    goldTypeRepository.deleteById(1L);
+
+    mockMvc
+        .perform(get(ENDPOINT).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$", hasSize(23)));
+  }
 }
