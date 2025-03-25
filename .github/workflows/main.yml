@@ -1,3 +1,4 @@
+name: Build Code, Test and Build to Docker
 on:
   push:
     branches:
