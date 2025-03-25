@@ -1,4 +1,4 @@
-name: Build Code & Push to Docker
+name: Build Code, Format, Commit and Push to Docker
 
 on:
   push:
@@ -65,6 +65,7 @@ jobs:
             echo "changed=true" >> $GITHUB_ENV
           else
             echo "changed=false" >> $GITHUB_ENV
+          fi
         env:
           ENABLE_BUILD: ${{ secrets.ENABLE_BUILD || 'true' }}
 

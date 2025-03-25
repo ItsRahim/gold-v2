@@ -1,4 +1,4 @@
-name: Build Code & Push to Docker
+name: Build Code & Test
 
 on:
   pull_request:
