@@ -68,7 +68,7 @@ public class GoldTypeController {
 
   @Operation(
       summary = "Retrieve all gold types",
-      description = "Fetches a list of all available gold types from the system.")
+      description = "Fetches a list of all available gold types from the system")
   @ApiResponses(
       value = {
         @ApiResponse(
