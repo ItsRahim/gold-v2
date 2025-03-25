@@ -18,17 +18,19 @@ import org.springframework.stereotype.Component;
 @Profile("!test")
 @ConfigurationProperties(prefix = "kafka.consumer")
 public class KafkaConsumerProperties {
-    private String keyDeserializer;
-    private String valueDeserializer;
+  private String keyDeserializer;
+  private String valueDeserializer;
 
-    @PostConstruct
-    public void validateConsumerProperties() {
-        if (keyDeserializer == null || keyDeserializer.isEmpty()) {
-            throw new InvalidKafkaConfigurationException("Kafka Consumer Properties missing required property 'kafka.consumer.key-deserializer'");
-        }
-
-        if (valueDeserializer == null || valueDeserializer.isEmpty()) {
-            throw new InvalidKafkaConfigurationException("Kafka Consumer Properties missing required property 'kafka.consumer.value-deserializer'");
-        }
+  @PostConstruct
+  public void validateConsumerProperties() {
+    if (keyDeserializer == null || keyDeserializer.isEmpty()) {
+      throw new InvalidKafkaConfigurationException(
+          "Kafka Consumer Properties missing required property 'kafka.consumer.key-deserializer'");
     }
+
+    if (valueDeserializer == null || valueDeserializer.isEmpty()) {
+      throw new InvalidKafkaConfigurationException(
+          "Kafka Consumer Properties missing required property 'kafka.consumer.value-deserializer'");
+    }
+  }
 }

@@ -18,17 +18,19 @@ import org.springframework.stereotype.Component;
 @Profile("!test")
 @ConfigurationProperties(prefix = "kafka")
 public class KafkaProperties {
-    private String securityProtocol;
-    private String bootstrapServers;
+  private String securityProtocol;
+  private String bootstrapServers;
 
-    @PostConstruct
-    public void init() {
-        if (securityProtocol == null) {
-            throw new InvalidKafkaConfigurationException("Kafka Properties missing required property 'kafka.security-protocol'");
-        }
-
-        if (bootstrapServers == null) {
-            throw new InvalidKafkaConfigurationException("Kafka Properties missing required property 'kafka.bootstrap-servers'");
-        }
+  @PostConstruct
+  public void init() {
+    if (securityProtocol == null) {
+      throw new InvalidKafkaConfigurationException(
+          "Kafka Properties missing required property 'kafka.security-protocol'");
     }
+
+    if (bootstrapServers == null) {
+      throw new InvalidKafkaConfigurationException(
+          "Kafka Properties missing required property 'kafka.bootstrap-servers'");
+    }
+  }
 }

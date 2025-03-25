@@ -7,5 +7,5 @@ import com.google.protobuf.Message;
  * @created 17/03/2025
  */
 public interface IKafkaService {
-    void sendMessage(String topic, Message data);
+  void sendMessage(String topic, Message data);
 }
