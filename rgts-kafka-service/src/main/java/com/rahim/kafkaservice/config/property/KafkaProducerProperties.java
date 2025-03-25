@@ -18,17 +18,19 @@ import org.springframework.stereotype.Component;
 @Profile("!test")
 @ConfigurationProperties(prefix = "kafka.producer")
 public class KafkaProducerProperties {
-    private String keySerializer;
-    private String valueSerializer;
+  private String keySerializer;
+  private String valueSerializer;
 
-    @PostConstruct
-    public void validateProducerProperties() {
-        if (keySerializer == null || keySerializer.isEmpty()) {
-            throw new InvalidKafkaConfigurationException("Kafka Producer Properties missing required property 'kafka.producer.key-serializer'");
-        }
-
-        if (valueSerializer == null || valueSerializer.isEmpty()) {
-            throw new InvalidKafkaConfigurationException("Kafka Producer Properties missing required property 'kafka.producer.value-serializer'");
-        }
+  @PostConstruct
+  public void validateProducerProperties() {
+    if (keySerializer == null || keySerializer.isEmpty()) {
+      throw new InvalidKafkaConfigurationException(
+          "Kafka Producer Properties missing required property 'kafka.producer.key-serializer'");
     }
+
+    if (valueSerializer == null || valueSerializer.isEmpty()) {
+      throw new InvalidKafkaConfigurationException(
+          "Kafka Producer Properties missing required property 'kafka.producer.value-serializer'");
+    }
+  }
 }
