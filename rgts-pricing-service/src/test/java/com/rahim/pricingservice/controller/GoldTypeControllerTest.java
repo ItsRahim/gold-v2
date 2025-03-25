@@ -1,16 +1,20 @@
 package com.rahim.pricingservice.controller;
 
+import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rahim.common.exception.ApiExceptionHandler;
 import com.rahim.pricingservice.BaseControllerTest;
 import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
+import com.rahim.pricingservice.entity.GoldType;
 import com.rahim.pricingservice.repository.GoldTypeRepository;
 import com.rahim.pricingservice.service.IAddGoldTypeService;
 import java.math.BigDecimal;
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,5 +90,31 @@ public class GoldTypeControllerTest extends BaseControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(invalidRequest)))
         .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  public void shouldReturn200AndListOfGoldTypes() throws Exception {
+    mockMvc
+        .perform(get(ENDPOINT).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$", hasSize(24)))
+        .andExpect(jsonPath("$[0].name").value("24 Carat"))
+        .andExpect(jsonPath("$[1].name").value("23 Carat"));
+
+    List<GoldType> goldTypes =
+        List.of(
+            new GoldType("GoldType1", "22K", BigDecimal.TEN, "Description1"),
+            new GoldType("GoldType2", "24K", BigDecimal.valueOf(15), "Description2"));
+
+    goldTypeRepository.saveAll(goldTypes);
+
+    mockMvc
+        .perform(get(ENDPOINT).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$", hasSize(26)))
+        .andExpect(jsonPath("$[24].name").value("GoldType1"))
+        .andExpect(jsonPath("$[25].name").value("GoldType2"));
   }
 }

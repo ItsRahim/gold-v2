@@ -35,4 +35,11 @@ public class GoldType {
   @NotNull
   @Column(name = "description", nullable = false, length = Integer.MAX_VALUE)
   private String description;
+
+  public GoldType(String name, String carat, BigDecimal weight, String description) {
+    this.name = name;
+    this.carat = carat;
+    this.weight = weight;
+    this.description = description;
+  }
 }
