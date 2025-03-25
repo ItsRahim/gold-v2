@@ -73,7 +73,7 @@ public class GoldTypeController {
       value = {
         @ApiResponse(
             responseCode = "200",
-            description = "Gold types retrieved successfully",
+            description = "Gold types retrieved successfully.",
             content =
                 @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
