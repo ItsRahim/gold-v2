@@ -13,16 +13,14 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class GrpcClientConfig {
 
-    @Value("${grpc.server.host}")
-    private String grpcServerHost;
+  @Value("${grpc.server.host}")
+  private String grpcServerHost;
 
-    @Value("${grpc.server.port}")
-    private int grpcServerPort;
+  @Value("${grpc.server.port}")
+  private int grpcServerPort;
 
-    @Bean
-    public ManagedChannel grpChannel() {
-        return ManagedChannelBuilder.forAddress(grpcServerHost, grpcServerPort)
-                .usePlaintext()
-                .build();
-    }
+  @Bean
+  public ManagedChannel grpChannel() {
+    return ManagedChannelBuilder.forAddress(grpcServerHost, grpcServerPort).usePlaintext().build();
+  }
 }

@@ -9,5 +9,4 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @ComponentScan("com.rahim.proto")
-public class ProtoServiceApplication {
-}
+public class ProtoServiceApplication {}
