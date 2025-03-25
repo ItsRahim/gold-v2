@@ -14,13 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        folder: [
-          "rgts-common",
-          "rgts-proto-service",
-          "rgts-kafka-service",
-          "rgts-pricing-service"
-        ]
-      fail-fast: false
+        folder: ["rgts-pricing-service"]
 
     steps:
       - name: Checkout code
@@ -35,17 +29,9 @@ jobs:
           distribution: 'adopt'
           cache: 'maven'
 
-      - name: Build parent Maven
+      - name: Build and Test
         run: mvn clean install
 
-      # Sequential steps for each matrix.folder
-      - name: Build with Maven for ${{ matrix.folder }}
-        run: |
-          echo "Building ${{ matrix.folder }} folder"
-          cd ${{ matrix.folder }}
-          mvn clean install
-
-      # Log in to Docker Hub (Uncomment if needed)
       # - name: Log in to Docker Hub
       #   if: env.ENABLE_BUILD != 'false'
       #   run: echo "${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
