@@ -25,9 +25,4 @@ public class ApiExceptionHandler {
         new ErrorResponse(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     return ResponseEntity.status(errorResponse.getStatus()).body(errorResponse);
   }
-
-  @ExceptionHandler(Exception.class)
-  public void test() {
-    System.out.println("AHAH");
-  }
 }

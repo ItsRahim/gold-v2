@@ -35,7 +35,6 @@ jobs:
           cache: 'maven'
 
       - name: Build with Maven
-        if: steps.check-changes.outputs.changed == 'true'
         run: |
           cd ${{ matrix.folder }}
           mvn clean install
