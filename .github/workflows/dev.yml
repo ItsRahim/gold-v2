@@ -4,23 +4,10 @@ on:
   pull_request:
     branches:
       - main
-    paths:
-      - 'rgts-common/**'
-      - 'rgts-kafka-service/**'
-      - 'rgts-pricing-service/**'
-      - 'rgts-proto-service/**'
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        folder: [
-          "rgts-common",
-          "rgts-kafka-service",
-          "rgts-pricing-service",
-          "rgts-proto-service",
-        ]
 
     steps:
       - name: Checkout code
@@ -29,5 +16,4 @@ jobs:
           fetch-depth: 0
 
       - name: Build with Maven
-        if: env.ENABLE_BUILD != 'false'
         run: mvn clean install
