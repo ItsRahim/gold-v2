@@ -1,4 +1,4 @@
-name: Build Code, Format, Commit and Push to Docker
+ame: Build Code, Format, Commit and Push to Docker
 
 on:
   push:
@@ -6,19 +6,9 @@ on:
       - main
     paths:
       - 'rgts-common/**'
-      # - 'rgts-config-server/**'
-      # - 'rgts-database/**'
-      # - 'rgts-email-service/**'
-      # - 'rgts-eureka-server/**'
-      # - 'rgts-gateway-service/**'
-      # - 'rgts-holdings-service/**'
       - 'rgts-kafka-service/**'
-      # - 'rgts-notification-service/**'
       - 'rgts-pricing-service/**'
       - 'rgts-proto-service/**'
-      # - 'rgts-python-api/**'
-      # - 'rgts-scheduler-service/**'
-      # - 'rgts-user-service/**'
 
 jobs:
   build:
@@ -27,19 +17,9 @@ jobs:
       matrix:
         folder: [
           "rgts-common",
-          # "rgts-config-server",
-          # "rgts-database",
-          # "rgts-email-service",
-          # "rgts-eureka-server",
-          # "rgts-gateway-service",
-          # "rgts-holdings-service",
           "rgts-kafka-service",
-          # "rgts-notification-service",
           "rgts-pricing-service",
-          "rgts-proto-service",
-          # "rgts-python-api",
-          # "rgts-scheduler-service",
-          # "rgts-user-service"
+          "rgts-proto-service"
         ]
 
     steps:
@@ -47,6 +27,11 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Set up environment variables
+        run: |
+          changes=$(git diff --name-only HEAD^ HEAD "${{ matrix.folder }}")
+          echo "changes=$changes" >> $GITHUB_ENV
 
       - name: Build with Maven
         if: env.ENABLE_BUILD != 'false'
@@ -61,10 +46,10 @@ jobs:
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-          git checkout ${{ github.head_ref }}
+          git checkout ${{ github.head_ref || github.ref_name }}
           git add .
-          git commit -m "Apply code formatting"
-          git push https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }} ${{ github.head_ref }}
+          git commit -m "Apply code formatting for ${{ matrix.folder }}" || echo "No changes to commit"
+          git push https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }} ${{ github.head_ref || github.ref_name }}
 
       # Docker build and push steps can be here (optional)
       # - name: Log in to Docker Hub
