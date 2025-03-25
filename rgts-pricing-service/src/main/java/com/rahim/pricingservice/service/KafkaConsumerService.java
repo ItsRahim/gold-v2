@@ -8,35 +8,33 @@ import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
-/**
- * Kafka consumer service for processing gold price updates.
- */
+/** Kafka consumer service for processing gold price updates. */
 @Service
 public class KafkaConsumerService {
-    private static final Logger logger = LoggerFactory.getLogger(KafkaConsumerService.class);
+  private static final Logger logger = LoggerFactory.getLogger(KafkaConsumerService.class);
 
-    @KafkaListener(topics = "gold.price.update", groupId = "gold-price-group")
-    public void listen(byte[] data) {
-        try {
-            GoldPriceInfo goldPriceInfo = deserialiseProtobuf(data);
-            if (goldPriceInfo == null) {
-                logger.error("Failed to deserialise data into GoldPriceInfo");
-                return;
-            }
+  @KafkaListener(topics = "gold.price.update", groupId = "gold-price-group")
+  public void listen(byte[] data) {
+    try {
+      GoldPriceInfo goldPriceInfo = deserialiseProtobuf(data);
+      if (goldPriceInfo == null) {
+        logger.error("Failed to deserialise data into GoldPriceInfo");
+        return;
+      }
 
-            GoldPriceUpdateDTO goldPriceUpdateDTO = GoldPriceUpdateDTO.fromProtobuf(goldPriceInfo);
-            if (goldPriceUpdateDTO == null) {
-                logger.error("Failed to convert GoldPriceInfo to GoldPriceUpdateDTO.");
-                return;
-            }
+      GoldPriceUpdateDTO goldPriceUpdateDTO = GoldPriceUpdateDTO.fromProtobuf(goldPriceInfo);
+      if (goldPriceUpdateDTO == null) {
+        logger.error("Failed to convert GoldPriceInfo to GoldPriceUpdateDTO.");
+        return;
+      }
 
-            logger.info("Gold price update processed: {}", goldPriceUpdateDTO);
-        } catch (Exception e) {
-            logger.error("Failed to process Kafka message", e);
-        }
+      logger.info("Gold price update processed: {}", goldPriceUpdateDTO);
+    } catch (Exception e) {
+      logger.error("Failed to process Kafka message", e);
     }
+  }
 
-    private GoldPriceInfo deserialiseProtobuf(byte[] data) {
-        return ProtobufDerSerUtil.deserialiseByteToProtobuf(data, GoldPriceInfo.getDefaultInstance());
-    }
+  private GoldPriceInfo deserialiseProtobuf(byte[] data) {
+    return ProtobufDerSerUtil.deserialiseByteToProtobuf(data, GoldPriceInfo.getDefaultInstance());
+  }
 }

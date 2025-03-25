@@ -1,8 +1,6 @@
 name: Build Code & Push to Docker
+
 on:
-  pull_request:
-    branches:
-      - main
   push:
     branches:
       - main
@@ -29,20 +27,21 @@ jobs:
       matrix:
         folder: [
           "rgts-common",
-          # "rgts-config-server", 
-          # "rgts-database", 
-          # "rgts-email-service", 
-          # "rgts-eureka-server", 
-          # "rgts-gateway-service", 
-          # "rgts-holdings-service", 
+          # "rgts-config-server",
+          # "rgts-database",
+          # "rgts-email-service",
+          # "rgts-eureka-server",
+          # "rgts-gateway-service",
+          # "rgts-holdings-service",
           "rgts-kafka-service",
-          # "rgts-notification-service", 
+          # "rgts-notification-service",
           "rgts-pricing-service",
           "rgts-proto-service",
-          # "rgts-python-api", 
-          # "rgts-scheduler-service", 
+          # "rgts-python-api",
+          # "rgts-scheduler-service",
           # "rgts-user-service"
         ]
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -53,9 +52,10 @@ jobs:
         if: env.ENABLE_BUILD != 'false'
         run: mvn clean install
 
-      # - name: Log in to Docker Hub
-      #   if: env.ENABLE_BUILD != 'false'
-      #   run: echo "${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
+      - name: Format Java Code
+        run: |
+          mvn -B com.spotify.fmt:fmt-maven-plugin:format
+        working-directory: ${{ matrix.folder }}
 
       - name: Check if folder has changes
         id: check_changes
@@ -65,9 +65,24 @@ jobs:
             echo "changed=true" >> $GITHUB_ENV
           else
             echo "changed=false" >> $GITHUB_ENV
-          fi
         env:
           ENABLE_BUILD: ${{ secrets.ENABLE_BUILD || 'true' }}
+
+      # This step should only run on push to `main`
+      - name: Commit formatted code
+        if: success() && env.changed == 'true' && github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git checkout ${{ github.head_ref }}
+          git add .
+          git commit -m "Apply code formatting"
+          git push https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }} ${{ github.head_ref }}
+
+      # Docker build and push steps can be here (optional)
+      # - name: Log in to Docker Hub
+      #   if: env.ENABLE_BUILD != 'false'
+      #   run: echo "${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
 
       # - name: Build and push Docker image
       #   if: env.changed == 'true' && env.ENABLE_BUILD != 'false'

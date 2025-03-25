@@ -6,11 +6,11 @@ package com.rahim.kafkaservice.exception;
  */
 public class InvalidKafkaConfigurationException extends RuntimeException {
 
-    public InvalidKafkaConfigurationException(String message, Throwable cause) {
-        super(message, cause);
-    }
+  public InvalidKafkaConfigurationException(String message, Throwable cause) {
+    super(message, cause);
+  }
 
-    public InvalidKafkaConfigurationException(String message) {
-        super(message);
-    }
+  public InvalidKafkaConfigurationException(String message) {
+    super(message);
+  }
 }

@@ -14,5 +14,5 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v2/pricing-service/price")
 @RequiredArgsConstructor
 public class GoldPriceController {
-    private static final Logger logger = LoggerFactory.getLogger(GoldPriceController.class);
+  private static final Logger logger = LoggerFactory.getLogger(GoldPriceController.class);
 }
