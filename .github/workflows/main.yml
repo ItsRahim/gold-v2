@@ -57,14 +57,20 @@ jobs:
           cd ${{ matrix.folder }}
           mvn -B com.spotify.fmt:fmt-maven-plugin:format
 
-      - name: Commit formatted code
+      - name: Commit and Push Formatted Code
         if: steps.check-changes.outputs.changed == 'true'
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
+          
+          # Pull latest changes to avoid push conflicts
+          git pull --rebase origin main
+          
           git add ${{ matrix.folder }}
           git commit -m "Apply code formatting for ${{ matrix.folder }}" || echo "No changes to commit"
-          git push
+          
+          # Retry push with rebase
+          git push || (git pull --rebase origin main && git push)
 
       - name: Log in to Docker Hub
         if: steps.check-changes.outputs.changed == 'true'
