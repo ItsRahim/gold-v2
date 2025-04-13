@@ -6,11 +6,10 @@ import com.rahim.kafkaservice.config.property.KafkaSSLProperties;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.config.SslConfigs;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -23,11 +22,11 @@ import org.springframework.kafka.listener.ContainerProperties;
  * @author Rahim Ahmed
  * @created 17/03/2025
  */
+@Slf4j
 @Configuration
 @Profile("!test")
 @RequiredArgsConstructor
 public class KafkaConsumerConfig {
-  private static final Logger logger = LoggerFactory.getLogger(KafkaConsumerConfig.class);
   private final KafkaConsumerProperties kafkaConsumerProperties;
   private final KafkaSSLProperties kafkaSSLProperties;
   private final KafkaProperties kafkaProperties;
@@ -45,7 +44,7 @@ public class KafkaConsumerConfig {
         kafkaConsumerProperties.getValueDeserializer());
 
     if ("SSL".equalsIgnoreCase(kafkaProperties.getSecurityProtocol())) {
-      logger.info("SSL Protocol Detected. Configuring Kafka Consumer Factory in SSL");
+      log.info("SSL Protocol Detected. Configuring Kafka Consumer Factory in SSL");
       consumerProps.put(
           CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, kafkaProperties.getSecurityProtocol());
       consumerProps.put(SslConfigs.SSL_PROTOCOL_CONFIG, kafkaSSLProperties.getProtocol());
@@ -58,7 +57,7 @@ public class KafkaConsumerConfig {
           CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, kafkaProperties.getSecurityProtocol());
     }
 
-    logger.debug("Initialised Kafka Consumer Factory with: {}", consumerProps);
+    log.debug("Initialised Kafka Consumer Factory with: {}", consumerProps);
     return new DefaultKafkaConsumerFactory<>(consumerProps);
   }
 

@@ -2,22 +2,18 @@ package com.rahim.pricingservice.controller;
 
 import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
 import com.rahim.pricingservice.entity.GoldType;
-import com.rahim.pricingservice.repository.GoldTypeRepository;
 import com.rahim.pricingservice.service.IAddGoldTypeService;
 import com.rahim.pricingservice.service.IQueryGoldTypeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -28,12 +24,12 @@ import org.springframework.web.bind.annotation.*;
  * @author Rahim Ahmed
  * @created 23/03/2025
  */
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v2/pricing-service/type")
 @Tag(name = "Gold Type Management", description = "Endpoints for managing gold types")
 public class GoldTypeController {
-  private static final Logger logger = LoggerFactory.getLogger(GoldTypeController.class);
   private final IAddGoldTypeService addGoldTypeService;
   private final IQueryGoldTypeService queryGoldTypeService;
 
@@ -94,8 +90,36 @@ public class GoldTypeController {
       @Parameter(description = "Number of items per page", example = "10")
           @RequestParam(value = "size", defaultValue = "10")
           int size) {
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(queryGoldTypeService.getAllGoldTypes(page, size));
+  }
 
-    logger.info("Received request to get all available gold types");
-    return ResponseEntity.ok(queryGoldTypeService.getAllGoldTypes(page, size));
+  @Operation(
+      summary = "Retrieve a gold type by ID",
+      description = "Returns the details of a specific gold type by its unique identifier.")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Gold type retrieved successfully",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = GoldType.class))),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Gold type not found",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Internal server error",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
+      })
+  @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<GoldType> getGoldTypeById(
+      @Parameter(description = "Unique identifier of the gold type", example = "1")
+          @PathVariable("id")
+          long id) {
+    return ResponseEntity.status(HttpStatus.OK).body(queryGoldTypeService.getGoldType(id));
   }
 }
