@@ -61,8 +61,7 @@ public class GoldTypeController {
       @Valid @Parameter(description = "Gold type details", required = true) @RequestBody
           AddGoldTypeRequest request) {
     addGoldTypeService.addGoldType(request);
-    return ResponseEntity.status(HttpStatus.OK)
-            .body("Successfully added gold type");
+    return ResponseEntity.status(HttpStatus.OK).body("Successfully added gold type");
   }
 
   @Operation(

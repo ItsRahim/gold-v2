@@ -47,8 +47,7 @@ public class GrpcClientService implements IGrpcClientService {
       log.error("Error occurred during gRPC request execution: {}", e.getMessage(), e);
       return null;
     } catch (Exception e) {
-      log.error(
-          "Unexpected error during gRPC request and JSON conversion: {}", e.getMessage(), e);
+      log.error("Unexpected error during gRPC request and JSON conversion: {}", e.getMessage(), e);
       return null;
     }
   }

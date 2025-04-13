@@ -13,5 +13,4 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v2/pricing-service/price")
 @RequiredArgsConstructor
-public class GoldPriceController {
-}
+public class GoldPriceController {}
