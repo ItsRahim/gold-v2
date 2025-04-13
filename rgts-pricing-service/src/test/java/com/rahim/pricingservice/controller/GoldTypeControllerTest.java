@@ -12,6 +12,7 @@ import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
 import com.rahim.pricingservice.entity.GoldType;
 import com.rahim.pricingservice.repository.GoldTypeRepository;
 import com.rahim.pricingservice.service.IAddGoldTypeService;
+import com.rahim.pricingservice.service.IQueryGoldTypeService;
 import java.math.BigDecimal;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,6 +32,8 @@ public class GoldTypeControllerTest extends BaseControllerTest {
 
   @Autowired private IAddGoldTypeService addGoldTypeService;
 
+  @Autowired private IQueryGoldTypeService queryGoldTypeService;
+
   @Autowired private GoldTypeRepository goldTypeRepository;
 
   @Autowired private ObjectMapper objectMapper;
@@ -40,7 +43,7 @@ public class GoldTypeControllerTest extends BaseControllerTest {
   @BeforeEach
   public void setUp() {
     GoldTypeController goldTypeController =
-        new GoldTypeController(addGoldTypeService, goldTypeRepository);
+        new GoldTypeController(addGoldTypeService, queryGoldTypeService);
     mockMvc =
         MockMvcBuilders.standaloneSetup(goldTypeController)
             .setControllerAdvice(new ApiExceptionHandler())
@@ -92,53 +95,54 @@ public class GoldTypeControllerTest extends BaseControllerTest {
   }
 
   @Test
-  public void shouldReturn200AndInitialListOfGoldTypes() throws Exception {
+  public void shouldReturn200AndInitialPageOfGoldTypes() throws Exception {
     mockMvc
         .perform(get(ENDPOINT).contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$", hasSize(24)))
-        .andExpect(jsonPath("$[0].name").value("24 Carat"))
-        .andExpect(jsonPath("$[1].name").value("23 Carat"));
+        .andExpect(jsonPath("$.content", hasSize(10)))
+        .andExpect(jsonPath("$.content[0].name").value("1 Carat"))
+        .andExpect(jsonPath("$.content[1].name").value("10 Carat"))
+        .andExpect(jsonPath("$.totalElements").value(24));
   }
 
   @Test
-  public void shouldReturn200AndListOfGoldTypesAfterAddingNew() throws Exception {
+  public void shouldReturn200AndPageWithNewGoldTypesAfterAdding() throws Exception {
     List<GoldType> goldTypes =
         List.of(
             new GoldType("GoldType1", "22K", BigDecimal.TEN, "Description1"),
             new GoldType("GoldType2", "24K", BigDecimal.valueOf(15), "Description2"));
-
     goldTypeRepository.saveAll(goldTypes);
 
     mockMvc
         .perform(get(ENDPOINT).contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$", hasSize(26)))
-        .andExpect(jsonPath("$[-2].name").value("GoldType1"))
-        .andExpect(jsonPath("$[-1].name").value("GoldType2"));
+        .andExpect(jsonPath("$.totalElements").value(26));
   }
 
   @Test
-  public void shouldReturn200AndCorrectListAfterDeletingOneGoldType() throws Exception {
+  public void shouldReturn200AndPageWithReducedGoldTypesAfterDeletingOne() throws Exception {
     goldTypeRepository.deleteById(1L);
 
     mockMvc
         .perform(get(ENDPOINT).contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$", hasSize(23)));
+        .andExpect(jsonPath("$.totalElements").value(23));
   }
 
   @Test
-  public void shouldReturn200AndEmptyListAfterDeletingAllGoldTypes() throws Exception {
+  public void shouldReturn200AndEmptyPageAfterDeletingAllGoldTypes() throws Exception {
     goldTypeRepository.deleteAll();
 
     mockMvc
         .perform(get(ENDPOINT).contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$", hasSize(0)));
+        .andExpect(jsonPath("$.content", hasSize(0)))
+        .andExpect(jsonPath("$.totalElements").value(0))
+        .andExpect(jsonPath("$.totalPages").value(0))
+        .andExpect(jsonPath("$.last").value(true));
   }
 }
