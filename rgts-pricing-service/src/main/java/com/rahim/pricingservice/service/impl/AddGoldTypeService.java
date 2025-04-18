@@ -27,7 +27,7 @@ public class AddGoldTypeService implements IAddGoldTypeService {
   private final GoldCaratUtil goldCaratUtil;
 
   @Override
-  public void addGoldType(AddGoldTypeRequest request) {
+  public GoldType addGoldType(AddGoldTypeRequest request) {
     if (request == null) {
       log.error("AddGoldTypeRequest request body is null");
       throw new BadRequestException("Request body is null");
@@ -65,8 +65,8 @@ public class AddGoldTypeService implements IAddGoldTypeService {
     GoldType goldType =
         GoldType.builder().name(name).carat(carat).weight(weight).description(description).build();
 
-    goldTypeRepository.save(goldType);
     log.info(
         "Successfully added gold type: Name='{}', Carat='{}', Weight='{}'", name, carat, weight);
+    return goldTypeRepository.save(goldType);
   }
 }

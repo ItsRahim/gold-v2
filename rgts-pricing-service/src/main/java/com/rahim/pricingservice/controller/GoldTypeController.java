@@ -1,5 +1,6 @@
 package com.rahim.pricingservice.controller;
 
+import com.rahim.common.response.SuccessResponse;
 import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
 import com.rahim.pricingservice.entity.GoldType;
 import com.rahim.pricingservice.service.IAddGoldTypeService;
@@ -44,7 +45,23 @@ public class GoldTypeController {
             content =
                 @Content(
                     mediaType = "application/json",
-                    schema = @Schema(example = "{\"message\": \"Successfully added gold type\"}"))),
+                    schema =
+                        @Schema(
+                            description = "Success response with gold type data",
+                            example =
+                                // language=JSON
+                                """
+                        {
+                          "message": "Gold type added successfully",
+                          "data": {
+                            "id": 1,
+                            "name": "Premium Gold",
+                            "carat": "24K",
+                            "weight": 15.75,
+                            "description": "High purity gold"
+                          }
+                        }
+                        """))),
         @ApiResponse(
             responseCode = "400",
             description = "Invalid gold type details or gold type already exists",
@@ -57,11 +74,13 @@ public class GoldTypeController {
   @PostMapping(
       consumes = MediaType.APPLICATION_JSON_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<Object> addGoldType(
+  public ResponseEntity<SuccessResponse<GoldType>> addGoldType(
       @Valid @Parameter(description = "Gold type details", required = true) @RequestBody
           AddGoldTypeRequest request) {
-    addGoldTypeService.addGoldType(request);
-    return ResponseEntity.status(HttpStatus.OK).body("Successfully added gold type");
+    GoldType savedGoldType = addGoldTypeService.addGoldType(request);
+    SuccessResponse<GoldType> response =
+        SuccessResponse.of("Gold type added successfully", savedGoldType);
+    return new ResponseEntity<>(response, HttpStatus.OK);
   }
 
   @Operation(

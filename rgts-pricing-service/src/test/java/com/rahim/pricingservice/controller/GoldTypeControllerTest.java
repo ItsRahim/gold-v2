@@ -1,6 +1,7 @@
 package com.rahim.pricingservice.controller;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -51,7 +52,7 @@ public class GoldTypeControllerTest extends BaseControllerTest {
   }
 
   @Test
-  public void shouldReturn200WhenGoldTypeAddedSuccessfully() throws Exception {
+  public void shouldReturn200WithSuccessResponseWhenGoldTypeAddedSuccessfully() throws Exception {
     AddGoldTypeRequest request =
         new AddGoldTypeRequest("GoldTypeName", "22K", BigDecimal.TEN, "Valid description");
 
@@ -61,7 +62,35 @@ public class GoldTypeControllerTest extends BaseControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().isOk())
-        .andExpect(content().string("Successfully added gold type"));
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.message").value("Gold type added successfully"))
+        .andExpect(jsonPath("$.data").exists())
+        .andExpect(jsonPath("$.data.name").value("GoldTypeName"))
+        .andExpect(jsonPath("$.data.carat").value("22K"))
+        .andExpect(jsonPath("$.data.weight").value(10))
+        .andExpect(jsonPath("$.data.description").value("Valid description"));
+  }
+
+  @Test
+  public void shouldReturn200WithSuccessResponseAndVerifyAllGoldTypeFields() throws Exception {
+    AddGoldTypeRequest request =
+        new AddGoldTypeRequest(
+            "Premium Gold", "24K", BigDecimal.valueOf(15.75), "High purity gold");
+
+    mockMvc
+        .perform(
+            post(ENDPOINT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.message").value("Gold type added successfully"))
+        .andExpect(jsonPath("$.data").exists())
+        .andExpect(jsonPath("$.data.id").exists())
+        .andExpect(jsonPath("$.data.name").value("Premium Gold"))
+        .andExpect(jsonPath("$.data.carat").value("24K"))
+        .andExpect(jsonPath("$.data.weight").value(15.75))
+        .andExpect(jsonPath("$.data.description").value("High purity gold"));
   }
 
   @Test
