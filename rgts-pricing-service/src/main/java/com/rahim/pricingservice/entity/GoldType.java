@@ -1,5 +1,7 @@
 package com.rahim.pricingservice.entity;
 
+import com.rahim.pricingservice.converter.WeightUnitConverter;
+import com.rahim.pricingservice.enums.WeightUnit;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -33,13 +35,19 @@ public class GoldType {
   private BigDecimal weight;
 
   @NotNull
+  @Convert(converter = WeightUnitConverter.class)
+  @Column(name = "unit", nullable = false, length = 10)
+  private WeightUnit unit;
+
+  @NotNull
   @Column(name = "description", nullable = false, length = Integer.MAX_VALUE)
   private String description;
 
-  public GoldType(String name, String carat, BigDecimal weight, String description) {
+  public GoldType(String name, String carat, BigDecimal weight, WeightUnit unit, String description) {
     this.name = name;
     this.carat = carat;
     this.weight = weight;
+    this.unit = unit;
     this.description = description;
   }
 }

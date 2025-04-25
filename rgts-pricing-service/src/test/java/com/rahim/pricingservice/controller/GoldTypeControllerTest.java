@@ -1,7 +1,6 @@
 package com.rahim.pricingservice.controller;
 
 import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -11,6 +10,7 @@ import com.rahim.common.exception.ApiExceptionHandler;
 import com.rahim.pricingservice.BaseControllerTest;
 import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
 import com.rahim.pricingservice.entity.GoldType;
+import com.rahim.pricingservice.enums.WeightUnit;
 import com.rahim.pricingservice.repository.GoldTypeRepository;
 import com.rahim.pricingservice.service.IAddGoldTypeService;
 import com.rahim.pricingservice.service.IQueryGoldTypeService;
@@ -54,7 +54,7 @@ public class GoldTypeControllerTest extends BaseControllerTest {
   @Test
   public void shouldReturn200WithSuccessResponseWhenGoldTypeAddedSuccessfully() throws Exception {
     AddGoldTypeRequest request =
-        new AddGoldTypeRequest("GoldTypeName", "22K", BigDecimal.TEN, "Valid description");
+        new AddGoldTypeRequest("GoldTypeName", "22K", BigDecimal.TEN, "g", "Valid description");
 
     mockMvc
         .perform(
@@ -75,7 +75,7 @@ public class GoldTypeControllerTest extends BaseControllerTest {
   public void shouldReturn200WithSuccessResponseAndVerifyAllGoldTypeFields() throws Exception {
     AddGoldTypeRequest request =
         new AddGoldTypeRequest(
-            "Premium Gold", "24K", BigDecimal.valueOf(15.75), "High purity gold");
+            "Premium Gold", "24K", BigDecimal.valueOf(15.75), "g", "High purity gold");
 
     mockMvc
         .perform(
@@ -96,9 +96,9 @@ public class GoldTypeControllerTest extends BaseControllerTest {
   @Test
   public void shouldReturn400WhenGoldTypeAlreadyExists() throws Exception {
     AddGoldTypeRequest request =
-        new AddGoldTypeRequest("ExistingGoldType", "22K", BigDecimal.TEN, "Description");
+        new AddGoldTypeRequest("ExistingGoldType", "22K", BigDecimal.TEN, "g", "Description");
     AddGoldTypeRequest request1 =
-        new AddGoldTypeRequest("ExistingGoldType", "22K", BigDecimal.TEN, "Description");
+        new AddGoldTypeRequest("ExistingGoldType", "22K", BigDecimal.TEN, "g", "Description");
 
     addGoldTypeService.addGoldType(request);
 
@@ -111,15 +111,38 @@ public class GoldTypeControllerTest extends BaseControllerTest {
   }
 
   @Test
-  public void shouldReturn400WhenGoldTypeRequestIsInvalid() throws Exception {
+  public void shouldReturn400WhenGoldTypeRequestNameIsInvalid() throws Exception {
     AddGoldTypeRequest invalidRequest =
-        new AddGoldTypeRequest(null, "22K", BigDecimal.TEN, "Valid description");
+        new AddGoldTypeRequest(null, "22K", BigDecimal.TEN, "g", "Valid description");
 
     mockMvc
         .perform(
             post(ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(invalidRequest)))
+        .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  public void shouldReturn400WhenGoldTypeRequestUnitIsInvalid() throws Exception {
+    AddGoldTypeRequest invalidRequest =
+        new AddGoldTypeRequest("Necklace", "22K", BigDecimal.TEN, "L", "Valid description");
+
+    mockMvc
+        .perform(
+            post(ENDPOINT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(invalidRequest)))
+        .andExpect(status().isBadRequest());
+
+    AddGoldTypeRequest invalidRequest2 =
+        new AddGoldTypeRequest("Necklace", "22K", BigDecimal.TEN, null, "Valid description");
+
+    mockMvc
+        .perform(
+            post(ENDPOINT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(invalidRequest2)))
         .andExpect(status().isBadRequest());
   }
 
@@ -139,8 +162,9 @@ public class GoldTypeControllerTest extends BaseControllerTest {
   public void shouldReturn200AndPageWithNewGoldTypesAfterAdding() throws Exception {
     List<GoldType> goldTypes =
         List.of(
-            new GoldType("GoldType1", "22K", BigDecimal.TEN, "Description1"),
-            new GoldType("GoldType2", "24K", BigDecimal.valueOf(15), "Description2"));
+            new GoldType("GoldType1", "22K", BigDecimal.TEN, WeightUnit.GRAM, "Description1"),
+            new GoldType(
+                "GoldType2", "24K", BigDecimal.valueOf(15), WeightUnit.OUNCE, "Description2"));
     goldTypeRepository.saveAll(goldTypes);
 
     mockMvc

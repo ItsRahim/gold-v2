@@ -4,6 +4,7 @@ import com.rahim.common.exception.DuplicateEntityException;
 import com.rahim.common.exception.base.BadRequestException;
 import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
 import com.rahim.pricingservice.entity.GoldType;
+import com.rahim.pricingservice.enums.WeightUnit;
 import com.rahim.pricingservice.exception.InvalidCaratException;
 import com.rahim.pricingservice.repository.GoldTypeRepository;
 import com.rahim.pricingservice.service.IAddGoldTypeService;
@@ -56,6 +57,20 @@ public class AddGoldTypeService implements IAddGoldTypeService {
       throw new BadRequestException("Gold weight must be non-negative and greater than 0");
     }
 
+    String unitValue = request.getUnit();
+    if (unitValue == null || unitValue.isEmpty()) {
+      log.error("Weight unit is null or empty");
+      throw new BadRequestException("Weight unit is required");
+    }
+
+    WeightUnit unit;
+    try {
+      unit = WeightUnit.fromValue(unitValue);
+    } catch (IllegalArgumentException e) {
+      log.error("Invalid weight unit provided: '{}'", unitValue);
+      throw new BadRequestException("Invalid weight unit: " + unitValue);
+    }
+
     String description = request.getDescription();
     if (description == null || description.isEmpty()) {
       log.error("Empty or null description provided.");
@@ -63,10 +78,20 @@ public class AddGoldTypeService implements IAddGoldTypeService {
     }
 
     GoldType goldType =
-        GoldType.builder().name(name).carat(carat).weight(weight).description(description).build();
+        GoldType.builder()
+            .name(name)
+            .carat(carat)
+            .weight(weight)
+            .unit(unit)
+            .description(description)
+            .build();
 
     log.info(
-        "Successfully added gold type: Name='{}', Carat='{}', Weight='{}'", name, carat, weight);
+        "Successfully added gold type: Name='{}', Carat='{}', Weight='{}', Unit='{}'",
+        name,
+        carat,
+        weight,
+        unit.getValue());
     return goldTypeRepository.save(goldType);
   }
 }
