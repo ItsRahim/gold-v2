@@ -23,15 +23,15 @@ import lombok.Setter;
 @Schema(
     name = "AddGoldTypeRequest",
     description = "Request object for adding a new gold type",
-    // language=json
     example =
         """
-                    {
-                        "name": "Sovereign - Victoria, Old Veiled Head",
-                        "weight": 7.98,
-                        "carat": "22K",
-                        "description": "Gold Sovereign"
-                    }
+                {
+                    "name": "Sovereign - Victoria, Old Veiled Head",
+                    "weight": 7.98,
+                    "carat": "22K",
+                    "unit": "g",
+                    "description": "Gold Sovereign"
+                }
                 """)
 public class AddGoldTypeRequest {
   @Schema(
@@ -61,6 +61,14 @@ public class AddGoldTypeRequest {
   @NotNull(message = "Weight cannot be null")
   @Positive(message = "Weight must be a positive number")
   private BigDecimal weight;
+
+  @Schema(
+      description = "Unit of measure for the weight",
+      example = "g",
+      requiredMode = Schema.RequiredMode.REQUIRED)
+  @JsonProperty("unit")
+  @NotNull(message = "Unit of measure cannot be null")
+  private String unit;
 
   @Schema(
       description = "Description of the gold type",
