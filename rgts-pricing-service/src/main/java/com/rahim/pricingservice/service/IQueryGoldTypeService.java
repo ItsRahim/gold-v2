@@ -9,5 +9,6 @@ import org.springframework.data.domain.Page;
  */
 public interface IQueryGoldTypeService {
   Page<GoldType> getAllGoldTypes(int page, int size);
+
   GoldType getGoldType(long id);
 }
