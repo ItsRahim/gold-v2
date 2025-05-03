@@ -1,4 +1,6 @@
 INSERT INTO rgts.gold_types(name, carat, weight, unit, description)
+VALUES ('XAU/GBP', '24K', 1, 'oz', 'Gold Ticker');
+INSERT INTO rgts.gold_types(name, carat, weight, unit, description)
 VALUES ('24 Carat', '24K', 1, 'g', '24K Gold');
 INSERT INTO rgts.gold_types(name, carat, weight, unit, description)
 VALUES ('23 Carat', '23K', 1, 'g', '23K Gold');
