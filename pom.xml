@@ -33,6 +33,7 @@
         <indriya.version>2.2.3</indriya.version>
         <mockito.version>5.15.2</mockito.version>
         <junit.version>5.11.4</junit.version>
+        <java-fixture.version>2.12.0</java-fixture.version>
 
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
         <maven-surefire-plugin.version>3.2.3</maven-surefire-plugin.version>
@@ -289,6 +290,12 @@
                 <groupId>com.h2database</groupId>
                 <artifactId>h2</artifactId>
                 <version>${h2.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.github.nylle</groupId>
+                <artifactId>javafixture</artifactId>
+                <version>${java-fixture.version}</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
