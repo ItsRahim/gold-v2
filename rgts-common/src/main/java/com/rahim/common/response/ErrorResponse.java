@@ -1,4 +1,4 @@
-package com.rahim.common.exception;
+package com.rahim.common.response;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;

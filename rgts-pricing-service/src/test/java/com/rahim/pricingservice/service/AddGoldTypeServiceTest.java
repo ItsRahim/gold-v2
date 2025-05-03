@@ -2,7 +2,7 @@ package com.rahim.pricingservice.service;
 
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
-import com.rahim.common.exception.base.BadRequestException;
+import com.rahim.common.exception.BadRequestException;
 import com.rahim.pricingservice.BaseUnitTest;
 import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
 import com.rahim.pricingservice.enums.WeightUnit;
@@ -27,7 +27,7 @@ public class AddGoldTypeServiceTest extends BaseUnitTest {
         new AddGoldTypeRequest(
             "name", "22K", BigDecimal.TEN, WeightUnit.GRAM.getValue(), "description");
     addGoldTypeService.addGoldType(request);
-    assertThat(goldTypeRepository.existsGoldTypeByName("name")).isTrue();
+    assertThat(goldTypeRepository.existsGoldTypeByNameIgnoreCase("name")).isTrue();
   }
 
   @Test
@@ -75,7 +75,7 @@ public class AddGoldTypeServiceTest extends BaseUnitTest {
         new AddGoldTypeRequest(
             "non-duplicate", "22K", BigDecimal.TEN, WeightUnit.GRAM.getValue(), "description");
     assertThatCode(() -> addGoldTypeService.addGoldType(request3)).doesNotThrowAnyException();
-    assertThat(goldTypeRepository.existsGoldTypeByName(request3.getName())).isTrue();
+    assertThat(goldTypeRepository.existsGoldTypeByNameIgnoreCase(request3.getName())).isTrue();
   }
 
   @Test

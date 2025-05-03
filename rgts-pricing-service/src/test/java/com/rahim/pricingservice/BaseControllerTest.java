@@ -1,6 +1,6 @@
 package com.rahim.pricingservice;
 
-import com.rahim.common.exception.ApiExceptionHandler;
+import com.rahim.common.handler.ApiExceptionHandler;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;

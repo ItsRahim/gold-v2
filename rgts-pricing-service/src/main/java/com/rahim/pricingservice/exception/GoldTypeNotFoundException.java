@@ -1,6 +1,6 @@
 package com.rahim.pricingservice.exception;
 
-import com.rahim.common.exception.base.NotFoundException;
+import com.rahim.common.exception.NotFoundException;
 
 /**
  * @author Rahim Ahmed

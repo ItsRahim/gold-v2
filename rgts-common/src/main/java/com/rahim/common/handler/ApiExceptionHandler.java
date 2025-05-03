@@ -1,6 +1,7 @@
-package com.rahim.common.exception;
+package com.rahim.common.handler;
 
-import com.rahim.common.exception.base.ApiException;
+import com.rahim.common.exception.ApiException;
+import com.rahim.common.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

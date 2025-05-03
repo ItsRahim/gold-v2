@@ -1,10 +1,10 @@
 package com.rahim.pricingservice.service.impl;
 
-import com.rahim.common.exception.DuplicateEntityException;
-import com.rahim.common.exception.base.BadRequestException;
+import com.rahim.common.exception.BadRequestException;
 import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
 import com.rahim.pricingservice.entity.GoldType;
 import com.rahim.pricingservice.enums.WeightUnit;
+import com.rahim.pricingservice.exception.DuplicateGoldTypeException;
 import com.rahim.pricingservice.exception.InvalidCaratException;
 import com.rahim.pricingservice.repository.GoldTypeRepository;
 import com.rahim.pricingservice.service.IAddGoldTypeService;
@@ -40,9 +40,9 @@ public class AddGoldTypeService implements IAddGoldTypeService {
       throw new BadRequestException("Gold type name is null or empty");
     }
 
-    if (goldTypeRepository.existsGoldTypeByName(name)) {
+    if (goldTypeRepository.existsGoldTypeByNameIgnoreCase(name)) {
       log.error("Gold type with name {}}' already exists", name);
-      throw new DuplicateEntityException("Gold type with name '" + name + "' already exists");
+      throw new DuplicateGoldTypeException("Gold type with name '" + name + "' already exists");
     }
 
     String carat = request.getCarat();

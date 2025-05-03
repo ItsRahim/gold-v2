@@ -58,6 +58,7 @@ public class GoldTypeController {
                             "name": "Premium Gold",
                             "carat": "24K",
                             "weight": 15.75,
+                            "unit": "g",
                             "description": "High purity gold"
                           }
                         }

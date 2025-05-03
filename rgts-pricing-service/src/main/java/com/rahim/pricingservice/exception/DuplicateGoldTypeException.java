@@ -6,8 +6,8 @@ import com.rahim.common.exception.BadRequestException;
  * @author Rahim Ahmed
  * @created 24/03/2025
  */
-public class InvalidCaratException extends BadRequestException {
-  public InvalidCaratException(String message) {
+public class DuplicateGoldTypeException extends BadRequestException {
+  public DuplicateGoldTypeException(String message) {
     super(message);
   }
 }
