@@ -1,4 +1,4 @@
-package com.rahim.pricingservice.service;
+package com.rahim.pricingservice.service.type;
 
 import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
 import com.rahim.pricingservice.entity.GoldType;

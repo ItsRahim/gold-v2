@@ -8,6 +8,8 @@ import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
 import com.rahim.pricingservice.enums.WeightUnit;
 import com.rahim.pricingservice.repository.GoldTypeRepository;
 import java.math.BigDecimal;
+
+import com.rahim.pricingservice.service.type.IAddGoldTypeService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -85,21 +87,21 @@ public class AddGoldTypeServiceTest extends BaseUnitTest {
             "name", "25K", BigDecimal.TEN, WeightUnit.GRAM.getValue(), "description");
     assertThatThrownBy(() -> addGoldTypeService.addGoldType(request))
         .isInstanceOf(BadRequestException.class)
-        .hasMessage("Gold carat '" + request.getCarat() + "' is invalid");
+        .hasMessage("Gold carat '" + request.getCaratLabel() + "' is invalid");
 
     AddGoldTypeRequest request2 =
         new AddGoldTypeRequest(
             "name2", "2.5K", BigDecimal.TEN, WeightUnit.GRAM.getValue(), "description");
     assertThatThrownBy(() -> addGoldTypeService.addGoldType(request2))
         .isInstanceOf(BadRequestException.class)
-        .hasMessage("Gold carat '" + request2.getCarat() + "' is invalid");
+        .hasMessage("Gold carat '" + request2.getCaratLabel() + "' is invalid");
 
     AddGoldTypeRequest request3 =
         new AddGoldTypeRequest(
             "name3", "-12K", BigDecimal.TEN, WeightUnit.GRAM.getValue(), "description");
     assertThatThrownBy(() -> addGoldTypeService.addGoldType(request3))
         .isInstanceOf(BadRequestException.class)
-        .hasMessage("Gold carat '" + request3.getCarat() + "' is invalid");
+        .hasMessage("Gold carat '" + request3.getCaratLabel() + "' is invalid");
 
     AddGoldTypeRequest request4 =
         new AddGoldTypeRequest(

@@ -1,4 +1,4 @@
-package com.rahim.pricingservice.service;
+package com.rahim.pricingservice.service.price;
 
 import com.rahim.pricingservice.dto.grpc.GoldPriceUpdateDTO;
 

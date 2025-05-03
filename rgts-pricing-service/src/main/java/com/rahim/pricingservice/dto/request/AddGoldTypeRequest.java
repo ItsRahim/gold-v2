@@ -50,8 +50,8 @@ public class AddGoldTypeRequest {
       example = "24K",
       requiredMode = Schema.RequiredMode.REQUIRED)
   @NotBlank(message = "Gold purity cannot be blank")
-  @JsonProperty("carat")
-  private String carat;
+  @JsonProperty("caratLabel")
+  private String caratLabel;
 
   @Schema(
       description = "Weight of the gold type",

@@ -6,6 +6,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import com.rahim.pricingservice.BaseUnitTest;
 import com.rahim.pricingservice.entity.GoldType;
 import com.rahim.pricingservice.exception.GoldTypeNotFoundException;
+import com.rahim.pricingservice.service.type.IQueryGoldTypeService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

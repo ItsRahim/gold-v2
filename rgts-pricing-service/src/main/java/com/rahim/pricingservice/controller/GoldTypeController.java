@@ -2,9 +2,10 @@ package com.rahim.pricingservice.controller;
 
 import com.rahim.common.response.SuccessResponse;
 import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
+import com.rahim.pricingservice.dto.response.GoldTypeResponse;
 import com.rahim.pricingservice.entity.GoldType;
-import com.rahim.pricingservice.service.IAddGoldTypeService;
-import com.rahim.pricingservice.service.IQueryGoldTypeService;
+import com.rahim.pricingservice.service.type.IAddGoldTypeService;
+import com.rahim.pricingservice.service.type.IQueryGoldTypeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -103,7 +104,7 @@ public class GoldTypeController {
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
       })
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<Page<GoldType>> getAllGoldTypes(
+  public ResponseEntity<Page<GoldTypeResponse>> getAllGoldTypes(
       @Parameter(description = "Page number (0-based)", example = "0")
           @RequestParam(value = "page", defaultValue = "0")
           int page,
