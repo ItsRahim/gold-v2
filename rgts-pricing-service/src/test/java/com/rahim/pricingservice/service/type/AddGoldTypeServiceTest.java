@@ -1,4 +1,4 @@
-package com.rahim.pricingservice.service;
+package com.rahim.pricingservice.service.type;
 
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
@@ -9,7 +9,6 @@ import com.rahim.pricingservice.enums.WeightUnit;
 import com.rahim.pricingservice.repository.GoldTypeRepository;
 import java.math.BigDecimal;
 
-import com.rahim.pricingservice.service.type.IAddGoldTypeService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 

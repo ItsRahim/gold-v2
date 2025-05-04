@@ -25,7 +25,7 @@ public class GoldResponseMapper {
     };
   }
 
-  private static AbstractResponseDTO mapGoldType(GoldType goldType) {
+  private static GoldTypeResponseDTO mapGoldType(GoldType goldType) {
     return GoldTypeResponseDTO.builder()
         .id(goldType.getId())
         .name(goldType.getName())
