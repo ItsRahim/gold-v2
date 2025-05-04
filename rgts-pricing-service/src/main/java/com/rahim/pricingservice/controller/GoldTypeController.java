@@ -119,6 +119,6 @@ public class GoldTypeController {
       @Parameter(description = "Unique identifier of the gold type", example = "1")
           @PathVariable("id")
           long id) {
-    return ResponseEntity.status(HttpStatus.OK).body(queryGoldTypeService.getGoldType(id));
+    return ResponseEntity.status(HttpStatus.OK).body(queryGoldTypeService.getGoldTypeById(id));
   }
 }

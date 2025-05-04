@@ -31,7 +31,7 @@ public class QueryGoldTypeService implements IQueryGoldTypeService {
   }
 
   @Override
-  public GoldType getGoldType(long id) {
+  public GoldType getGoldTypeById(long id) {
     return goldTypeRepository
         .findById(id)
         .orElseThrow(

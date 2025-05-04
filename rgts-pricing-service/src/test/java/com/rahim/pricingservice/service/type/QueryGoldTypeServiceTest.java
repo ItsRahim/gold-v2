@@ -8,7 +8,6 @@ import com.rahim.pricingservice.BaseUnitTest;
 import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
 import com.rahim.pricingservice.entity.GoldType;
 import com.rahim.pricingservice.exception.GoldTypeNotFoundException;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,8 +22,7 @@ public class QueryGoldTypeServiceTest extends BaseUnitTest {
   @Autowired private IQueryGoldTypeService queryGoldTypeService;
   @Autowired private IAddGoldTypeService addGoldTypeService;
 
-  @BeforeEach()
-  public void setUp() {
+  private void addGoldType() {
     AddGoldTypeRequest request =
         new AddGoldTypeRequest("Gold Coin", "22K", BigDecimal.TEN, "g", "Valid");
     addGoldTypeService.addGoldType(request);
@@ -32,6 +30,7 @@ public class QueryGoldTypeServiceTest extends BaseUnitTest {
 
   @Test
   public void getAllGoldTypes_returnsPagedResult() {
+    addGoldType();
     Page<AbstractResponseDTO> result = queryGoldTypeService.getAllGoldTypes(0, 10);
 
     assertThat(result).isNotNull();
@@ -39,16 +38,17 @@ public class QueryGoldTypeServiceTest extends BaseUnitTest {
   }
 
   @Test
-  void getGoldType_existingId_returnsGoldType() {
-    GoldType result = queryGoldTypeService.getGoldType(1L);
+  void getGoldTypeById_existingId_returnsGoldType() {
+    addGoldType();
+    GoldType result = queryGoldTypeService.getGoldTypeById(1);
 
     assertThat(result).isNotNull();
     assertThat(result.getName()).isEqualTo("Gold Coin");
   }
 
   @Test
-  void getGoldType_nonExistingId_throwsException() {
-    assertThatThrownBy(() -> queryGoldTypeService.getGoldType(99L))
+  void getGoldTypeById_nonExistingId_throwsException() {
+    assertThatThrownBy(() -> queryGoldTypeService.getGoldTypeById(99))
         .isInstanceOf(GoldTypeNotFoundException.class)
         .hasMessage("Gold Type with ID: 99 not found");
   }
