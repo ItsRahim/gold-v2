@@ -6,12 +6,14 @@ import com.rahim.common.util.DateUtil;
 import com.rahim.pricingservice.dto.payload.GoldPriceUpdateDTO;
 import com.rahim.pricingservice.entity.GoldPrice;
 import com.rahim.pricingservice.entity.GoldPurity;
+import com.rahim.pricingservice.entity.GoldType;
 import com.rahim.pricingservice.enums.WeightUnit;
 import com.rahim.pricingservice.exception.GoldPriceCalculationException;
 import com.rahim.pricingservice.repository.GoldPriceRepository;
 import com.rahim.pricingservice.service.price.GoldPriceCalculationService;
 import com.rahim.pricingservice.service.price.IUpdateGoldPriceService;
 import com.rahim.pricingservice.service.purity.IGoldPurityQueryService;
+import com.rahim.pricingservice.service.type.IQueryGoldTypeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -33,11 +35,11 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional(rollbackFor = Exception.class)
 public class UpdateGoldPriceService implements IUpdateGoldPriceService {
-
-  private final RedisService redisService;
-  private final GoldPriceRepository goldPriceRepository;
-  private final IGoldPurityQueryService goldPurityQueryService;
   private final GoldPriceCalculationService goldPriceCalculationService;
+  private final IGoldPurityQueryService goldPurityQueryService;
+  private final IQueryGoldTypeService goldTypeQueryService;
+  private final GoldPriceRepository goldPriceRepository;
+  private final RedisService redisService;
 
   private List<GoldPurity> goldPurityList = new ArrayList<>();
 
@@ -71,48 +73,49 @@ public class UpdateGoldPriceService implements IUpdateGoldPriceService {
         BigDecimal pricePerGram =
             goldPriceCalculationService.calculatePricePerGramForPurity(pricePerTroyOunce, purity);
         GoldPrice existing = goldPriceRepository.getGoldPriceByPurity(purity);
+
         if (existing == null) {
           createGoldPrice(purity, pricePerGram);
+        } else if (existing.getPurity().getLabel().equalsIgnoreCase("XAUGBP")) {
+          updateExistingGoldPrice(existing, pricePerGram);
         } else {
           updateExistingGoldPrice(existing, pricePerGram);
         }
-        log.debug("Updated price for carat {}: {}", purity.getLabel(), pricePerGram);
       } catch (Exception e) {
         log.error("Failed to update price for purity {}: {}", purity.getLabel(), e.getMessage(), e);
       }
     }
 
     log.info("Gold price update completed for {} entries", goldPurityList.size());
+    updateGoldTypePrices();
   }
 
   @Override
   public BigDecimal calculateGoldPrice(
       GoldPurity goldPurity, BigDecimal weight, WeightUnit weightUnit) {
-    if (goldPurity == null) {
-      log.error("Gold purity is null");
-      throw new GoldPriceCalculationException("Gold purity must be provided");
-    }
 
-    if (weight == null || weight.compareTo(BigDecimal.ZERO) <= 0) {
-      log.error("Invalid weight: {}", weight);
-      throw new GoldPriceCalculationException("Weight must be greater than zero");
-    }
-
-    if (weightUnit == null) {
-      log.error("Weight unit is null");
-      throw new GoldPriceCalculationException("Weight unit must be specified");
-    }
+    validateInputs(goldPurity, weight, weightUnit);
 
     String carat = goldPurity.getLabel();
     Object priceObject = redisService.getValue(carat);
 
-    if (!(priceObject instanceof BigDecimal pricePerGram)) {
-      log.error("No valid price found in Redis for carat: '{}'", carat);
+    if (priceObject instanceof GoldPrice goldPrice) {
+      return goldPriceCalculationService.calculatePrice(goldPrice.getPrice(), weight, weightUnit);
+    } else {
       throw new GoldPriceCalculationException("Gold price not available for carat: " + carat);
     }
+  }
 
-    log.debug("Retrieved pricePerGram={} for carat={}", pricePerGram, carat);
-    return goldPriceCalculationService.calculatePrice(pricePerGram, weight, weightUnit);
+  private void validateInputs(GoldPurity goldPurity, BigDecimal weight, WeightUnit weightUnit) {
+    if (goldPurity == null) {
+      throw new GoldPriceCalculationException("Gold purity must be provided");
+    }
+    if (weight == null || weight.compareTo(BigDecimal.ZERO) <= 0) {
+      throw new GoldPriceCalculationException("Weight must be greater than zero");
+    }
+    if (weightUnit == null) {
+      throw new GoldPriceCalculationException("Weight unit must be specified");
+    }
   }
 
   private void createGoldPrice(GoldPurity goldPurity, BigDecimal pricePerGram) {
@@ -142,5 +145,16 @@ public class UpdateGoldPriceService implements IUpdateGoldPriceService {
     } catch (SerializationException e) {
       log.error("Failed to add new gold price to redis: {}", e.getMessage(), e);
     }
+  }
+
+  private void updateGoldTypePrices() {
+    List<GoldType> goldTypes = goldTypeQueryService.getAllGoldTypes();
+    for (GoldType goldType : goldTypes) {
+      BigDecimal updatedPrice =
+          calculateGoldPrice(goldType.getPurity(), goldType.getWeight(), goldType.getUnit());
+      goldType.setPrice(updatedPrice);
+      goldTypeQueryService.saveGoldType(goldType);
+    }
+    log.info("Updated {} gold types", goldTypes.size());
   }
 }

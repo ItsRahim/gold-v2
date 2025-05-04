@@ -13,6 +13,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * @author Rahim Ahmed
  * @created 24/03/2025
@@ -36,5 +38,15 @@ public class QueryGoldTypeService implements IQueryGoldTypeService {
         .findById(id)
         .orElseThrow(
             () -> new GoldTypeNotFoundException("Gold Type with ID: " + id + " not found"));
+  }
+
+  @Override
+  public List<GoldType> getAllGoldTypes() {
+    return goldTypeRepository.findAll();
+  }
+
+  @Override
+  public void saveGoldType(GoldType goldType) {
+    goldTypeRepository.save(goldType);
   }
 }
