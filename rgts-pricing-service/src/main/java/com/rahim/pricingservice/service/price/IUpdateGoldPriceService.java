@@ -1,6 +1,6 @@
 package com.rahim.pricingservice.service.price;
 
-import com.rahim.pricingservice.dto.grpc.GoldPriceUpdateDTO;
+import com.rahim.pricingservice.dto.payload.GoldPriceUpdateDTO;
 
 /**
  * @created 03/05/2025

@@ -1,7 +1,6 @@
 package com.rahim.pricingservice.service.type.impl;
 
 import com.rahim.common.exception.BadRequestException;
-import com.rahim.common.exception.EntityNotFoundException;
 import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
 import com.rahim.pricingservice.entity.GoldPurity;
 import com.rahim.pricingservice.entity.GoldType;
@@ -37,7 +36,7 @@ public class AddGoldTypeService implements IAddGoldTypeService {
   private static final Pattern pattern = Pattern.compile(CARAT_REGEX);
 
   @Override
-  public GoldType addGoldType(AddGoldTypeRequest request) {
+  public void addGoldType(AddGoldTypeRequest request) {
     if (request == null) {
       log.error("AddGoldTypeRequest request body is null");
       throw new BadRequestException("Request body is null");
@@ -60,13 +59,7 @@ public class AddGoldTypeService implements IAddGoldTypeService {
       throw new InvalidCaratException("Gold carat '" + caratLabel + "' is invalid");
     }
 
-    GoldPurity goldPurity;
-    try {
-      goldPurity = goldPurityQueryService.getGoldPurityByCaratLabel(caratLabel);
-    } catch (EntityNotFoundException e) {
-      log.error("Gold purity not found", e);
-      throw new BadRequestException("Gold purity not found");
-    }
+    GoldPurity goldPurity = goldPurityQueryService.getGoldPurityByCaratLabel(caratLabel);
 
     BigDecimal weight = request.getWeight();
     if (weight == null || weight.compareTo(BigDecimal.ZERO) <= 0) {
@@ -80,13 +73,7 @@ public class AddGoldTypeService implements IAddGoldTypeService {
       throw new BadRequestException("Weight unit is required");
     }
 
-    WeightUnit unit;
-    try {
-      unit = WeightUnit.fromValue(unitValue);
-    } catch (IllegalArgumentException e) {
-      log.error("Invalid weight unit provided: '{}'", unitValue);
-      throw new BadRequestException("Invalid weight unit: " + unitValue);
-    }
+    WeightUnit unit = WeightUnit.fromValue(unitValue);
 
     String description = request.getDescription();
     if (description == null || description.isEmpty()) {
@@ -110,7 +97,7 @@ public class AddGoldTypeService implements IAddGoldTypeService {
         caratLabel,
         weight,
         unit.getValue());
-    return goldTypeRepository.save(goldType);
+    goldTypeRepository.save(goldType);
   }
 
   private boolean isValidGoldCarat(String input) {

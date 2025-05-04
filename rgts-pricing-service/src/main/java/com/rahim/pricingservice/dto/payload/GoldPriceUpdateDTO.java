@@ -1,11 +1,11 @@
-package com.rahim.pricingservice.dto.grpc;
+package com.rahim.pricingservice.dto.payload;
 
+import com.rahim.common.util.DateUtil;
 import com.rahim.proto.protobuf.GoldPriceInfo;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Instant;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
+
 import lombok.*;
 
 /**
@@ -15,7 +15,6 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-@ToString
 public class GoldPriceUpdateDTO {
   private String source;
   private BigDecimal price;
@@ -34,10 +33,7 @@ public class GoldPriceUpdateDTO {
     BigDecimal price =
         BigDecimal.valueOf(goldPriceInfo.getPrice()).setScale(2, RoundingMode.HALF_UP);
 
-    String formattedDate =
-        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-            .withZone(ZoneId.of("UTC"))
-            .format(instant);
+    String formattedDate = DateUtil.formatInstant(instant);
 
     return GoldPriceUpdateDTO.builder()
         .source(goldPriceInfo.getSource())

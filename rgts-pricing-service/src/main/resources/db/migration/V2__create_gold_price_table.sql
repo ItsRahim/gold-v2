@@ -3,7 +3,7 @@ CREATE TABLE rgts.gold_prices
     price_id   SERIAL PRIMARY KEY,
     carat_id   INT                       NOT NULL REFERENCES rgts.gold_purities (id),
     price      NUMERIC(10, 2)            NOT NULL,
-    updated_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
+    updated_at TIMESTAMP DEFAULT NOW() NOT NULL
 );
 
 

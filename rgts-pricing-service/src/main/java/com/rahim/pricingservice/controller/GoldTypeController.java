@@ -1,8 +1,8 @@
 package com.rahim.pricingservice.controller;
 
-import com.rahim.common.response.SuccessResponse;
+import com.rahim.common.response.AbstractResponseDTO;
+import com.rahim.pricingservice.constant.Endpoints;
 import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
-import com.rahim.pricingservice.dto.response.GoldTypeResponse;
 import com.rahim.pricingservice.entity.GoldType;
 import com.rahim.pricingservice.service.type.IAddGoldTypeService;
 import com.rahim.pricingservice.service.type.IQueryGoldTypeService;
@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v2/pricing-service/type")
+@RequestMapping(Endpoints.GOLD_TYPE_ENDPOINT)
 @Tag(name = "Gold Type Management", description = "Endpoints for managing gold types")
 public class GoldTypeController {
   private final IAddGoldTypeService addGoldTypeService;
@@ -43,46 +43,24 @@ public class GoldTypeController {
         @ApiResponse(
             responseCode = "200",
             description = "Gold type added successfully",
-            content =
-                @Content(
-                    mediaType = "application/json",
-                    schema =
-                        @Schema(
-                            description = "Success response with gold type data",
-                            example =
-                                // language=JSON
-                                """
-                        {
-                          "message": "Gold type added successfully",
-                          "data": {
-                            "id": 1,
-                            "name": "Premium Gold",
-                            "carat": "24K",
-                            "weight": 15.75,
-                            "unit": "g",
-                            "description": "High purity gold"
-                          }
-                        }
-                        """))),
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)),
         @ApiResponse(
             responseCode = "400",
             description = "Invalid gold type details or gold type already exists",
-            content = @Content(mediaType = "application/json")),
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)),
         @ApiResponse(
             responseCode = "500",
             description = "Internal server error",
-            content = @Content(mediaType = "application/json"))
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
       })
   @PostMapping(
       consumes = MediaType.APPLICATION_JSON_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<SuccessResponse<GoldType>> addGoldType(
+  public ResponseEntity<String> addGoldType(
       @Valid @Parameter(description = "Gold type details", required = true) @RequestBody
           AddGoldTypeRequest request) {
-    GoldType savedGoldType = addGoldTypeService.addGoldType(request);
-    SuccessResponse<GoldType> response =
-        SuccessResponse.of("Gold type added successfully", savedGoldType);
-    return new ResponseEntity<>(response, HttpStatus.OK);
+    addGoldTypeService.addGoldType(request);
+    return ResponseEntity.status(HttpStatus.OK).body("Successfully added gold type");
   }
 
   @Operation(
@@ -104,7 +82,7 @@ public class GoldTypeController {
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
       })
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<Page<GoldTypeResponse>> getAllGoldTypes(
+  public ResponseEntity<Page<AbstractResponseDTO>> getAllGoldTypes(
       @Parameter(description = "Page number (0-based)", example = "0")
           @RequestParam(value = "page", defaultValue = "0")
           int page,

@@ -1,6 +1,6 @@
 package com.rahim.pricingservice.service.price.impl;
 
-import com.rahim.pricingservice.dto.grpc.GoldPriceUpdateDTO;
+import com.rahim.pricingservice.dto.payload.GoldPriceUpdateDTO;
 import com.rahim.pricingservice.repository.GoldPriceRepository;
 import com.rahim.pricingservice.service.price.IUpdateGoldPriceService;
 import lombok.RequiredArgsConstructor;

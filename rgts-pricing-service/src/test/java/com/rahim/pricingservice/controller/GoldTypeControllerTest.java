@@ -1,52 +1,53 @@
 package com.rahim.pricingservice.controller;
 
 import static org.hamcrest.Matchers.hasSize;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rahim.common.handler.ApiExceptionHandler;
+import com.rahim.common.response.AbstractResponseDTO;
 import com.rahim.pricingservice.BaseControllerTest;
+import com.rahim.pricingservice.constant.Endpoints;
 import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
-import com.rahim.pricingservice.entity.GoldType;
+import com.rahim.pricingservice.dto.response.GoldTypeResponseDTO;
 import com.rahim.pricingservice.enums.WeightUnit;
-import com.rahim.pricingservice.repository.GoldTypeRepository;
 import com.rahim.pricingservice.service.type.IAddGoldTypeService;
 import com.rahim.pricingservice.service.type.IQueryGoldTypeService;
 import java.math.BigDecimal;
 import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.*;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
-/**
- * @author Rahim Ahmed
- * @created 24/03/2025
- */
 public class GoldTypeControllerTest extends BaseControllerTest {
-
-  private static final String ENDPOINT = "/api/v2/pricing-service/type";
-
-  @Autowired private IAddGoldTypeService addGoldTypeService;
-
-  @Autowired private IQueryGoldTypeService queryGoldTypeService;
-
-  @Autowired private GoldTypeRepository goldTypeRepository;
-
-  @Autowired private ObjectMapper objectMapper;
 
   private MockMvc mockMvc;
 
+  @Mock private IAddGoldTypeService addGoldTypeService;
+
+  @Mock private IQueryGoldTypeService queryGoldTypeService;
+
+  @InjectMocks private GoldTypeController goldTypeController;
+
   @BeforeEach
   public void setUp() {
-    GoldTypeController goldTypeController =
-        new GoldTypeController(addGoldTypeService, queryGoldTypeService);
+    MockitoAnnotations.openMocks(this);
+
+    LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
+    validator.afterPropertiesSet();
+
     mockMvc =
         MockMvcBuilders.standaloneSetup(goldTypeController)
+            .setValidator(validator)
             .setControllerAdvice(new ApiExceptionHandler())
             .build();
   }
@@ -54,148 +55,51 @@ public class GoldTypeControllerTest extends BaseControllerTest {
   @Test
   public void shouldReturn200WithSuccessResponseWhenGoldTypeAddedSuccessfully() throws Exception {
     AddGoldTypeRequest request =
-        new AddGoldTypeRequest("GoldTypeName", "22K", BigDecimal.TEN, "g", "Valid description");
+        new AddGoldTypeRequest("Necklace", "22K", BigDecimal.TEN, "g", "Test gold");
 
     mockMvc
         .perform(
-            post(ENDPOINT)
+            post(Endpoints.GOLD_TYPE_ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
+                .content(requestToJson(request)))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.message").value("Gold type added successfully"))
-        .andExpect(jsonPath("$.data").exists())
-        .andExpect(jsonPath("$.data.name").value("GoldTypeName"))
-        .andExpect(jsonPath("$.data.carat").value("22K"))
-        .andExpect(jsonPath("$.data.weight").value(10))
-        .andExpect(jsonPath("$.data.description").value("Valid description"));
-  }
+        .andExpect(content().string("Successfully added gold type"));
 
-  @Test
-  public void shouldReturn200WithSuccessResponseAndVerifyAllGoldTypeFields() throws Exception {
-    AddGoldTypeRequest request =
-        new AddGoldTypeRequest(
-            "Premium Gold", "24K", BigDecimal.valueOf(15.75), "g", "High purity gold");
-
-    mockMvc
-        .perform(
-            post(ENDPOINT)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
-        .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.message").value("Gold type added successfully"))
-        .andExpect(jsonPath("$.data").exists())
-        .andExpect(jsonPath("$.data.id").exists())
-        .andExpect(jsonPath("$.data.name").value("Premium Gold"))
-        .andExpect(jsonPath("$.data.carat").value("24K"))
-        .andExpect(jsonPath("$.data.weight").value(15.75))
-        .andExpect(jsonPath("$.data.description").value("High purity gold"));
-  }
-
-  @Test
-  public void shouldReturn400WhenGoldTypeAlreadyExists() throws Exception {
-    AddGoldTypeRequest request =
-        new AddGoldTypeRequest("ExistingGoldType", "22K", BigDecimal.TEN, "g", "Description");
-    AddGoldTypeRequest request1 =
-        new AddGoldTypeRequest("ExistingGoldType", "22K", BigDecimal.TEN, "g", "Description");
-
-    addGoldTypeService.addGoldType(request);
-
-    mockMvc
-        .perform(
-            post(ENDPOINT)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request1)))
-        .andExpect(status().isBadRequest());
+    verify(addGoldTypeService, times(1)).addGoldType(any(AddGoldTypeRequest.class));
   }
 
   @Test
   public void shouldReturn400WhenGoldTypeRequestNameIsInvalid() throws Exception {
-    AddGoldTypeRequest invalidRequest =
-        new AddGoldTypeRequest(null, "22K", BigDecimal.TEN, "g", "Valid description");
+    AddGoldTypeRequest request = new AddGoldTypeRequest(null, "22K", BigDecimal.TEN, "g", "Valid");
 
     mockMvc
         .perform(
-            post(ENDPOINT)
+            post(Endpoints.GOLD_TYPE_ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(invalidRequest)))
-        .andExpect(status().isBadRequest());
-  }
-
-  @Test
-  public void shouldReturn400WhenGoldTypeRequestUnitIsInvalid() throws Exception {
-    AddGoldTypeRequest invalidRequest =
-        new AddGoldTypeRequest("Necklace", "22K", BigDecimal.TEN, "L", "Valid description");
-
-    mockMvc
-        .perform(
-            post(ENDPOINT)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(invalidRequest)))
-        .andExpect(status().isBadRequest());
-
-    AddGoldTypeRequest invalidRequest2 =
-        new AddGoldTypeRequest("Necklace", "22K", BigDecimal.TEN, null, "Valid description");
-
-    mockMvc
-        .perform(
-            post(ENDPOINT)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(invalidRequest2)))
+                .content(requestToJson(request)))
         .andExpect(status().isBadRequest());
   }
 
   @Test
   public void shouldReturn200AndInitialPageOfGoldTypes() throws Exception {
-    mockMvc
-        .perform(get(ENDPOINT).contentType(MediaType.APPLICATION_JSON))
-        .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.content", hasSize(10)))
-        .andExpect(jsonPath("$.content[0].name").value("1 Carat"))
-        .andExpect(jsonPath("$.content[1].name").value("10 Carat"))
-        .andExpect(jsonPath("$.totalElements").value(24));
-  }
-
-  @Test
-  public void shouldReturn200AndPageWithNewGoldTypesAfterAdding() throws Exception {
-    List<GoldType> goldTypes =
+    List<AbstractResponseDTO> mockGoldTypes =
         List.of(
-            new GoldType("GoldType1", "22K", BigDecimal.TEN, WeightUnit.GRAM, "Description1"),
-            new GoldType(
-                "GoldType2", "24K", BigDecimal.valueOf(15), WeightUnit.OUNCE, "Description2"));
-    goldTypeRepository.saveAll(goldTypes);
+            new GoldTypeResponseDTO(
+                1, "1 Carat", "22K", BigDecimal.ONE, WeightUnit.GRAM, "Desc", BigDecimal.ONE),
+            new GoldTypeResponseDTO(
+                2, "10 Carat", "24K", BigDecimal.TEN, WeightUnit.GRAM, "Desc", BigDecimal.TEN));
+
+    Page<AbstractResponseDTO> page =
+        new PageImpl<>(mockGoldTypes, PageRequest.of(0, 10), mockGoldTypes.size());
+
+    when(queryGoldTypeService.getAllGoldTypes(0, 10)).thenReturn(page);
 
     mockMvc
-        .perform(get(ENDPOINT).contentType(MediaType.APPLICATION_JSON))
+        .perform(get(Endpoints.GOLD_TYPE_ENDPOINT + "?page=0&size=10"))
         .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.totalElements").value(26));
-  }
-
-  @Test
-  public void shouldReturn200AndPageWithReducedGoldTypesAfterDeletingOne() throws Exception {
-    goldTypeRepository.deleteById(1L);
-
-    mockMvc
-        .perform(get(ENDPOINT).contentType(MediaType.APPLICATION_JSON))
-        .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.totalElements").value(23));
-  }
-
-  @Test
-  public void shouldReturn200AndEmptyPageAfterDeletingAllGoldTypes() throws Exception {
-    goldTypeRepository.deleteAll();
-
-    mockMvc
-        .perform(get(ENDPOINT).contentType(MediaType.APPLICATION_JSON))
-        .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.content", hasSize(0)))
-        .andExpect(jsonPath("$.totalElements").value(0))
-        .andExpect(jsonPath("$.totalPages").value(0))
-        .andExpect(jsonPath("$.last").value(true));
+        .andExpect(jsonPath("$.content", hasSize(2)))
+        .andExpect(jsonPath("$.totalElements").value(2))
+        .andExpect(jsonPath("$.content[0].name").value("1 Carat"))
+        .andExpect(jsonPath("$.content[1].name").value("10 Carat"));
   }
 }

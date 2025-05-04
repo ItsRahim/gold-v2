@@ -1,6 +1,6 @@
 package com.rahim.pricingservice.service.type;
 
-import com.rahim.pricingservice.dto.response.GoldTypeResponse;
+import com.rahim.common.response.AbstractResponseDTO;
 import com.rahim.pricingservice.entity.GoldType;
 import org.springframework.data.domain.Page;
 
@@ -9,7 +9,7 @@ import org.springframework.data.domain.Page;
  * @created 24/03/2025
  */
 public interface IQueryGoldTypeService {
-  Page<GoldTypeResponse> getAllGoldTypes(int page, int size);
+  Page<AbstractResponseDTO> getAllGoldTypes(int page, int size);
 
   GoldType getGoldType(long id);
 }

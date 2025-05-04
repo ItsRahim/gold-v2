@@ -1,20 +1,17 @@
 package com.rahim.pricingservice.dto.response;
 
+import com.rahim.common.response.AbstractResponseDTO;
 import com.rahim.pricingservice.enums.WeightUnit;
 import lombok.*;
 
 import java.math.BigDecimal;
 
-/**
- * @created 03/05/2025
- * @author Rahim Ahmed
- */
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class GoldTypeResponse {
+public class GoldTypeResponseDTO extends AbstractResponseDTO {
   private Integer id;
   private String name;
   private String carat;
