@@ -134,7 +134,6 @@ public class GoldTypeControllerTest extends BaseControllerTest {
     mockMvc
         .perform(get(Endpoints.GOLD_TYPE_ENDPOINT))
         .andExpect(status().isOk())
-        .andDo(print())
         .andExpect(jsonPath("$.content", hasSize(2)))
         .andExpect(jsonPath("$.totalElements").value(2))
         .andExpect(jsonPath("$.content[0].name").value("1 Carat"))
