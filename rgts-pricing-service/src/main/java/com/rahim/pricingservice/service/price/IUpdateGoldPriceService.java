@@ -7,5 +7,5 @@ import com.rahim.pricingservice.dto.payload.GoldPriceUpdateDTO;
  * @author Rahim Ahmed
  */
 public interface IUpdateGoldPriceService {
-    void updateGoldPrice(GoldPriceUpdateDTO goldPriceUpdateDTO);
+    void updateBasePrice(GoldPriceUpdateDTO goldPriceUpdateDTO);
 }

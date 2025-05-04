@@ -29,8 +29,8 @@ public class GoldType {
 
   @NotNull
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "carat_id", nullable = false)
-  private GoldPurity carat;
+  @JoinColumn(name = "purity_id", nullable = false)
+  private GoldPurity purity;
 
   @Column(name = "weight", precision = 10, scale = 2)
   private BigDecimal weight;

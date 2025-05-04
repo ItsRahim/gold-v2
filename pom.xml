@@ -30,7 +30,6 @@
         <postgres.version>42.7.5</postgres.version>
         <flyway.version>11.4.1</flyway.version>
         <h2.version>2.3.232</h2.version>
-        <indriya.version>2.2.3</indriya.version>
         <mockito.version>5.15.2</mockito.version>
         <junit.version>5.11.4</junit.version>
         <java-fixture.version>2.12.0</java-fixture.version>
@@ -243,11 +242,6 @@
                 <groupId>javax.annotation</groupId>
                 <artifactId>javax.annotation-api</artifactId>
                 <version>${javax-annotation.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>tech.units</groupId>
-                <artifactId>indriya</artifactId>
-                <version>${indriya.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.postgresql</groupId>

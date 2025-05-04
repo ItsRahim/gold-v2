@@ -84,7 +84,7 @@ public class AddGoldTypeService implements IAddGoldTypeService {
     GoldType goldType =
         GoldType.builder()
             .name(name)
-            .carat(goldPurity)
+            .purity(goldPurity)
             .weight(weight)
             .unit(unit)
             .price(BigDecimal.ZERO)

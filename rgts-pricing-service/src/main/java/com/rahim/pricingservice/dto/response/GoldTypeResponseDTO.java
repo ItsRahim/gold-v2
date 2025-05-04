@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 public class GoldTypeResponseDTO extends AbstractResponseDTO {
   private Integer id;
   private String name;
-  private String carat;
+  private String purity;
   private BigDecimal weight;
   private WeightUnit unit;
   private String description;

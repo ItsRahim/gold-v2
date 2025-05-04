@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * @created 03/05/2025
  * @author Rahim Ahmed
@@ -24,5 +26,10 @@ public class GoldPurityQueryService implements IGoldPurityQueryService {
         .getGoldPuritiesByLabel(label)
         .orElseThrow(
             () -> new EntityNotFoundException("Gold purity not found for label: " + label));
+  }
+
+  @Override
+  public List<GoldPurity> getAllGoldPurities() {
+    return goldPurityRepository.findAll();
   }
 }
