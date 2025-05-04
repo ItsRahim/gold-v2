@@ -2,6 +2,8 @@ package com.rahim.pricingservice.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
 
@@ -15,7 +17,7 @@ import org.hibernate.annotations.ColumnDefault;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "gold_prices", schema = "rgts")
-public class GoldPrice {
+public class GoldPrice implements Serializable {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "price_id", nullable = false)

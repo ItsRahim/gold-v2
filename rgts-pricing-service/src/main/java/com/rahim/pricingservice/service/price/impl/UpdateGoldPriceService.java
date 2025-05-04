@@ -1,5 +1,6 @@
 package com.rahim.pricingservice.service.price.impl;
 
+import com.rahim.cachemanager.service.RedisService;
 import com.rahim.common.exception.InitialisationException;
 import com.rahim.common.util.DateUtil;
 import com.rahim.pricingservice.dto.payload.GoldPriceUpdateDTO;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.data.redis.serializer.SerializationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +32,7 @@ import java.util.List;
 @Transactional(rollbackFor = Exception.class)
 public class UpdateGoldPriceService implements IUpdateGoldPriceService {
 
+  private final RedisService redisService;
   private final GoldPriceRepository goldPriceRepository;
   private final IGoldPurityQueryService goldPurityQueryService;
   private final GoldPriceCalculationService goldPriceCalculationService;
@@ -71,20 +74,25 @@ public class UpdateGoldPriceService implements IUpdateGoldPriceService {
       }
       log.info("Gold price update successful for {} entries", goldPurityList.size());
     } catch (Exception e) {
-      log.error("Error occurred while updating gold prices", e);
+      log.error("Error occurred while updating gold prices: {}", e.getMessage(), e);
     }
   }
 
   private void createGoldPrice(GoldPurity goldPurity, BigDecimal pricePerGram) {
-    GoldPrice newGoldPrice =
+    GoldPrice goldPrice =
         GoldPrice.builder()
             .purity(goldPurity)
             .price(pricePerGram)
             .updatedAt(DateUtil.generateInstant())
             .build();
 
-    goldPriceRepository.save(newGoldPrice);
+    goldPriceRepository.save(goldPrice);
     log.debug("New gold price created for purity: {}", goldPurity.getLabel());
+    try {
+      redisService.setValue(goldPurity.getLabel(), goldPrice);
+    } catch (SerializationException e) {
+      log.error("Failed to add new gold price to redis: {}", e.getMessage(), e);
+    }
   }
 
   private void updateExistingGoldPrice(GoldPrice goldPrice, BigDecimal updatedPrice) {
@@ -92,5 +100,10 @@ public class UpdateGoldPriceService implements IUpdateGoldPriceService {
     goldPrice.setUpdatedAt(DateUtil.generateInstant());
 
     goldPriceRepository.save(goldPrice);
+    try {
+      redisService.setValue(goldPrice.getPurity().getLabel(), goldPrice);
+    } catch (SerializationException e) {
+      log.error("Failed to add new gold price to redis: {}", e.getMessage(), e);
+    }
   }
 }

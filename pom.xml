@@ -52,6 +52,7 @@
         <module>rgts-notification-service</module>
         <module>rgts-email-service</module>
         <module>rgts-scheduler-service</module>
+        <module>rgts-cache-manager</module>
     </modules>
 
     <dependencyManagement>
@@ -65,6 +66,11 @@
             <dependency>
                 <groupId>com.rahim</groupId>
                 <artifactId>rgts-common</artifactId>
+                <version>${rgts.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.rahim</groupId>
+                <artifactId>rgts-cache-manager</artifactId>
                 <version>${rgts.version}</version>
             </dependency>
             <dependency>
