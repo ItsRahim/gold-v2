@@ -1,13 +1,15 @@
 package com.rahim.pricingservice.service.type.impl;
 
 import com.rahim.common.exception.BadRequestException;
+import com.rahim.common.exception.DuplicateEntityException;
+import com.rahim.common.exception.ServiceException;
 import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
 import com.rahim.pricingservice.entity.GoldPurity;
 import com.rahim.pricingservice.entity.GoldType;
 import com.rahim.pricingservice.enums.WeightUnit;
-import com.rahim.pricingservice.exception.DuplicateGoldTypeException;
-import com.rahim.pricingservice.exception.InvalidCaratException;
+import com.rahim.pricingservice.exception.GoldPriceCalculationException;
 import com.rahim.pricingservice.repository.GoldTypeRepository;
+import com.rahim.pricingservice.service.price.IUpdateGoldPriceService;
 import com.rahim.pricingservice.service.purity.IGoldPurityQueryService;
 import com.rahim.pricingservice.service.type.IAddGoldTypeService;
 
@@ -29,8 +31,9 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(rollbackFor = Exception.class)
 public class AddGoldTypeService implements IAddGoldTypeService {
-  private final GoldTypeRepository goldTypeRepository;
   private final IGoldPurityQueryService goldPurityQueryService;
+  private final IUpdateGoldPriceService updateGoldPriceService;
+  private final GoldTypeRepository goldTypeRepository;
 
   private static final String CARAT_REGEX = "^([1-9]|1[0-9]|2[0-4])[Kk]?$";
   private static final Pattern pattern = Pattern.compile(CARAT_REGEX);
@@ -38,72 +41,77 @@ public class AddGoldTypeService implements IAddGoldTypeService {
   @Override
   public void addGoldType(AddGoldTypeRequest request) {
     if (request == null) {
-      log.error("AddGoldTypeRequest request body is null");
-      throw new BadRequestException("Request body is null");
+      log.error("Received null AddGoldTypeRequest");
+      throw new BadRequestException("Request body cannot be null");
     }
 
-    String name = request.getName();
-    if (name == null || name.isEmpty()) {
-      log.error("Gold type name is null or empty");
-      throw new BadRequestException("Gold type name is null or empty");
+    validateAddGoldTypeRequest(request);
+
+    try {
+      GoldPurity purity = goldPurityQueryService.getGoldPurityByCaratLabel(request.getCaratLabel());
+      WeightUnit unit = WeightUnit.fromValue(request.getUnit());
+
+      BigDecimal price =
+          updateGoldPriceService.calculateGoldPrice(purity, request.getWeight(), unit);
+
+      GoldType goldType =
+          GoldType.builder()
+              .name(request.getName())
+              .purity(purity)
+              .weight(request.getWeight())
+              .unit(unit)
+              .price(price)
+              .description(request.getDescription())
+              .build();
+
+      goldTypeRepository.save(goldType);
+
+      log.info(
+          "Added new gold type: '{}', Carat: '{}', Price: {}",
+          request.getName(),
+          purity.getLabel(),
+          price);
+    } catch (GoldPriceCalculationException e) {
+      log.error("Failed to add gold type '{}': {}", request.getName(), e.getMessage(), e);
+      throw new BadRequestException("Could not add gold type: " + e.getMessage());
+    } catch (Exception e) {
+      log.error(
+          "Unexpected error while adding gold type '{}': {}", request.getName(), e.getMessage(), e);
+      throw new ServiceException("Unexpected error occurred while adding gold type");
+    }
+  }
+
+  private void validateAddGoldTypeRequest(AddGoldTypeRequest request) {
+    if (request.getName() == null || request.getName().isEmpty()) {
+      throw new BadRequestException("Gold type name is required");
     }
 
-    if (goldTypeRepository.existsGoldTypeByNameIgnoreCase(name)) {
-      log.error("Gold type with name {}}' already exists", name);
-      throw new DuplicateGoldTypeException("Gold type with name '" + name + "' already exists");
+    if (goldTypeRepository.existsGoldTypeByNameIgnoreCase(request.getName())) {
+      throw new DuplicateEntityException("Gold type already exists: " + request.getName());
     }
 
-    String caratLabel = request.getCaratLabel();
-    if (!isValidGoldCarat(caratLabel)) {
-      log.error("Invalid gold carat provided: '{}'.", caratLabel);
-      throw new InvalidCaratException("Gold carat '" + caratLabel + "' is invalid");
+    if (!isValidGoldCarat(request.getCaratLabel())) {
+      throw new BadRequestException("Invalid carat label: " + request.getCaratLabel());
     }
 
-    GoldPurity goldPurity = goldPurityQueryService.getGoldPurityByCaratLabel(caratLabel);
-
-    BigDecimal weight = request.getWeight();
-    if (weight == null || weight.compareTo(BigDecimal.ZERO) <= 0) {
-      log.error("Invalid weight provided: '{}'. Weight must be non-negative.", weight);
-      throw new BadRequestException("Gold weight must be non-negative and greater than 0");
+    if (request.getWeight() == null || request.getWeight().compareTo(BigDecimal.ZERO) <= 0) {
+      throw new BadRequestException("Gold weight must be positive");
     }
 
-    String unitValue = request.getUnit();
-    if (unitValue == null || unitValue.isEmpty()) {
-      log.error("Weight unit is null or empty");
+    if (request.getUnit() == null || request.getUnit().isEmpty()) {
       throw new BadRequestException("Weight unit is required");
     }
 
-    WeightUnit unit = WeightUnit.fromValue(unitValue);
-
-    String description = request.getDescription();
-    if (description == null || description.isEmpty()) {
-      log.error("Empty or null description provided.");
-      throw new BadRequestException("Gold description is required");
+    if (request.getDescription() == null || request.getDescription().isEmpty()) {
+      throw new BadRequestException("Description is required");
     }
-
-    GoldType goldType =
-        GoldType.builder()
-            .name(name)
-            .purity(goldPurity)
-            .weight(weight)
-            .unit(unit)
-            .price(BigDecimal.ZERO)
-            .description(description)
-            .build();
-
-    log.info(
-        "Successfully added gold type: Name='{}', Carat='{}', Weight='{}', Unit='{}'",
-        name,
-        caratLabel,
-        weight,
-        unit.getValue());
-    goldTypeRepository.save(goldType);
   }
 
   private boolean isValidGoldCarat(String input) {
     if (input == null) {
       return false;
     }
+
     Matcher matcher = pattern.matcher(input);
     return matcher.matches();
   }

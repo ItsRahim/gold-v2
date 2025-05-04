@@ -6,6 +6,8 @@ import com.rahim.common.util.DateUtil;
 import com.rahim.pricingservice.dto.payload.GoldPriceUpdateDTO;
 import com.rahim.pricingservice.entity.GoldPrice;
 import com.rahim.pricingservice.entity.GoldPurity;
+import com.rahim.pricingservice.enums.WeightUnit;
+import com.rahim.pricingservice.exception.GoldPriceCalculationException;
 import com.rahim.pricingservice.repository.GoldPriceRepository;
 import com.rahim.pricingservice.service.price.GoldPriceCalculationService;
 import com.rahim.pricingservice.service.price.IUpdateGoldPriceService;
@@ -56,26 +58,61 @@ public class UpdateGoldPriceService implements IUpdateGoldPriceService {
 
   @Override
   public void updateBasePrice(GoldPriceUpdateDTO goldPriceUpdateDTO) {
+    if (goldPriceUpdateDTO == null || goldPriceUpdateDTO.getPrice() == null) {
+      log.warn("Invalid update request: DTO or price is null");
+      return;
+    }
+
     BigDecimal pricePerTroyOunce = goldPriceUpdateDTO.getPrice();
     log.info("Received gold price update: {} per troy ounce", pricePerTroyOunce);
 
-    try {
-      for (GoldPurity goldPurity : goldPurityList) {
-        GoldPrice goldPrice = goldPriceRepository.getGoldPriceByPurity(goldPurity);
-
+    for (GoldPurity purity : goldPurityList) {
+      try {
         BigDecimal pricePerGram =
-            goldPriceCalculationService.calculatePricePerGramForPurity(
-                pricePerTroyOunce, goldPurity);
-        if (goldPrice == null) {
-          createGoldPrice(goldPurity, pricePerGram);
+            goldPriceCalculationService.calculatePricePerGramForPurity(pricePerTroyOunce, purity);
+        GoldPrice existing = goldPriceRepository.getGoldPriceByPurity(purity);
+        if (existing == null) {
+          createGoldPrice(purity, pricePerGram);
         } else {
-          updateExistingGoldPrice(goldPrice, pricePerGram);
+          updateExistingGoldPrice(existing, pricePerGram);
         }
+        log.debug("Updated price for carat {}: {}", purity.getLabel(), pricePerGram);
+      } catch (Exception e) {
+        log.error("Failed to update price for purity {}: {}", purity.getLabel(), e.getMessage(), e);
       }
-      log.info("Gold price update successful for {} entries", goldPurityList.size());
-    } catch (Exception e) {
-      log.error("Error occurred while updating gold prices: {}", e.getMessage(), e);
     }
+
+    log.info("Gold price update completed for {} entries", goldPurityList.size());
+  }
+
+  @Override
+  public BigDecimal calculateGoldPrice(
+      GoldPurity goldPurity, BigDecimal weight, WeightUnit weightUnit) {
+    if (goldPurity == null) {
+      log.error("Gold purity is null");
+      throw new GoldPriceCalculationException("Gold purity must be provided");
+    }
+
+    if (weight == null || weight.compareTo(BigDecimal.ZERO) <= 0) {
+      log.error("Invalid weight: {}", weight);
+      throw new GoldPriceCalculationException("Weight must be greater than zero");
+    }
+
+    if (weightUnit == null) {
+      log.error("Weight unit is null");
+      throw new GoldPriceCalculationException("Weight unit must be specified");
+    }
+
+    String carat = goldPurity.getLabel();
+    Object priceObject = redisService.getValue(carat);
+
+    if (!(priceObject instanceof BigDecimal pricePerGram)) {
+      log.error("No valid price found in Redis for carat: '{}'", carat);
+      throw new GoldPriceCalculationException("Gold price not available for carat: " + carat);
+    }
+
+    log.debug("Retrieved pricePerGram={} for carat={}", pricePerGram, carat);
+    return goldPriceCalculationService.calculatePrice(pricePerGram, weight, weightUnit);
   }
 
   private void createGoldPrice(GoldPurity goldPurity, BigDecimal pricePerGram) {
