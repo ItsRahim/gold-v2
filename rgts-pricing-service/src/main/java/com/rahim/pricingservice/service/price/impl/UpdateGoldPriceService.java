@@ -75,7 +75,7 @@ public class UpdateGoldPriceService implements IUpdateGoldPriceService {
         GoldPrice existing = goldPriceRepository.getGoldPriceByPurity(purity);
 
         if (existing == null) {
-          createGoldPrice(purity, pricePerGram);
+          createGoldPrice(purity, pricePerTroyOunce, pricePerGram);
         } else if (existing.getPurity().getLabel().equalsIgnoreCase("XAUGBP")) {
           updateExistingGoldPrice(existing, pricePerGram);
         } else {
@@ -110,29 +110,30 @@ public class UpdateGoldPriceService implements IUpdateGoldPriceService {
     if (goldPurity == null) {
       throw new GoldPriceCalculationException("Gold purity must be provided");
     }
+
     if (weight == null || weight.compareTo(BigDecimal.ZERO) <= 0) {
       throw new GoldPriceCalculationException("Weight must be greater than zero");
     }
+
     if (weightUnit == null) {
       throw new GoldPriceCalculationException("Weight unit must be specified");
     }
   }
 
-  private void createGoldPrice(GoldPurity goldPurity, BigDecimal pricePerGram) {
+  private void createGoldPrice(
+      GoldPurity goldPurity, BigDecimal pricePerTroyOunce, BigDecimal pricePerGram) {
+    BigDecimal price =
+        goldPurity.getLabel().equalsIgnoreCase("XAUGBP") ? pricePerTroyOunce : pricePerGram;
     GoldPrice goldPrice =
         GoldPrice.builder()
             .purity(goldPurity)
-            .price(pricePerGram)
+            .price(price)
             .updatedAt(DateUtil.generateInstant())
             .build();
 
     goldPriceRepository.save(goldPrice);
     log.debug("New gold price created for purity: {}", goldPurity.getLabel());
-    try {
-      redisService.setValue(goldPurity.getLabel(), goldPrice);
-    } catch (SerializationException e) {
-      log.error("Failed to add new gold price to redis: {}", e.getMessage(), e);
-    }
+    savePriceToRedis(goldPrice);
   }
 
   private void updateExistingGoldPrice(GoldPrice goldPrice, BigDecimal updatedPrice) {
@@ -140,6 +141,10 @@ public class UpdateGoldPriceService implements IUpdateGoldPriceService {
     goldPrice.setUpdatedAt(DateUtil.generateInstant());
 
     goldPriceRepository.save(goldPrice);
+    savePriceToRedis(goldPrice);
+  }
+
+  private void savePriceToRedis(GoldPrice goldPrice) {
     try {
       redisService.setValue(goldPrice.getPurity().getLabel(), goldPrice);
     } catch (SerializationException e) {

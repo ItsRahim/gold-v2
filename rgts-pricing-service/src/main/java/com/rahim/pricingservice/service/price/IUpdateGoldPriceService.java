@@ -11,6 +11,7 @@ import java.math.BigDecimal;
  * @author Rahim Ahmed
  */
 public interface IUpdateGoldPriceService {
-    void updateBasePrice(GoldPriceUpdateDTO goldPriceUpdateDTO);
-    BigDecimal calculateGoldPrice(GoldPurity goldPurity, BigDecimal weight, WeightUnit weightUnit);
+  void updateBasePrice(GoldPriceUpdateDTO goldPriceUpdateDTO);
+
+  BigDecimal calculateGoldPrice(GoldPurity goldPurity, BigDecimal weight, WeightUnit weightUnit);
 }

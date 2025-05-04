@@ -72,7 +72,7 @@ public class AddGoldTypeService implements IAddGoldTypeService {
           purity.getLabel(),
           price);
     } catch (GoldPriceCalculationException e) {
-      log.error("Failed to add gold type '{}': {}", request.getName(), e.getMessage(), e);
+      log.error("Failed to calculate gold price for new gold type '{}': {}", request.getName(), e.getMessage(), e);
       throw new BadRequestException("Could not add gold type: " + e.getMessage());
     } catch (Exception e) {
       log.error(
