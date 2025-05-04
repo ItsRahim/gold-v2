@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
+
 import lombok.*;
 
 @Getter
@@ -26,10 +27,10 @@ public class GoldType {
   @Column(name = "name", nullable = false)
   private String name;
 
-  @Size(max = 3)
   @NotNull
-  @Column(name = "carat", nullable = false, length = 3)
-  private String carat;
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "carat_id", nullable = false)
+  private GoldPurity carat;
 
   @Column(name = "weight", precision = 10, scale = 2)
   private BigDecimal weight;
@@ -43,11 +44,7 @@ public class GoldType {
   @Column(name = "description", nullable = false, length = Integer.MAX_VALUE)
   private String description;
 
-  public GoldType(String name, String carat, BigDecimal weight, WeightUnit unit, String description) {
-    this.name = name;
-    this.carat = carat;
-    this.weight = weight;
-    this.unit = unit;
-    this.description = description;
-  }
+  @NotNull
+  @Column(name = "price", nullable = false, precision = 10, scale = 2)
+  private BigDecimal price;
 }

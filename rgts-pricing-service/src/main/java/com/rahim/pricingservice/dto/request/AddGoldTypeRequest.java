@@ -2,10 +2,8 @@ package com.rahim.pricingservice.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
+
 import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,7 +26,7 @@ import lombok.Setter;
                 {
                     "name": "Sovereign - Victoria, Old Veiled Head",
                     "weight": 7.98,
-                    "carat": "22K",
+                    "caratLabel": "22K",
                     "unit": "g",
                     "description": "Gold Sovereign"
                 }
@@ -50,8 +48,8 @@ public class AddGoldTypeRequest {
       example = "24K",
       requiredMode = Schema.RequiredMode.REQUIRED)
   @NotBlank(message = "Gold purity cannot be blank")
-  @JsonProperty("carat")
-  private String carat;
+  @JsonProperty("caratLabel")
+  private String caratLabel;
 
   @Schema(
       description = "Weight of the gold type",
