@@ -59,8 +59,7 @@ class AddGoldTypeServiceTest extends BaseUnitTest {
     mockPurity.setDenominator(24);
 
     when(goldPurityQueryService.getGoldPurityByCaratLabel("22K")).thenReturn(mockPurity);
-    when(updateGoldPriceService.calculateGoldPrice(
-            eq(mockPurity), eq(BigDecimal.TEN), eq(WeightUnit.GRAM)))
+    when(updateGoldPriceService.calculateGoldPrice(mockPurity, BigDecimal.TEN, WeightUnit.GRAM))
         .thenReturn(new BigDecimal("500.00"));
 
     addGoldTypeService.addGoldType(request);

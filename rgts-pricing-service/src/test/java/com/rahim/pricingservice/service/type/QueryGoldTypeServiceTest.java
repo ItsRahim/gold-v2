@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -135,8 +134,7 @@ class QueryGoldTypeServiceTest extends BaseUnitTest {
 
     List<GoldType> result = queryGoldTypeService.getAllGoldTypes();
 
-    assertThat(result).isNotNull();
-    assertThat(result).hasSize(2);
+    assertThat(result).isNotNull().hasSize(2);
     assertThat(result.get(0).getName()).isEqualTo("Gold Ring");
     assertThat(result.get(1).getName()).isEqualTo("Gold Necklace");
 
@@ -149,8 +147,7 @@ class QueryGoldTypeServiceTest extends BaseUnitTest {
 
     List<GoldType> result = queryGoldTypeService.getAllGoldTypes();
 
-    assertThat(result).isNotNull();
-    assertThat(result).isEmpty();
+    assertThat(result).isNotNull().isNotEmpty();
 
     verify(goldTypeRepository).findAll();
   }
