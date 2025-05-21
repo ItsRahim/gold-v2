@@ -1,1 +1,1 @@
-DELETE FROM price_sources WHERE id = :id
+DELETE FROM rgts.price_sources WHERE id = :id

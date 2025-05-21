@@ -1,1 +1,1 @@
-SELECT 1 FROM price_sources WHERE name = :name
+SELECT 1 FROM rgts.price_sources WHERE name = :name

@@ -1,1 +1,1 @@
-SELECT name, url, element FROM price_sources WHERE is_active = TRUE
+SELECT name, url, element FROM rgts.price_sources WHERE is_active = TRUE

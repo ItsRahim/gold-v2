@@ -1,1 +1,1 @@
-SELECT name, url, element FROM price_sources WHERE endpoint =:endpoint
+SELECT name, url, element FROM rgts.price_sources WHERE endpoint =:endpoint
