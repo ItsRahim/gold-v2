@@ -15,13 +15,12 @@ import com.rahim.pricingservice.entity.GoldType;
 import com.rahim.pricingservice.enums.WeightUnit;
 import com.rahim.pricingservice.exception.GoldTypeNotFoundException;
 import com.rahim.pricingservice.repository.GoldTypeRepository;
+import com.rahim.pricingservice.service.type.impl.QueryGoldTypeService;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
-import com.rahim.pricingservice.service.type.impl.QueryGoldTypeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

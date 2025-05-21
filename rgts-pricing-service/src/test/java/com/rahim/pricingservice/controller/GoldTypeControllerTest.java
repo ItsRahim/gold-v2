@@ -17,7 +17,6 @@ import com.rahim.pricingservice.enums.WeightUnit;
 import com.rahim.pricingservice.service.type.IAddGoldTypeService;
 import java.math.BigDecimal;
 import java.time.Instant;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -51,7 +50,8 @@ public class GoldTypeControllerTest extends BaseControllerTest {
             .setControllerAdvice(new ApiExceptionHandler())
             .build();
     GoldPurity goldPurity = new GoldPurity(1, "22K", 22, 24, false);
-    when(redisService.getValue(anyString())).thenReturn(new GoldPrice(1,goldPurity, BigDecimal.valueOf(100), Instant.now()));
+    when(redisService.getValue(anyString()))
+        .thenReturn(new GoldPrice(1, goldPurity, BigDecimal.valueOf(100), Instant.now()));
   }
 
   @Test
