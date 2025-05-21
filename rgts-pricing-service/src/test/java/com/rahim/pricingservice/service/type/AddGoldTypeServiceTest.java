@@ -3,16 +3,22 @@ package com.rahim.pricingservice.service.type;
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 import static org.mockito.Mockito.*;
 
+import com.rahim.cachemanager.service.RedisService;
 import com.rahim.common.exception.BadRequestException;
 import com.rahim.common.exception.DuplicateEntityException;
 import com.rahim.pricingservice.BaseUnitTest;
 import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
+import com.rahim.pricingservice.entity.GoldPrice;
 import com.rahim.pricingservice.entity.GoldPurity;
 import com.rahim.pricingservice.enums.WeightUnit;
 import com.rahim.pricingservice.repository.GoldTypeRepository;
 import com.rahim.pricingservice.service.price.IUpdateGoldPriceService;
 import com.rahim.pricingservice.service.purity.IGoldPurityQueryService;
 import java.math.BigDecimal;
+import java.time.Instant;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -32,6 +38,15 @@ public class AddGoldTypeServiceTest extends BaseUnitTest {
   @Mock private IGoldPurityQueryService goldPurityQueryService;
 
   @Mock private IUpdateGoldPriceService updateGoldPriceService;
+
+  @Mock RedisService redisService;
+
+  @BeforeEach
+  void setUp() {
+    GoldPurity goldPurity = new GoldPurity(1, "22K", 22, 24, false);
+    when(redisService.getValue(anyString()))
+        .thenReturn(new GoldPrice(1, goldPurity, BigDecimal.valueOf(100), Instant.now()));
+  }
 
   @Test
   public void shouldAddGoldType() {
