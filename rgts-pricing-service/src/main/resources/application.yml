@@ -32,6 +32,9 @@ spring:
     clean-disabled: false
     baseline-on-migrate: true
     table: ${spring.application.name}_history
+  redis:
+    host: localhost
+    port: 6379
 
 kafka:
   security-protocol: PLAINTEXT

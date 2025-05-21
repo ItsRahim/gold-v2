@@ -4,6 +4,7 @@ import com.rahim.common.exception.EntityNotFoundException;
 import com.rahim.pricingservice.entity.GoldPurity;
 import com.rahim.pricingservice.repository.GoldPurityRepository;
 import com.rahim.pricingservice.service.purity.IGoldPurityQueryService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,5 +25,10 @@ public class GoldPurityQueryService implements IGoldPurityQueryService {
         .getGoldPuritiesByLabel(label)
         .orElseThrow(
             () -> new EntityNotFoundException("Gold purity not found for label: " + label));
+  }
+
+  @Override
+  public List<GoldPurity> getAllGoldPurities() {
+    return goldPurityRepository.findAll();
   }
 }

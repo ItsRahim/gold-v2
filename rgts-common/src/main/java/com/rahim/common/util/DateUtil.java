@@ -14,4 +14,8 @@ public class DateUtil {
   public static String formatInstant(Instant instant) {
     return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(UTC_ZONE_ID).format(instant);
   }
+
+  public static Instant generateInstant() {
+    return Instant.now().atZone(UTC_ZONE_ID).toInstant();
+  }
 }

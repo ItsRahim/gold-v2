@@ -2,7 +2,6 @@ package com.rahim.pricingservice.controller;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.rahim.common.handler.ApiExceptionHandler;
@@ -11,7 +10,6 @@ import com.rahim.pricingservice.constant.Endpoints;
 import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
 import com.rahim.pricingservice.enums.WeightUnit;
 import com.rahim.pricingservice.service.type.IAddGoldTypeService;
-
 import java.math.BigDecimal;
 
 import org.junit.jupiter.api.BeforeEach;

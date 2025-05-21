@@ -1,0 +1,2 @@
+Cleanup on the exceptions being thrown, when they're being caught and the logs
+Refactor the code and organise it better

@@ -1,8 +1,10 @@
 package com.rahim.pricingservice.service;
 
 import com.rahim.pricingservice.dto.payload.GoldPriceUpdateDTO;
+import com.rahim.pricingservice.service.price.IUpdateGoldPriceService;
 import com.rahim.proto.protobuf.GoldPriceInfo;
 import com.rahim.proto.util.ProtobufDerSerUtil;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
@@ -10,7 +12,10 @@ import org.springframework.stereotype.Service;
 /** Kafka consumer service for processing gold price updates. */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class KafkaConsumerService {
+  private final IUpdateGoldPriceService updateGoldPriceService;
+
   @KafkaListener(topics = "gold.price.update", groupId = "gold-price-group")
   public void listen(byte[] data) {
     try {
@@ -26,7 +31,7 @@ public class KafkaConsumerService {
         return;
       }
 
-      log.info("Gold price update processed: {}", goldPriceUpdateDTO);
+      updateGoldPriceService.updateBasePrice(goldPriceUpdateDTO);
     } catch (Exception e) {
       log.error("Failed to process Kafka message", e);
     }

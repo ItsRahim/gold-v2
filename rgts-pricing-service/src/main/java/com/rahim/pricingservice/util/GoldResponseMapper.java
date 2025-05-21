@@ -29,7 +29,7 @@ public class GoldResponseMapper {
     return GoldTypeResponseDTO.builder()
         .id(goldType.getId())
         .name(goldType.getName())
-        .carat(goldType.getCarat().getLabel())
+        .purity(goldType.getPurity().getLabel())
         .weight(goldType.getWeight())
         .unit(goldType.getUnit())
         .description(goldType.getDescription())

@@ -6,6 +6,7 @@ import com.rahim.pricingservice.exception.GoldTypeNotFoundException;
 import com.rahim.pricingservice.repository.GoldTypeRepository;
 import com.rahim.pricingservice.service.type.IQueryGoldTypeService;
 import com.rahim.pricingservice.util.GoldResponseMapper;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -36,5 +37,15 @@ public class QueryGoldTypeService implements IQueryGoldTypeService {
         .findById(id)
         .orElseThrow(
             () -> new GoldTypeNotFoundException("Gold Type with ID: " + id + " not found"));
+  }
+
+  @Override
+  public List<GoldType> getAllGoldTypes() {
+    return goldTypeRepository.findAll();
+  }
+
+  @Override
+  public void saveGoldType(GoldType goldType) {
+    goldTypeRepository.save(goldType);
   }
 }

@@ -1,6 +1,7 @@
 package com.rahim.pricingservice.repository;
 
 import com.rahim.pricingservice.entity.GoldPrice;
+import com.rahim.pricingservice.entity.GoldPurity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -9,4 +10,6 @@ import org.springframework.stereotype.Repository;
  * @author Rahim Ahmed
  */
 @Repository
-public interface GoldPriceRepository extends JpaRepository<GoldPrice, Long> {}
+public interface GoldPriceRepository extends JpaRepository<GoldPrice, Long> {
+  GoldPrice getGoldPriceByPurity(GoldPurity goldPurity);
+}

@@ -45,6 +45,7 @@ def run_migrations_offline() -> None:
         url=url,
         target_metadata=target_metadata,
         literal_binds=True,
+        version_table_schema="public",
         dialect_opts={"paramstyle": "named"},
     )
 
