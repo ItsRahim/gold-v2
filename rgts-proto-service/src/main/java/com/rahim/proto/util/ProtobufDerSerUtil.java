@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class ProtobufDerSerUtil {
+  private ProtobufDerSerUtil() {}
 
   public static <T extends Message> T deserialiseByteToProtobuf(byte[] data, T defaultInstance) {
     if (data == null) {

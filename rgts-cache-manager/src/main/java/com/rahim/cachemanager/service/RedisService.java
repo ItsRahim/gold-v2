@@ -55,7 +55,7 @@ public class RedisService {
   }
 
   public boolean hasKey(String key) {
-    return redisTemplate.hasKey(key);
+    return redisTemplate != null && redisTemplate.hasKey(key);
   }
 
   public void expire(String key, long timeoutInSeconds) {

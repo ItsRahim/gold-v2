@@ -21,7 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
-public class GoldTypeControllerTest extends BaseControllerTest {
+class GoldTypeControllerTest extends BaseControllerTest {
 
   private MockMvc mockMvc;
 
@@ -30,7 +30,7 @@ public class GoldTypeControllerTest extends BaseControllerTest {
   @Autowired private GoldTypeController goldTypeController;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     MockitoAnnotations.openMocks(this);
 
     LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
@@ -44,7 +44,7 @@ public class GoldTypeControllerTest extends BaseControllerTest {
   }
 
   @Test
-  public void shouldReturn200WithSuccessResponseWhenGoldTypeAddedSuccessfully() throws Exception {
+  void shouldReturn200WithSuccessResponseWhenGoldTypeAddedSuccessfully() throws Exception {
     AddGoldTypeRequest request =
         new AddGoldTypeRequest("Necklace", "22K", BigDecimal.TEN, "g", "Test gold");
 
@@ -57,7 +57,7 @@ public class GoldTypeControllerTest extends BaseControllerTest {
   }
 
   @Test
-  public void shouldReturn400WhenGoldTypeRequestNameIsInvalid() throws Exception {
+  void shouldReturn400WhenGoldTypeRequestNameIsInvalid() throws Exception {
     AddGoldTypeRequest request = new AddGoldTypeRequest(null, "22K", BigDecimal.TEN, "g", "Valid");
 
     mockMvc
@@ -69,7 +69,7 @@ public class GoldTypeControllerTest extends BaseControllerTest {
   }
 
   @Test
-  public void shouldReturn400WhenGoldTypeCaratLabelIsInvalid() throws Exception {
+  void shouldReturn400WhenGoldTypeCaratLabelIsInvalid() throws Exception {
     AddGoldTypeRequest request =
         new AddGoldTypeRequest("Invalid Carat", "30K", BigDecimal.TEN, "g", "Valid");
 
@@ -82,7 +82,7 @@ public class GoldTypeControllerTest extends BaseControllerTest {
   }
 
   @Test
-  public void shouldReturn400WhenGoldTypeWeightIsInvalid() throws Exception {
+  void shouldReturn400WhenGoldTypeWeightIsInvalid() throws Exception {
     AddGoldTypeRequest request =
         new AddGoldTypeRequest("Invalid Weight", "30K", BigDecimal.valueOf(-10), "g", "Valid");
 
@@ -95,7 +95,7 @@ public class GoldTypeControllerTest extends BaseControllerTest {
   }
 
   @Test
-  public void shouldReturn400WhenGoldTypeUnitIsInvalid() throws Exception {
+  void shouldReturn400WhenGoldTypeUnitIsInvalid() throws Exception {
     AddGoldTypeRequest request =
         new AddGoldTypeRequest("Invalid Unit", "30K", BigDecimal.TEN, "L", "Valid");
 
@@ -108,7 +108,7 @@ public class GoldTypeControllerTest extends BaseControllerTest {
   }
 
   @Test
-  public void shouldReturn400WhenGoldTypeDescriptionIsNull() throws Exception {
+  void shouldReturn400WhenGoldTypeDescriptionIsNull() throws Exception {
     AddGoldTypeRequest request =
         new AddGoldTypeRequest("Invalid Description", "30K", BigDecimal.TEN, "L", null);
 
@@ -121,7 +121,7 @@ public class GoldTypeControllerTest extends BaseControllerTest {
   }
 
   @Test
-  public void shouldReturn200AndInitialPageOfGoldTypes() throws Exception {
+  void shouldReturn200AndInitialPageOfGoldTypes() throws Exception {
     addGoldTypeService.addGoldType(
         new AddGoldTypeRequest(
             "1 Carat", "22K", BigDecimal.ONE, WeightUnit.GRAM.getValue(), "Desc"));

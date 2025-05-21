@@ -28,12 +28,12 @@ public class GoldPriceCalculationTest extends BaseUnitTest {
   @DisplayName("Calculate Price Per Gram For Purity Tests")
   class CalculatePricePerGramForPurityTests {
 
-    @Test
-    void shouldCalculatePricePerGramFor24K() {
-      BigDecimal pricePerTroyOunce = BigDecimal.valueOf(2000);
+    @ParameterizedTest
+    @MethodSource("providePurityAndExpectedPrice")
+    void shouldCalculatePricePerGram(int numerator, int denominator, BigDecimal pricePerTroyOunce) {
       GoldPurity purity = new GoldPurity();
-      purity.setNumerator(24);
-      purity.setDenominator(24);
+      purity.setNumerator(numerator);
+      purity.setDenominator(denominator);
 
       BigDecimal result =
           goldPriceCalculationService.calculatePricePerGramForPurity(pricePerTroyOunce, purity);
@@ -41,45 +41,19 @@ public class GoldPriceCalculationTest extends BaseUnitTest {
       BigDecimal expected =
           pricePerTroyOunce
               .divide(TROY_OUNCE_TO_GRAMS, 10, RoundingMode.HALF_UP)
-              .multiply(BigDecimal.valueOf(24.0 / 24))
+              .multiply(BigDecimal.valueOf((double) numerator / denominator))
               .setScale(2, RoundingMode.HALF_UP);
+
       assertEquals(expected, result);
     }
 
-    @Test
-    void shouldCalculatePricePerGramFor22K() {
+    private static Stream<Arguments> providePurityAndExpectedPrice() {
       BigDecimal pricePerTroyOunce = BigDecimal.valueOf(2000);
-      GoldPurity purity = new GoldPurity();
-      purity.setNumerator(22);
-      purity.setDenominator(24);
 
-      BigDecimal result =
-          goldPriceCalculationService.calculatePricePerGramForPurity(pricePerTroyOunce, purity);
-
-      BigDecimal expected =
-          pricePerTroyOunce
-              .divide(TROY_OUNCE_TO_GRAMS, 10, RoundingMode.HALF_UP)
-              .multiply(BigDecimal.valueOf(22.0 / 24))
-              .setScale(2, RoundingMode.HALF_UP);
-      assertEquals(expected, result);
-    }
-
-    @Test
-    void shouldCalculatePricePerGramFor18K() {
-      BigDecimal pricePerTroyOunce = BigDecimal.valueOf(2000);
-      GoldPurity purity = new GoldPurity();
-      purity.setNumerator(18);
-      purity.setDenominator(24);
-
-      BigDecimal result =
-          goldPriceCalculationService.calculatePricePerGramForPurity(pricePerTroyOunce, purity);
-
-      BigDecimal expected =
-          pricePerTroyOunce
-              .divide(TROY_OUNCE_TO_GRAMS, 10, RoundingMode.HALF_UP)
-              .multiply(BigDecimal.valueOf(18.0 / 24))
-              .setScale(2, RoundingMode.HALF_UP);
-      assertEquals(expected, result);
+      return Stream.of(
+          Arguments.of(24, 24, pricePerTroyOunce),
+          Arguments.of(22, 24, pricePerTroyOunce),
+          Arguments.of(18, 24, pricePerTroyOunce));
     }
 
     @Test

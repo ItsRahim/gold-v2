@@ -1,8 +1,8 @@
 package com.rahim.pricingservice.service.type.impl;
 
+import com.rahim.common.exception.EntityNotFoundException;
 import com.rahim.common.response.AbstractResponseDTO;
 import com.rahim.pricingservice.entity.GoldType;
-import com.rahim.pricingservice.exception.GoldTypeNotFoundException;
 import com.rahim.pricingservice.repository.GoldTypeRepository;
 import com.rahim.pricingservice.service.type.IQueryGoldTypeService;
 import com.rahim.pricingservice.util.GoldResponseMapper;
@@ -35,8 +35,7 @@ public class QueryGoldTypeService implements IQueryGoldTypeService {
   public GoldType getGoldTypeById(long id) {
     return goldTypeRepository
         .findById(id)
-        .orElseThrow(
-            () -> new GoldTypeNotFoundException("Gold Type with ID: " + id + " not found"));
+        .orElseThrow(() -> new EntityNotFoundException("Gold Type with ID: " + id + " not found"));
   }
 
   @Override

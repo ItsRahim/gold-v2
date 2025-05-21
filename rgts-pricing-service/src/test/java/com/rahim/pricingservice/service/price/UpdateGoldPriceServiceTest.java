@@ -9,7 +9,6 @@ import com.rahim.common.exception.InitialisationException;
 import com.rahim.pricingservice.dto.payload.GoldPriceUpdateDTO;
 import com.rahim.pricingservice.entity.GoldPrice;
 import com.rahim.pricingservice.entity.GoldPurity;
-import com.rahim.pricingservice.entity.GoldType;
 import com.rahim.pricingservice.enums.WeightUnit;
 import com.rahim.pricingservice.exception.GoldPriceCalculationException;
 import com.rahim.pricingservice.repository.GoldPriceRepository;
@@ -49,7 +48,6 @@ class UpdateGoldPriceServiceTest {
   private GoldPurity goldPurityXAUGBP;
   private GoldPriceUpdateDTO goldPriceUpdateDTO;
   private GoldPrice existingGoldPrice;
-  private GoldType goldType;
 
   @BeforeEach
   void setUp() {
@@ -66,15 +64,6 @@ class UpdateGoldPriceServiceTest {
             .purity(goldPurity24K)
             .price(new BigDecimal("1950.00"))
             .updatedAt(Instant.now())
-            .build();
-
-    goldType =
-        GoldType.builder()
-            .id(1)
-            .purity(goldPurity24K)
-            .weight(new BigDecimal("10.0"))
-            .unit(WeightUnit.GRAM)
-            .price(new BigDecimal("500.00"))
             .build();
   }
 

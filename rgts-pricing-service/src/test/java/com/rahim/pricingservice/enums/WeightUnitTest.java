@@ -11,24 +11,24 @@ import org.junit.jupiter.params.provider.ValueSource;
  * @author Rahim Ahmed
  * @created 21/05/2025
  */
-public class WeightUnitTest {
+class WeightUnitTest {
 
   @Test
-  public void shouldReturnCorrectValueForWeightUnit() {
+  void shouldReturnCorrectValueForWeightUnit() {
     assertThat(WeightUnit.GRAM.getValue()).isEqualTo("g");
     assertThat(WeightUnit.KILOGRAM.getValue()).isEqualTo("kg");
     assertThat(WeightUnit.OUNCE.getValue()).isEqualTo("oz");
   }
 
   @Test
-  public void shouldReturnCorrectWeightUnitFromValue() {
+  void shouldReturnCorrectWeightUnitFromValue() {
     assertThat(WeightUnit.fromValue("g")).isEqualTo(WeightUnit.GRAM);
     assertThat(WeightUnit.fromValue("kg")).isEqualTo(WeightUnit.KILOGRAM);
     assertThat(WeightUnit.fromValue("oz")).isEqualTo(WeightUnit.OUNCE);
   }
 
   @Test
-  public void shouldBeCaseInsensitive() {
+  void shouldBeCaseInsensitive() {
     assertThat(WeightUnit.fromValue("G")).isEqualTo(WeightUnit.GRAM);
     assertThat(WeightUnit.fromValue("Kg")).isEqualTo(WeightUnit.KILOGRAM);
     assertThat(WeightUnit.fromValue("OZ")).isEqualTo(WeightUnit.OUNCE);
@@ -36,14 +36,14 @@ public class WeightUnitTest {
 
   @ParameterizedTest
   @ValueSource(strings = {"ml", "lb", "ton", "", " ", "grams", "kgs", "ounces"})
-  public void shouldThrowExceptionForInvalidWeightUnit(String invalidUnit) {
+  void shouldThrowExceptionForInvalidWeightUnit(String invalidUnit) {
     assertThatThrownBy(() -> WeightUnit.fromValue(invalidUnit))
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessage("Invalid weight unit: " + invalidUnit);
   }
 
   @Test
-  public void shouldThrowExceptionForNullWeightUnit() {
+  void shouldThrowExceptionForNullWeightUnit() {
     assertThatThrownBy(() -> WeightUnit.fromValue(null))
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessage("Invalid weight unit: null");
