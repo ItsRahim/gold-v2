@@ -143,11 +143,10 @@ class QueryGoldTypeServiceTest extends BaseUnitTest {
 
   @Test
   void shouldReturnEmptyListWhenNoGoldTypes() {
-    when(goldTypeRepository.findAll()).thenReturn(Collections.emptyList());
-
+    goldTypeRepository.deleteAll();
     List<GoldType> result = queryGoldTypeService.getAllGoldTypes();
 
-    assertThat(result).isNull();
+    assertThat(result).isEmpty();
 
     verify(goldTypeRepository).findAll();
   }
