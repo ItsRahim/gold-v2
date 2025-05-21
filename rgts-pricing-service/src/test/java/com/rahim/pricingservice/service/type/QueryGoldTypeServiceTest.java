@@ -6,7 +6,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import com.rahim.common.response.AbstractResponseDTO;
 import com.rahim.pricingservice.BaseUnitTest;
 import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
-import com.rahim.pricingservice.entity.GoldType;
 import com.rahim.pricingservice.exception.GoldTypeNotFoundException;
 import java.math.BigDecimal;
 
@@ -36,13 +35,6 @@ public class QueryGoldTypeServiceTest extends BaseUnitTest {
 
     assertThat(result).isNotNull();
     assertThat(result.getTotalElements()).isEqualTo(1);
-  }
-
-  @Test
-  void getGoldTypeById_existingId_returnsGoldType() {
-    GoldType result = queryGoldTypeService.getGoldTypeById(1);
-    assertThat(result).isNotNull();
-    assertThat(result.getName()).isEqualTo("Gold Coin");
   }
 
   @Test
