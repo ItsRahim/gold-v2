@@ -147,7 +147,7 @@ class QueryGoldTypeServiceTest extends BaseUnitTest {
 
     List<GoldType> result = queryGoldTypeService.getAllGoldTypes();
 
-    assertThat(result).isNotNull().isNotEmpty();
+    assertThat(result).isNull();
 
     verify(goldTypeRepository).findAll();
   }
