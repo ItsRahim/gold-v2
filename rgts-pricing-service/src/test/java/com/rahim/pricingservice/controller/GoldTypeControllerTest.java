@@ -1,18 +1,26 @@
 package com.rahim.pricingservice.controller;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import com.rahim.cachemanager.service.RedisService;
 import com.rahim.common.handler.ApiExceptionHandler;
 import com.rahim.pricingservice.BaseControllerTest;
 import com.rahim.pricingservice.constant.Endpoints;
 import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
+import com.rahim.pricingservice.entity.GoldPrice;
+import com.rahim.pricingservice.entity.GoldPurity;
 import com.rahim.pricingservice.enums.WeightUnit;
 import com.rahim.pricingservice.service.type.IAddGoldTypeService;
 import java.math.BigDecimal;
+import java.time.Instant;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -28,6 +36,8 @@ public class GoldTypeControllerTest extends BaseControllerTest {
 
   @Autowired private GoldTypeController goldTypeController;
 
+  @Mock RedisService redisService;
+
   @BeforeEach
   public void setUp() {
     MockitoAnnotations.openMocks(this);
@@ -40,6 +50,8 @@ public class GoldTypeControllerTest extends BaseControllerTest {
             .setValidator(validator)
             .setControllerAdvice(new ApiExceptionHandler())
             .build();
+    GoldPurity goldPurity = new GoldPurity(1, "22K", 22, 24, false);
+    when(redisService.getValue(anyString())).thenReturn(new GoldPrice(1,goldPurity, BigDecimal.valueOf(100), Instant.now()));
   }
 
   @Test
