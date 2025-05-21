@@ -5,18 +5,14 @@ import static org.mockito.Mockito.*;
 
 import com.rahim.common.exception.BadRequestException;
 import com.rahim.common.exception.DuplicateEntityException;
-import com.rahim.common.exception.ServiceException;
 import com.rahim.pricingservice.BaseUnitTest;
 import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
 import com.rahim.pricingservice.entity.GoldPurity;
 import com.rahim.pricingservice.enums.WeightUnit;
-import com.rahim.pricingservice.exception.GoldPriceCalculationException;
 import com.rahim.pricingservice.repository.GoldTypeRepository;
 import com.rahim.pricingservice.service.price.IUpdateGoldPriceService;
 import com.rahim.pricingservice.service.purity.IGoldPurityQueryService;
-
 import java.math.BigDecimal;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
