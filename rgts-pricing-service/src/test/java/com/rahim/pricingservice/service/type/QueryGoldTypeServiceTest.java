@@ -9,6 +9,8 @@ import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
 import com.rahim.pricingservice.entity.GoldType;
 import com.rahim.pricingservice.exception.GoldTypeNotFoundException;
 import java.math.BigDecimal;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,7 +23,8 @@ public class QueryGoldTypeServiceTest extends BaseUnitTest {
   @Autowired private IQueryGoldTypeService queryGoldTypeService;
   @Autowired private IAddGoldTypeService addGoldTypeService;
 
-  private void addGoldType() {
+  @BeforeEach
+  void setup() {
     AddGoldTypeRequest request =
         new AddGoldTypeRequest("Gold Coin", "22K", BigDecimal.TEN, "g", "Valid");
     addGoldTypeService.addGoldType(request);
@@ -29,7 +32,6 @@ public class QueryGoldTypeServiceTest extends BaseUnitTest {
 
   @Test
   public void getAllGoldTypes_returnsPagedResult() {
-    addGoldType();
     Page<AbstractResponseDTO> result = queryGoldTypeService.getAllGoldTypes(0, 10);
 
     assertThat(result).isNotNull();
@@ -38,9 +40,7 @@ public class QueryGoldTypeServiceTest extends BaseUnitTest {
 
   @Test
   void getGoldTypeById_existingId_returnsGoldType() {
-    addGoldType();
     GoldType result = queryGoldTypeService.getGoldTypeById(1);
-
     assertThat(result).isNotNull();
     assertThat(result.getName()).isEqualTo("Gold Coin");
   }
