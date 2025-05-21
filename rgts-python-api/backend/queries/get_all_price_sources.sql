@@ -1,1 +1,1 @@
-SELECT * FROM price_sources;
+SELECT * FROM rgts.price_sources;
