@@ -16,8 +16,8 @@ import java.math.RoundingMode;
 @Slf4j
 @Service
 public class GoldPriceCalculationService {
-  private static final BigDecimal TROY_OUNCE_TO_GRAMS = BigDecimal.valueOf(31.1035);
-  private static final BigDecimal GRAMS_TO_KILOGRAM = BigDecimal.valueOf(1000);
+  public static final BigDecimal TROY_OUNCE_TO_GRAMS = BigDecimal.valueOf(31.1035);
+  public static final BigDecimal GRAMS_TO_KILOGRAM = BigDecimal.valueOf(1000);
 
   public BigDecimal calculatePricePerGramForPurity(
       BigDecimal pricePerTroyOunce, GoldPurity goldPurity) {
