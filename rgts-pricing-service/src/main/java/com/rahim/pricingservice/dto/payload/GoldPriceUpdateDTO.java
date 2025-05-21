@@ -5,7 +5,6 @@ import com.rahim.proto.protobuf.GoldPriceInfo;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Instant;
-
 import lombok.*;
 
 /**

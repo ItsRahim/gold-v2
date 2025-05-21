@@ -2,11 +2,9 @@ package com.rahim.pricingservice.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
-
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 

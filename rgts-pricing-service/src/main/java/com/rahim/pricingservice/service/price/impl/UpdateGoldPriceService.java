@@ -14,6 +14,9 @@ import com.rahim.pricingservice.service.price.GoldPriceCalculationService;
 import com.rahim.pricingservice.service.price.IUpdateGoldPriceService;
 import com.rahim.pricingservice.service.purity.IGoldPurityQueryService;
 import com.rahim.pricingservice.service.type.IQueryGoldTypeService;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -21,10 +24,6 @@ import org.springframework.context.event.EventListener;
 import org.springframework.data.redis.serializer.SerializationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @created 03/05/2025

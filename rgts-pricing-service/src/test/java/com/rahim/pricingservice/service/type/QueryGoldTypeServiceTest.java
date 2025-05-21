@@ -8,11 +8,10 @@ import com.rahim.pricingservice.BaseUnitTest;
 import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
 import com.rahim.pricingservice.entity.GoldType;
 import com.rahim.pricingservice.exception.GoldTypeNotFoundException;
+import java.math.BigDecimal;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-
-import java.math.BigDecimal;
 
 /**
  * @created 05/04/2025

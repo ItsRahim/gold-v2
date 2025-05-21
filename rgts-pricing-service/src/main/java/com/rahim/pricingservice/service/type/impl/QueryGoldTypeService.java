@@ -6,14 +6,13 @@ import com.rahim.pricingservice.exception.GoldTypeNotFoundException;
 import com.rahim.pricingservice.repository.GoldTypeRepository;
 import com.rahim.pricingservice.service.type.IQueryGoldTypeService;
 import com.rahim.pricingservice.util.GoldResponseMapper;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * @author Rahim Ahmed

@@ -12,11 +12,9 @@ import com.rahim.pricingservice.repository.GoldTypeRepository;
 import com.rahim.pricingservice.service.price.IUpdateGoldPriceService;
 import com.rahim.pricingservice.service.purity.IGoldPurityQueryService;
 import com.rahim.pricingservice.service.type.IAddGoldTypeService;
-
 import java.math.BigDecimal;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -72,7 +70,11 @@ public class AddGoldTypeService implements IAddGoldTypeService {
           purity.getLabel(),
           price);
     } catch (GoldPriceCalculationException e) {
-      log.error("Failed to calculate gold price for new gold type '{}': {}", request.getName(), e.getMessage(), e);
+      log.error(
+          "Failed to calculate gold price for new gold type '{}': {}",
+          request.getName(),
+          e.getMessage(),
+          e);
       throw new BadRequestException("Could not add gold type: " + e.getMessage());
     } catch (Exception e) {
       log.error(

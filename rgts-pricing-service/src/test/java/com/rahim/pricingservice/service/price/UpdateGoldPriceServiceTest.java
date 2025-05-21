@@ -1,5 +1,9 @@
 package com.rahim.pricingservice.service.price;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+
 import com.rahim.cachemanager.service.RedisService;
 import com.rahim.common.exception.InitialisationException;
 import com.rahim.pricingservice.dto.payload.GoldPriceUpdateDTO;
@@ -12,6 +16,11 @@ import com.rahim.pricingservice.repository.GoldPriceRepository;
 import com.rahim.pricingservice.service.price.impl.UpdateGoldPriceService;
 import com.rahim.pricingservice.service.purity.IGoldPurityQueryService;
 import com.rahim.pricingservice.service.type.IQueryGoldTypeService;
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,16 +29,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.redis.serializer.SerializationException;
 import org.springframework.test.util.ReflectionTestUtils;
-
-import java.math.BigDecimal;
-import java.time.Instant;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class UpdateGoldPriceServiceTest {

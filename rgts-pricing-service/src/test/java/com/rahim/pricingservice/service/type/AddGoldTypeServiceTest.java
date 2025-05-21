@@ -8,7 +8,6 @@ import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
 import com.rahim.pricingservice.enums.WeightUnit;
 import com.rahim.pricingservice.repository.GoldTypeRepository;
 import java.math.BigDecimal;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -158,16 +157,15 @@ public class AddGoldTypeServiceTest extends BaseUnitTest {
 
   @Test
   public void shouldThrowExceptionWhenAddGoldTypeRequestWeighUnitIsInvalid() {
-    AddGoldTypeRequest request =
-            new AddGoldTypeRequest("name1", "22K", BigDecimal.TEN, "ml", null);
+    AddGoldTypeRequest request = new AddGoldTypeRequest("name1", "22K", BigDecimal.TEN, "ml", null);
     assertThatThrownBy(() -> addGoldTypeService.addGoldType(request))
-            .isInstanceOf(BadRequestException.class)
-            .hasMessage("Invalid weight unit: " + request.getUnit());
+        .isInstanceOf(BadRequestException.class)
+        .hasMessage("Invalid weight unit: " + request.getUnit());
 
     AddGoldTypeRequest request2 =
-            new AddGoldTypeRequest("name1", "22K", BigDecimal.TEN, null, null);
+        new AddGoldTypeRequest("name1", "22K", BigDecimal.TEN, null, null);
     assertThatThrownBy(() -> addGoldTypeService.addGoldType(request2))
-            .isInstanceOf(BadRequestException.class)
-            .hasMessage("Weight unit is required");
+        .isInstanceOf(BadRequestException.class)
+        .hasMessage("Weight unit is required");
   }
 }

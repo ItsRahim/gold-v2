@@ -1,9 +1,14 @@
 package com.rahim.pricingservice.service.price;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.rahim.pricingservice.BaseUnitTest;
 import com.rahim.pricingservice.entity.GoldPurity;
 import com.rahim.pricingservice.enums.WeightUnit;
 import com.rahim.pricingservice.exception.GoldPriceCalculationException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -12,12 +17,6 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class GoldPriceCalculationTest extends BaseUnitTest {
   @Autowired private GoldPriceCalculationService goldPriceCalculationService;

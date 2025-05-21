@@ -2,9 +2,8 @@ package com.rahim.pricingservice.dto.response;
 
 import com.rahim.common.response.AbstractResponseDTO;
 import com.rahim.pricingservice.enums.WeightUnit;
-import lombok.*;
-
 import java.math.BigDecimal;
+import lombok.*;
 
 @Getter
 @Setter

@@ -2,9 +2,8 @@ package com.rahim.pricingservice.service.type;
 
 import com.rahim.common.response.AbstractResponseDTO;
 import com.rahim.pricingservice.entity.GoldType;
-import org.springframework.data.domain.Page;
-
 import java.util.List;
+import org.springframework.data.domain.Page;
 
 /**
  * @author Rahim Ahmed
