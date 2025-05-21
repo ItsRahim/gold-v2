@@ -2,7 +2,6 @@ package com.rahim.pricingservice.enums;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import com.rahim.common.exception.BadRequestException;
 import lombok.AllArgsConstructor;
 
 /**
@@ -29,6 +28,6 @@ public enum WeightUnit {
         return weightUnit;
       }
     }
-    throw new BadRequestException("Invalid weight unit: " + value);
+    throw new IllegalArgumentException("Invalid weight unit: " + value);
   }
 }
