@@ -9,6 +9,8 @@ import java.time.format.DateTimeFormatter;
  * @author Rahim Ahmed
  */
 public class DateUtil {
+  private DateUtil() {}
+
   private static final ZoneId UTC_ZONE_ID = ZoneId.of("UTC");
 
   public static String formatInstant(Instant instant) {

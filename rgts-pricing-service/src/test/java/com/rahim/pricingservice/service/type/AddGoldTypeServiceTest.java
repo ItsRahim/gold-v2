@@ -16,8 +16,6 @@ import com.rahim.pricingservice.service.price.IUpdateGoldPriceService;
 import com.rahim.pricingservice.service.purity.IGoldPurityQueryService;
 import java.math.BigDecimal;
 import java.time.Instant;
-
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -29,7 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author Rahim Ahmed
  * @created 24/03/2025
  */
-public class AddGoldTypeServiceTest extends BaseUnitTest {
+class AddGoldTypeServiceTest extends BaseUnitTest {
 
   @Autowired private IAddGoldTypeService addGoldTypeService;
 
@@ -49,7 +47,7 @@ public class AddGoldTypeServiceTest extends BaseUnitTest {
   }
 
   @Test
-  public void shouldAddGoldType() {
+  void shouldAddGoldType() {
     AddGoldTypeRequest request =
         new AddGoldTypeRequest(
             "name", "22K", BigDecimal.TEN, WeightUnit.GRAM.getValue(), "description");
@@ -60,8 +58,7 @@ public class AddGoldTypeServiceTest extends BaseUnitTest {
     mockPurity.setDenominator(24);
 
     when(goldPurityQueryService.getGoldPurityByCaratLabel("22K")).thenReturn(mockPurity);
-    when(updateGoldPriceService.calculateGoldPrice(
-            eq(mockPurity), eq(BigDecimal.TEN), eq(WeightUnit.GRAM)))
+    when(updateGoldPriceService.calculateGoldPrice(mockPurity, BigDecimal.TEN, WeightUnit.GRAM))
         .thenReturn(new BigDecimal("500.00"));
 
     addGoldTypeService.addGoldType(request);
@@ -70,14 +67,14 @@ public class AddGoldTypeServiceTest extends BaseUnitTest {
   }
 
   @Test
-  public void shouldThrowExceptionWhenAddGoldTypeRequestIsNull() {
+  void shouldThrowExceptionWhenAddGoldTypeRequestIsNull() {
     assertThatThrownBy(() -> addGoldTypeService.addGoldType(null))
         .isInstanceOf(BadRequestException.class)
         .hasMessage("Request body cannot be null");
   }
 
   @Test
-  public void shouldThrowExceptionWhenAddGoldTypeRequestNameIsEmpty() {
+  void shouldThrowExceptionWhenAddGoldTypeRequestNameIsEmpty() {
     AddGoldTypeRequest request =
         new AddGoldTypeRequest(
             "", "22K", BigDecimal.TEN, WeightUnit.GRAM.getValue(), "description");
@@ -87,7 +84,7 @@ public class AddGoldTypeServiceTest extends BaseUnitTest {
   }
 
   @Test
-  public void shouldThrowExceptionWhenAddGoldTypeRequestNameIsNull() {
+  void shouldThrowExceptionWhenAddGoldTypeRequestNameIsNull() {
     AddGoldTypeRequest request =
         new AddGoldTypeRequest(
             null, "22K", BigDecimal.TEN, WeightUnit.GRAM.getValue(), "description");
@@ -97,7 +94,7 @@ public class AddGoldTypeServiceTest extends BaseUnitTest {
   }
 
   @Test
-  public void shouldThrowExceptionWhenAddGoldTypeRequestNameIsExists() {
+  void shouldThrowExceptionWhenAddGoldTypeRequestNameIsExists() {
     AddGoldTypeRequest request =
         new AddGoldTypeRequest(
             "name", "22K", BigDecimal.TEN, WeightUnit.GRAM.getValue(), "description");
@@ -127,7 +124,7 @@ public class AddGoldTypeServiceTest extends BaseUnitTest {
 
   @ParameterizedTest
   @ValueSource(strings = {"25K", "2.5K", "-12K", "K", "0K", "100K"})
-  public void shouldThrowExceptionWhenAddGoldTypeRequestCaratIsInvalid(String invalidCarat) {
+  void shouldThrowExceptionWhenAddGoldTypeRequestCaratIsInvalid(String invalidCarat) {
     AddGoldTypeRequest request =
         new AddGoldTypeRequest(
             "name", invalidCarat, BigDecimal.TEN, WeightUnit.GRAM.getValue(), "description");
@@ -138,7 +135,7 @@ public class AddGoldTypeServiceTest extends BaseUnitTest {
 
   @ParameterizedTest
   @ValueSource(strings = {"1K", "9K", "10K", "14K", "18K", "22K", "24K"})
-  public void shouldAcceptValidCaratLabels(String validCarat) {
+  void shouldAcceptValidCaratLabels(String validCarat) {
     AddGoldTypeRequest request =
         new AddGoldTypeRequest(
             "name-" + validCarat,
@@ -158,7 +155,7 @@ public class AddGoldTypeServiceTest extends BaseUnitTest {
   }
 
   @Test
-  public void shouldThrowExceptionWhenAddGoldTypeRequestWeightIsInvalid() {
+  void shouldThrowExceptionWhenAddGoldTypeRequestWeightIsInvalid() {
     AddGoldTypeRequest request1 =
         new AddGoldTypeRequest("name1", "22K", null, WeightUnit.GRAM.getValue(), "description");
     assertThatThrownBy(() -> addGoldTypeService.addGoldType(request1))
@@ -181,7 +178,7 @@ public class AddGoldTypeServiceTest extends BaseUnitTest {
   }
 
   @Test
-  public void shouldThrowExceptionWhenAddGoldTypeRequestDescriptionIsInvalid() {
+  void shouldThrowExceptionWhenAddGoldTypeRequestDescriptionIsInvalid() {
     AddGoldTypeRequest request1 =
         new AddGoldTypeRequest("name1", "22K", BigDecimal.TEN, WeightUnit.GRAM.getValue(), null);
     assertThatThrownBy(() -> addGoldTypeService.addGoldType(request1))
@@ -196,7 +193,7 @@ public class AddGoldTypeServiceTest extends BaseUnitTest {
   }
 
   @Test
-  public void shouldThrowExceptionWhenAddGoldTypeRequestWeightUnitIsInvalid() {
+  void shouldThrowExceptionWhenAddGoldTypeRequestWeightUnitIsInvalid() {
     AddGoldTypeRequest request =
         new AddGoldTypeRequest("name1", "22K", BigDecimal.TEN, "ml", "description");
     assertThatThrownBy(() -> addGoldTypeService.addGoldType(request))
@@ -217,7 +214,7 @@ public class AddGoldTypeServiceTest extends BaseUnitTest {
   }
 
   @Test
-  public void shouldSupportAllValidWeightUnits() {
+  void shouldSupportAllValidWeightUnits() {
     for (WeightUnit unit : WeightUnit.values()) {
       AddGoldTypeRequest request =
           new AddGoldTypeRequest(
