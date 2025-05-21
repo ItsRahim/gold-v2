@@ -1,0 +1,6 @@
+projectKey=RGTS
+serverUrl=http://localhost:9000
+serverVersion=25.5.0.107428
+dashboardUrl=http://localhost:9000/dashboard?id=RGTS
+ceTaskId=11153ad3-cbcd-4797-84a7-06916ca0efe4
+ceTaskUrl=http://localhost:9000/api/ce/task?id=11153ad3-cbcd-4797-84a7-06916ca0efe4
