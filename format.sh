@@ -1,6 +1,13 @@
 #!/bin/bash
 set -e
 
+current_branch=$(git rev-parse --abbrev-ref HEAD)
+
+if [ "$current_branch" == "main" ]; then
+  echo "Cannot format and push to main branch"
+  exit 0
+fi
+
 # Check if there are any uncommitted changes
 if ! git diff-index --quiet HEAD --; then
   echo "❌ Error: There are uncommitted changes. Please commit or stash them first."
@@ -26,7 +33,6 @@ done
 
 # Commit and push
 git commit -m "Pre-commit java formatting"
-current_branch=$(git rev-parse --abbrev-ref HEAD)
 git push origin "$current_branch"
 
 echo "✅ Code formatted, committed, and pushed to $current_branch"
