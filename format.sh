@@ -1,22 +1,31 @@
 #!/bin/bash
+set -e
+
+# Check if there are any uncommitted changes
+if ! git diff-index --quiet HEAD --; then
+  echo "❌ Error: There are uncommitted changes. Please commit or stash them first."
+  git status --porcelain
+  exit 1
+fi
 
 # Format the code
 echo "Formatting code..."
 mvn com.spotify.fmt:fmt-maven-plugin:format
 
-# Stage all changes
-git add .
-
-# Check if there are staged changes
-if git diff --cached --quiet; then
-  echo "No changes to commit."
+# Get modified files and stage them
+modified_files=$(git ls-files --modified)
+if [ -z "$modified_files" ]; then
+  echo "No formatting changes needed."
   exit 0
 fi
 
+# Stage files one by one
+for file in $modified_files; do
+  git add "$file"
+done
 
 # Commit and push
 git commit -m "Pre-commit java formatting"
-
 current_branch=$(git rev-parse --abbrev-ref HEAD)
 git push origin "$current_branch"
 
