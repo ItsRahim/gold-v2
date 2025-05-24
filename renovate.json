@@ -1,0 +1,96 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended"
+  ],
+  "prHeader": "Renovate Dependency Update",
+  "assignees": [
+    "ItsRahim"
+  ],
+  "labels": [
+    "dependency",
+    "upgrade",
+    "dependency-upgrade",
+    "renovate"
+  ],
+  "timezone": "UTC",
+  "prConcurrentLimit": 5,
+  "prHourlyLimit": 2,
+  "platformAutomerge": false,
+  "packageRules": [
+    {
+      "description": "Patch Updates",
+      "matchUpdateTypes": [
+        "patch"
+      ]
+    },
+    {
+      "description": "Minor updates",
+      "matchUpdateTypes": [
+        "minor"
+      ]
+    },
+    {
+      "description": "Major updates",
+      "matchUpdateTypes": [
+        "major"
+      ]
+    },
+    {
+      "description": "Security updates - high priority",
+      "matchPackagePatterns": [
+        "*"
+      ],
+      "matchUpdateTypes": [
+        "patch",
+        "minor"
+      ]
+    },
+    {
+      "description": "Docker images - weekly updates",
+      "matchDatasources": [
+        "docker"
+      ]
+    },
+    {
+      "description": "GitHub Actions - monthly updates",
+      "matchManagers": [
+        "github-actions"
+      ]
+    }
+  ],
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": [
+      "at any time"
+    ]
+  },
+  "dependencyDashboard": true,
+  "dependencyDashboardTitle": "Dependency Dashboard",
+  "dependencyDashboardApproval": false,
+  "dependencyDashboardLabels": [
+    "dependency-dashboard"
+  ],
+  "semanticCommits": "enabled",
+  "semanticCommitType": "chore",
+  "semanticCommitScope": "deps",
+  "commitMessageTopic": "{{depName}}",
+  "commitMessageExtra": "to {{newVersion}}",
+  "commitMessageSuffix": "",
+  "prTitle": "{{semanticPrefix}}{{#if isPin}}pin{{else}}update{{/if}} {{depName}} {{#unless isRollback}}{{#if isMajor}}(major){{else}}{{#if isMinor}}(minor){{else}}{{#if isPatch}}(patch){{/if}}{{/if}}{{/if}}{{/unless}}",
+  "branchPrefix": "renovate/",
+  "branchConcurrentLimit": 10,
+  "prBodyTemplate": "{{{header}}}{{{table}}}{{{notes}}}{{{changelogs}}}{{{configDescription}}}{{{controls}}}{{{footer}}}",
+  "enabledManagers": [
+    "npm",
+    "dockerfile",
+    "docker-compose",
+    "github-actions",
+    "terraform"
+  ],
+  "ignorePaths": [
+    "**/node_modules/**",
+    "**/vendor/**",
+    "**/.git/**"
+  ]
+}
