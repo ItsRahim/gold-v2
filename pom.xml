@@ -25,7 +25,7 @@
         <apache.version>3.17.0</apache.version>
         <lombok.version>1.18.38</lombok.version>
         <javax-annotation.version>1.3.2</javax-annotation.version>
-        <micrometer.version>1.14.3</micrometer.version>
+        <micrometer.version>1.15.0</micrometer.version>
         <zipkin.version>3.5.0</zipkin.version>
         <postgres.version>42.7.5</postgres.version>
         <flyway.version>11.4.1</flyway.version>
