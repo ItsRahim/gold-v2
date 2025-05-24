@@ -81,10 +81,14 @@
   "prBodyTemplate": "{{{header}}}{{{table}}}{{{notes}}}{{{changelogs}}}{{{configDescription}}}{{{controls}}}{{{footer}}}",
   "enabledManagers": [
     "npm",
+    "pnpm",
     "dockerfile",
     "docker-compose",
     "github-actions",
-    "terraform"
+    "terraform",
+    "maven",
+    "pipenv",
+    "pip"
   ],
   "ignorePaths": [
     "**/node_modules/**",
