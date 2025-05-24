@@ -159,4 +159,22 @@ class QueryGoldTypeServiceTest extends BaseUnitTest {
 
     verify(goldTypeRepository).save(goldType1);
   }
+
+  @Test
+  void shouldFindGoldTypeByName() {
+    when(goldTypeRepository.findById(1L)).thenReturn(Optional.of(goldType1));
+    GoldTypeResponseDTO result = queryGoldTypeService.getGoldTypeByName(goldType1.getName());
+
+    assertThat(result).isNotNull();
+    assertThat(result.getId()).isEqualTo(1);
+    assertThat(result.getName()).isEqualTo("Gold Ring");
+  }
+
+  @Test
+  void shouldThrowExceptionWhenGoldTypeByNameNotFound() {
+    when(goldTypeRepository.findById(1L)).thenReturn(Optional.empty());
+    assertThatThrownBy(() -> queryGoldTypeService.getGoldTypeByName(goldType1.getName()))
+        .isInstanceOf(EntityNotFoundException.class)
+        .hasMessage("old Type with name: " + goldType1.getName() + " not found");
+  }
 }
