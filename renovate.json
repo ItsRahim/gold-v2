@@ -75,20 +75,17 @@
   "commitMessageTopic": "{{depName}}",
   "commitMessageExtra": "to {{newVersion}}",
   "commitMessageSuffix": "",
-  "prTitle": "{{#if semanticCommitType}}{{semanticCommitType}}{{#if semanticCommitScope}}({{semanticCommitScope}}){{/if}}: {{/if}}{{#if isPin}}pin{{else}}update{{/if}} {{depName}} {{#unless isRollback}}{{#if isMajor}}(major){{else}}{{#if isMinor}}(minor){{else}}{{#if isPatch}}(patch){{/if}}{{/if}}{{/if}}{{/unless}}",
   "branchPrefix": "renovate/",
   "branchConcurrentLimit": 10,
   "prBodyTemplate": "{{{header}}}{{{table}}}{{{notes}}}{{{changelogs}}}{{{configDescription}}}{{{controls}}}{{{footer}}}",
   "enabledManagers": [
     "npm",
-    "pnpm",
     "dockerfile",
     "docker-compose",
     "github-actions",
     "terraform",
     "maven",
-    "pipenv",
-    "pip"
+    "pipenv"
   ],
   "ignorePaths": [
     "**/node_modules/**",
