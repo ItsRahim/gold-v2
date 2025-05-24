@@ -6,7 +6,6 @@ import static org.mockito.Mockito.*;
 import com.rahim.cachemanager.service.RedisService;
 import com.rahim.common.exception.BadRequestException;
 import com.rahim.common.exception.DuplicateEntityException;
-import com.rahim.common.util.DateUtil;
 import com.rahim.pricingservice.BaseUnitTest;
 import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
 import com.rahim.pricingservice.entity.GoldPrice;
@@ -16,14 +15,12 @@ import com.rahim.pricingservice.repository.GoldTypeRepository;
 import com.rahim.pricingservice.service.price.IUpdateGoldPriceService;
 import com.rahim.pricingservice.service.purity.IGoldPurityQueryService;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.Instant;
-import java.util.Random;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -33,7 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 class AddGoldTypeServiceTest extends BaseUnitTest {
 
-  @Autowired private IAddGoldTypeService addGoldTypeService;
+  @Autowired @InjectMocks private IAddGoldTypeService addGoldTypeService;
 
   @Autowired private GoldTypeRepository goldTypeRepository;
 
@@ -45,26 +42,9 @@ class AddGoldTypeServiceTest extends BaseUnitTest {
 
   @BeforeEach
   void setUp() {
-    Random random = new Random();
-
-    for (int k = 1; k <= 24; k++) {
-      String label = k + "K";
-
-      GoldPurity purity = new GoldPurity();
-      purity.setLabel(label);
-      BigDecimal price =
-          BigDecimal.valueOf(50 + (500 - 50) * random.nextDouble())
-              .setScale(2, RoundingMode.HALF_UP);
-
-      GoldPrice goldPrice =
-          GoldPrice.builder()
-              .purity(purity)
-              .price(price)
-              .updatedAt(DateUtil.generateInstant())
-              .build();
-
-      redisService.setValue(label, goldPrice);
-    }
+    GoldPurity goldPurity = new GoldPurity(1, "22K", 22, 24, false);
+    when(redisService.getValue(anyString()))
+        .thenReturn(new GoldPrice(1, goldPurity, BigDecimal.valueOf(100), Instant.now()));
   }
 
   @Test

@@ -4,20 +4,13 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import com.rahim.cachemanager.service.RedisService;
 import com.rahim.common.handler.ApiExceptionHandler;
-import com.rahim.common.util.DateUtil;
 import com.rahim.pricingservice.BaseControllerTest;
 import com.rahim.pricingservice.constant.Endpoints;
 import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
-import com.rahim.pricingservice.entity.GoldPrice;
-import com.rahim.pricingservice.entity.GoldPurity;
 import com.rahim.pricingservice.enums.WeightUnit;
 import com.rahim.pricingservice.service.type.IAddGoldTypeService;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.Instant;
-import java.util.Random;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,8 +29,6 @@ class GoldTypeControllerTest extends BaseControllerTest {
 
   @Autowired private GoldTypeController goldTypeController;
 
-  @Autowired private RedisService redisService;
-
   @BeforeEach
   void setUp() {
     MockitoAnnotations.openMocks(this);
@@ -50,27 +41,6 @@ class GoldTypeControllerTest extends BaseControllerTest {
             .setValidator(validator)
             .setControllerAdvice(new ApiExceptionHandler())
             .build();
-
-    Random random = new Random();
-
-    for (int k = 1; k <= 24; k++) {
-      String label = k + "K";
-
-      GoldPurity purity = new GoldPurity();
-      purity.setLabel(label);
-      BigDecimal price =
-          BigDecimal.valueOf(50 + (500 - 50) * random.nextDouble())
-              .setScale(2, RoundingMode.HALF_UP);
-
-      GoldPrice goldPrice =
-          GoldPrice.builder()
-              .purity(purity)
-              .price(price)
-              .updatedAt(DateUtil.generateInstant())
-              .build();
-
-      redisService.setValue(label, goldPrice);
-    }
   }
 
   @Test
