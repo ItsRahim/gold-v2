@@ -35,7 +35,7 @@
         <java-fixture.version>2.12.0</java-fixture.version>
 
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
-        <maven-surefire-plugin.version>3.2.3</maven-surefire-plugin.version>
+        <maven-surefire-plugin.version>3.5.3</maven-surefire-plugin.version>
         <spotify-fmt-plugin.version>2.27</spotify-fmt-plugin.version>
     </properties>
 
