@@ -50,7 +50,13 @@ jobs:
           path: target/surefire-reports
 
       - name: Run OWASP Dependency-Check
-        run: mvn org.owasp:dependency-check-maven:check -Dformat=HTML -DoutputDirectory=dependency-check-report
+        env:
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+        run: |
+          mvn org.owasp:dependency-check-maven:check \
+            -DnvdApiKey=${NVD_API_KEY} \
+            -Dformat=HTML \
+            -DoutputDirectory=dependency-check-report
 
       - name: Upload dependency-check report
         uses: actions/upload-artifact@v4.6.2
