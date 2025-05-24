@@ -1,6 +1,5 @@
 package com.rahim.pricingservice.controller;
 
-import com.rahim.common.response.AbstractResponseDTO;
 import com.rahim.pricingservice.constant.Endpoints;
 import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
 import com.rahim.pricingservice.dto.response.GoldTypeResponseDTO;
@@ -57,7 +56,7 @@ public class GoldTypeController {
   @PostMapping(
       consumes = MediaType.APPLICATION_JSON_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<AbstractResponseDTO> addGoldType(
+  public ResponseEntity<GoldTypeResponseDTO> addGoldType(
       @Valid @Parameter(description = "Gold type details", required = true) @RequestBody
           AddGoldTypeRequest request) {
     addGoldTypeService.addGoldType(request);
@@ -84,7 +83,7 @@ public class GoldTypeController {
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
       })
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<Page<AbstractResponseDTO>> getAllGoldTypes(
+  public ResponseEntity<Page<GoldTypeResponseDTO>> getAllGoldTypes(
       @Parameter(description = "Page number (0-based)", example = "0")
           @RequestParam(value = "page", defaultValue = "0")
           int page,

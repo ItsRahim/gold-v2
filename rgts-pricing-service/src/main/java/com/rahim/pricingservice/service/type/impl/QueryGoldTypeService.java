@@ -1,7 +1,6 @@
 package com.rahim.pricingservice.service.type.impl;
 
 import com.rahim.common.exception.EntityNotFoundException;
-import com.rahim.common.response.AbstractResponseDTO;
 import com.rahim.pricingservice.dto.response.GoldTypeResponseDTO;
 import com.rahim.pricingservice.entity.GoldType;
 import com.rahim.pricingservice.repository.GoldTypeRepository;
@@ -26,7 +25,7 @@ public class QueryGoldTypeService implements IQueryGoldTypeService {
   private final GoldTypeRepository goldTypeRepository;
 
   @Override
-  public Page<AbstractResponseDTO> getAllGoldTypes(int page, int size) {
+  public Page<GoldTypeResponseDTO> getAllGoldTypes(int page, int size) {
     Page<GoldType> goldTypes =
         goldTypeRepository.findAll(PageRequest.of(page, size, Sort.by("name")));
     return goldTypes.map(GoldResponseMapper::mapToGoldType);
