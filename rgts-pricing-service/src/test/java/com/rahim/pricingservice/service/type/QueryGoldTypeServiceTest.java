@@ -8,8 +8,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.rahim.common.exception.EntityNotFoundException;
-import com.rahim.common.response.AbstractResponseDTO;
 import com.rahim.pricingservice.BaseUnitTest;
+import com.rahim.pricingservice.dto.response.GoldTypeResponseDTO;
 import com.rahim.pricingservice.entity.GoldPurity;
 import com.rahim.pricingservice.entity.GoldType;
 import com.rahim.pricingservice.enums.WeightUnit;
@@ -79,7 +79,7 @@ class QueryGoldTypeServiceTest extends BaseUnitTest {
     Pageable pageable = PageRequest.of(0, 10, Sort.by("name"));
     when(goldTypeRepository.findAll(pageable)).thenReturn(goldTypePage);
 
-    Page<AbstractResponseDTO> result = queryGoldTypeService.getAllGoldTypes(0, 10);
+    Page<GoldTypeResponseDTO> result = queryGoldTypeService.getAllGoldTypes(0, 10);
 
     assertThat(result).isNotNull();
     assertThat(result.getTotalElements()).isEqualTo(2);
@@ -94,7 +94,7 @@ class QueryGoldTypeServiceTest extends BaseUnitTest {
     Pageable pageable = PageRequest.of(0, 10, Sort.by("name"));
     when(goldTypeRepository.findAll(pageable)).thenReturn(emptyPage);
 
-    Page<AbstractResponseDTO> result = queryGoldTypeService.getAllGoldTypes(0, 10);
+    Page<GoldTypeResponseDTO> result = queryGoldTypeService.getAllGoldTypes(0, 10);
 
     assertThat(result).isNotNull();
     assertThat(result.getTotalElements()).isZero();
@@ -158,5 +158,23 @@ class QueryGoldTypeServiceTest extends BaseUnitTest {
     queryGoldTypeService.saveGoldType(goldType1);
 
     verify(goldTypeRepository).save(goldType1);
+  }
+
+  @Test
+  void shouldFindGoldTypeByName() {
+    when(goldTypeRepository.findGoldTypeByNameIgnoreCase(goldType1.getName())).thenReturn(Optional.of(goldType1));
+    GoldTypeResponseDTO result = queryGoldTypeService.getGoldTypeByName(goldType1.getName());
+
+    assertThat(result).isNotNull();
+    assertThat(result.getId()).isEqualTo(1);
+    assertThat(result.getName()).isEqualTo("Gold Ring");
+  }
+
+  @Test
+  void shouldThrowExceptionWhenGoldTypeByNameNotFound() {
+    when(goldTypeRepository.findById(1L)).thenReturn(Optional.empty());
+    assertThatThrownBy(() -> queryGoldTypeService.getGoldTypeByName(goldType1.getName()))
+        .isInstanceOf(EntityNotFoundException.class)
+        .hasMessage("Gold Type with name: " + goldType1.getName() + " not found");
   }
 }

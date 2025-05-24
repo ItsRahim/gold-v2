@@ -2,7 +2,7 @@ CREATE TABLE rgts.gold_types
 (
     id          SERIAL PRIMARY KEY,
     name        VARCHAR(255)   NOT NULL UNIQUE,
-    purity_id    INT            NOT NULL REFERENCES rgts.gold_purities (id),
+    purity_id   INT            NOT NULL REFERENCES rgts.gold_purities (id),
     weight      NUMERIC(10, 2) NULL,
     unit        VARCHAR(10)    NOT NULL,
     description TEXT           NOT NULL,

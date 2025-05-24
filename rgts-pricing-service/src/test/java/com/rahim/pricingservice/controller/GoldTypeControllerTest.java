@@ -11,6 +11,7 @@ import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
 import com.rahim.pricingservice.enums.WeightUnit;
 import com.rahim.pricingservice.service.type.IAddGoldTypeService;
 import java.math.BigDecimal;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
@@ -52,7 +53,12 @@ class GoldTypeControllerTest extends BaseControllerTest {
             post(Endpoints.GOLD_TYPE_ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestToJson(request)))
-        .andExpect(content().string("Successfully added gold type"));
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.name").value("Necklace"))
+        .andExpect(jsonPath("$.purity").value("22K"))
+        .andExpect(jsonPath("$.weight").value("10 g"))
+        .andExpect(jsonPath("$.description").value("Test gold"))
+        .andExpect(jsonPath("$.price").value(730.60));
   }
 
   @Test
