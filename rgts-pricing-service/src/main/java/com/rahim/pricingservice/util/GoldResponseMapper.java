@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author Rahim Ahmed
  */
 @Slf4j
-public class GoldResponseMapper {
+public final class GoldResponseMapper {
   private GoldResponseMapper() {}
 
   public static GoldTypeResponseDTO mapToGoldType(GoldType goldType) {

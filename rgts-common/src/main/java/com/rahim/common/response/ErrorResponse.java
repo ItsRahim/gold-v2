@@ -1,7 +1,6 @@
 package com.rahim.common.response;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import com.rahim.common.util.DateUtil;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
@@ -11,13 +10,13 @@ import org.springframework.http.HttpStatus;
  */
 @Getter
 public class ErrorResponse {
-  private final String message;
   private final int status;
-  private final LocalDateTime timestamp;
+  private final String timestamp;
+  private final String message;
 
   public ErrorResponse(String message, HttpStatus status) {
-    this.message = message;
     this.status = status.value();
-    this.timestamp = LocalDateTime.now(ZoneOffset.UTC);
+    this.timestamp = DateUtil.generateFormattedInstant();
+    this.message = message;
   }
 }
