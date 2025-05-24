@@ -9,8 +9,6 @@
   ],
   "labels": [
     "dependency",
-    "upgrade",
-    "dependency-upgrade",
     "renovate"
   ],
   "timezone": "UTC",
@@ -22,19 +20,22 @@
       "description": "Patch Updates",
       "matchUpdateTypes": [
         "patch"
-      ]
+      ],
+      "label": ["patch"]
     },
     {
       "description": "Minor updates",
       "matchUpdateTypes": [
         "minor"
-      ]
+      ],
+      "label": ["minor"]
     },
     {
       "description": "Major updates",
       "matchUpdateTypes": [
         "major"
-      ]
+      ],
+      "label": ["major"]
     },
     {
       "description": "Security updates - high priority",
@@ -44,26 +45,30 @@
       "matchUpdateTypes": [
         "patch",
         "minor"
-      ]
+      ],
+      "label": ["patch", "minor", "security"]
     },
     {
-      "description": "Docker images - weekly updates",
+      "description": "Docker images",
       "matchDatasources": [
         "docker"
-      ]
+      ],
+      "label": ["docker"]
     },
     {
       "description": "GitHub Actions - monthly updates",
       "matchManagers": [
         "github-actions"
-      ]
+      ],
+      "label": ["github-action"]
     }
   ],
   "lockFileMaintenance": {
     "enabled": true,
     "schedule": [
       "at any time"
-    ]
+    ],
+    "label": ["python"]
   },
   "dependencyDashboard": true,
   "dependencyDashboardTitle": "Dependency Dashboard",
