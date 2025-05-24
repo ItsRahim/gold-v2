@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -20,6 +23,9 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
+    outputs:
+      build-cache-key: ${{ steps.cache.outputs.cache-hit }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -33,34 +39,83 @@ jobs:
           distribution: 'temurin'
 
       - name: Cache Maven packages
+        id: cache
         uses: actions/cache@v4.2.3
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-maven-
 
-      - name: Build and test with Maven
+      - name: Build with Maven (no tests)
         run: mvn clean install -DskipTests
 
-      - name: Upload test results
-        if: always()
-        uses: actions/upload-artifact@v4.6.2
+
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4.7.1
         with:
-          name: junit-results
-          path: target/surefire-reports
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Restore Maven cache
+        uses: actions/cache@v4.2.3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-maven-
+
+      - name: Run tests
+        run: mvn test
+
+  security-scan:
+    runs-on: ubuntu-latest
+    needs: build
+    if: "!startsWith(github.head_ref, 'renovate/')"
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4.7.1
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Restore Maven cache
+        uses: actions/cache@v4.2.3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-maven-
 
       - name: Run OWASP Dependency-Check
-        if: "!startsWith(github.head_ref, 'renovate/')"
         env:
           NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
         run: |
+          mkdir -p security-reports
           mvn org.owasp:dependency-check-maven:check \
             -DnvdApiKey=${NVD_API_KEY} \
             -Dformat=HTML \
-            -DoutputDirectory=dependency-check-report
+            -DoutputDirectory=security-reports
 
-      - name: Upload dependency-check report
-        uses: actions/upload-artifact@v4.6.2
-        with:
-          name: dependency-check-report
-          path: dependency-check-report
+      - name: Commit OWASP report to branch
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          mkdir -p security-reports
+          mv rgts-scheduler-service/target/dependency-check-report.html security-reports/dependency-check.html
+          
+          git fetch origin
+          git checkout ${{ github.head_ref || github.ref_name }}
+          
+          git add security-reports/dependency-check.html
+          git commit -m "Add OWASP Dependency-Check report [ci skip]" || echo "No changes to commit"
+          git push origin HEAD
