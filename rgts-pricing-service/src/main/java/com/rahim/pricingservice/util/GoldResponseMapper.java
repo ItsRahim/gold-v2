@@ -1,7 +1,6 @@
 package com.rahim.pricingservice.util;
 
 import com.rahim.common.exception.MappingException;
-import com.rahim.common.response.AbstractResponseDTO;
 import com.rahim.pricingservice.dto.response.GoldTypeResponseDTO;
 import com.rahim.pricingservice.entity.GoldType;
 import lombok.extern.slf4j.Slf4j;
@@ -14,26 +13,30 @@ import lombok.extern.slf4j.Slf4j;
 public class GoldResponseMapper {
   private GoldResponseMapper() {}
 
-  public static AbstractResponseDTO map(Object entity) {
-    if (entity == null) {
-      throw new MappingException("Entity must not be null");
+  public static GoldTypeResponseDTO mapToGoldType(GoldType goldType) {
+    try {
+      return GoldTypeResponseDTO.builder()
+          .id(goldType.getId())
+          .name(goldType.getName())
+          .purity(extractPurity(goldType))
+          .weight(formatWeight(goldType))
+          .description(goldType.getDescription())
+          .price(goldType.getPrice())
+          .build();
+    } catch (Exception e) {
+      log.error("Error mapping GoldType entity to DTO: {}", e.getMessage(), e);
+      throw new MappingException("Failed to map GoldType entity", e);
     }
-
-    return switch (entity) {
-      case GoldType goldType -> mapGoldType(goldType);
-      default -> throw new MappingException("No mapping defined for class: " + entity.getClass());
-    };
   }
 
-  private static GoldTypeResponseDTO mapGoldType(GoldType goldType) {
-    return GoldTypeResponseDTO.builder()
-        .id(goldType.getId())
-        .name(goldType.getName())
-        .purity(goldType.getPurity().getLabel())
-        .weight(goldType.getWeight())
-        .unit(goldType.getUnit())
-        .description(goldType.getDescription())
-        .price(goldType.getPrice())
-        .build();
+  private static String extractPurity(GoldType goldType) {
+    return goldType.getPurity() != null ? goldType.getPurity().getLabel() : null;
+  }
+
+  private static String formatWeight(GoldType goldType) {
+    if (goldType.getWeight() == null || goldType.getUnit() == null) {
+      return null;
+    }
+    return goldType.getWeight().toPlainString() + " " + goldType.getUnit().getValue();
   }
 }

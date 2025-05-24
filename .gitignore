@@ -276,4 +276,4 @@ pyrightconfig.json
 /certs/*
 /.idea/
 
-target/sonar/*.txt
+target/*

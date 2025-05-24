@@ -3,6 +3,7 @@ package com.rahim.pricingservice.controller;
 import com.rahim.common.response.AbstractResponseDTO;
 import com.rahim.pricingservice.constant.Endpoints;
 import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
+import com.rahim.pricingservice.dto.response.GoldTypeResponseDTO;
 import com.rahim.pricingservice.entity.GoldType;
 import com.rahim.pricingservice.service.type.IAddGoldTypeService;
 import com.rahim.pricingservice.service.type.IQueryGoldTypeService;
@@ -56,11 +57,12 @@ public class GoldTypeController {
   @PostMapping(
       consumes = MediaType.APPLICATION_JSON_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<String> addGoldType(
+  public ResponseEntity<AbstractResponseDTO> addGoldType(
       @Valid @Parameter(description = "Gold type details", required = true) @RequestBody
           AddGoldTypeRequest request) {
     addGoldTypeService.addGoldType(request);
-    return ResponseEntity.status(HttpStatus.OK).body("Successfully added gold type");
+    GoldTypeResponseDTO response = queryGoldTypeService.getGoldTypeByName(request.getName());
+    return ResponseEntity.status(HttpStatus.OK).body(response);
   }
 
   @Operation(

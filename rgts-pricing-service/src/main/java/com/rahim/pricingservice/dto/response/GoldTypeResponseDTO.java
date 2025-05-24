@@ -14,8 +14,7 @@ public class GoldTypeResponseDTO extends AbstractResponseDTO {
   private Integer id;
   private String name;
   private String purity;
-  private BigDecimal weight;
-  private WeightUnit unit;
+  private String weight;
   private String description;
   private BigDecimal price;
 }
