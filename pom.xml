@@ -28,7 +28,7 @@
         <micrometer.version>1.14.3</micrometer.version>
         <zipkin.version>3.5.0</zipkin.version>
         <postgres.version>42.7.5</postgres.version>
-        <flyway.version>11.4.1</flyway.version>
+        <flyway.version>11.8.2</flyway.version>
         <h2.version>2.3.232</h2.version>
         <mockito.version>5.18.0</mockito.version>
         <junit.version>5.12.2</junit.version>
