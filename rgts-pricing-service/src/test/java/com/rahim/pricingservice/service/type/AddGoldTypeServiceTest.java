@@ -16,6 +16,8 @@ import com.rahim.pricingservice.service.price.IUpdateGoldPriceService;
 import com.rahim.pricingservice.service.purity.IGoldPurityQueryService;
 import java.math.BigDecimal;
 import java.time.Instant;
+
+import com.rahim.pricingservice.service.type.impl.AddGoldTypeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -30,7 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 class AddGoldTypeServiceTest extends BaseUnitTest {
 
-  @Autowired @InjectMocks private IAddGoldTypeService addGoldTypeService;
+  @Autowired @InjectMocks private AddGoldTypeService addGoldTypeService;
 
   @Autowired private GoldTypeRepository goldTypeRepository;
 
