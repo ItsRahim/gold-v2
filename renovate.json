@@ -14,7 +14,7 @@
   "timezone": "UTC",
   "prConcurrentLimit": 0,
   "prHourlyLimit": 0,
-  "platformAutomerge": false,
+  "platformAutomerge": true,
   "packageRules": [
     {
       "description": "Patch Updates",
