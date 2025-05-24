@@ -113,7 +113,9 @@ jobs:
           mkdir -p security-reports
           mv rgts-scheduler-service/target/dependency-check-report.html security-reports/dependency-check.html
           
-          git add security-reports/dependency-check.html
+          git fetch origin
+          git checkout ${{ github.head_ref || github.ref_name }}
           
+          git add security-reports/dependency-check.html
           git commit -m "Add OWASP Dependency-Check report [ci skip]" || echo "No changes to commit"
-          git push
+          git push origin HEAD
