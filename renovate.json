@@ -12,8 +12,8 @@
     "renovate"
   ],
   "timezone": "UTC",
-  "prConcurrentLimit": 5,
-  "prHourlyLimit": 2,
+  "prConcurrentLimit": 0,
+  "prHourlyLimit": 0,
   "platformAutomerge": false,
   "packageRules": [
     {
@@ -76,7 +76,7 @@
   "commitMessageExtra": "to {{newVersion}}",
   "commitMessageSuffix": "",
   "branchPrefix": "renovate/",
-  "branchConcurrentLimit": 10,
+  "branchConcurrentLimit": 0,
   "prBodyTemplate": "{{{header}}}{{{table}}}{{{notes}}}{{{changelogs}}}{{{configDescription}}}{{{controls}}}{{{footer}}}",
   "enabledManagers": [
     "npm",
