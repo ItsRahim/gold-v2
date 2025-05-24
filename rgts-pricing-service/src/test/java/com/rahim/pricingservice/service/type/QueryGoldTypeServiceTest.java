@@ -162,7 +162,7 @@ class QueryGoldTypeServiceTest extends BaseUnitTest {
 
   @Test
   void shouldFindGoldTypeByName() {
-    when(goldTypeRepository.findById(1L)).thenReturn(Optional.of(goldType1));
+    when(goldTypeRepository.findGoldTypeByNameIgnoreCase(goldType1.getName())).thenReturn(Optional.of(goldType1));
     GoldTypeResponseDTO result = queryGoldTypeService.getGoldTypeByName(goldType1.getName());
 
     assertThat(result).isNotNull();
@@ -175,6 +175,6 @@ class QueryGoldTypeServiceTest extends BaseUnitTest {
     when(goldTypeRepository.findById(1L)).thenReturn(Optional.empty());
     assertThatThrownBy(() -> queryGoldTypeService.getGoldTypeByName(goldType1.getName()))
         .isInstanceOf(EntityNotFoundException.class)
-        .hasMessage("old Type with name: " + goldType1.getName() + " not found");
+        .hasMessage("Gold Type with name: " + goldType1.getName() + " not found");
   }
 }
