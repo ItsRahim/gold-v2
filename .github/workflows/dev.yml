@@ -6,43 +6,9 @@ on:
       - main
 
 jobs:
-  checkout:
-    runs-on: ubuntu-latest
-    outputs:
-      java-cache-key: ${{ steps.cache-key.outputs.key }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - id: cache-key
-        run: echo "key=${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}" >> $GITHUB_OUTPUT
-
-  setup-java:
-    needs: checkout
-    runs-on: ubuntu-latest
-    steps:
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4.7.1
-        with:
-          java-version: '21'
-          distribution: 'temurin'
-
-  cache-maven:
-    needs: [ checkout, setup-java ]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Cache Maven packages
-        uses: actions/cache@v4.2.3
-        with:
-          path: ~/.m2/repository
-          key: ${{ needs.checkout.outputs.java-cache-key }}
-          restore-keys: ${{ runner.os }}-maven-
-
   build:
-    needs: [ cache-maven ]
     runs-on: ubuntu-latest
+
     services:
       redis:
         image: redis
@@ -53,17 +19,29 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4.7.1
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Cache Maven packages
+        uses: actions/cache@v4.2.3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-maven-
 
       - name: Build and test with Maven
         run: mvn clean install -DskipTests
 
-  test-results:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4.6.2
@@ -71,15 +49,8 @@ jobs:
           name: junit-results
           path: target/surefire-reports
 
-  owasp-check:
-    if: "!startsWith(github.head_ref, 'renovate/')"
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
       - name: Run OWASP Dependency-Check
+        if: "!startsWith(github.head_ref, 'renovate/')"
         env:
           NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
         run: |
