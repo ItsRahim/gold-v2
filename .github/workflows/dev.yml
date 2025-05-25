@@ -112,26 +112,10 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-maven-
 
-#      - name: Run OWASP Dependency-Check
-#        env:
-#          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
-#        run: |
-#          mkdir -p security-reports
-#          mvn org.owasp:dependency-check-maven:check \
-#            -DnvdApiKey=${NVD_API_KEY} \
-#            -Dformat=HTML \
-#            -DoutputDirectory=security-reports
-#
-#      - name: Commit OWASP report to branch
-#        run: |
-#          git config --global user.name 'github-actions[bot]'
-#          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-#          mkdir -p security-reports
-#          mv rgts-scheduler-service/target/dependency-check-report.html security-reports/dependency-check.html
-#
-#          git fetch origin
-#          git checkout ${{ github.head_ref || github.ref_name }}
-#
-#          git add security-reports/dependency-check.html
-#          git commit -m "Add OWASP Dependency-Check report [ci skip]" || echo "No changes to commit"
-#          git push origin HEAD
+      - name: Make owasp.sh executable
+        run: chmod +x owasp.sh
+
+      - name: Run OWASP Dependency-Check
+        env:
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+        run: ./owasp.sh

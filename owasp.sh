@@ -1,61 +1,56 @@
 #!/bin/bash
 set -e
 
-echo "Running OWASP Dependency-Check..."
+echo "🔍 Running OWASP Dependency-Check..."
 
-# Create security reports directory
+# Create output directory
 mkdir -p security-reports
 
-# Run OWASP Dependency-Check
+# Run dependency check
 mvn org.owasp:dependency-check-maven:check \
   -DnvdApiKey="${NVD_API_KEY}" \
   -Dformat=HTML \
   -DoutputDirectory=security-reports
 
-echo "Moving report to security-reports directory..."
+# Move report from known location (scheduler service)
+REPORT_SRC="rgts-scheduler-service/target/dependency-check-report.html"
+REPORT_DST="security-reports/dependency-check.html"
 
-# Move the generated report to the expected location
-if [ -f "rgts-scheduler-service/target/dependency-check-report.html" ]; then
-  mv rgts-scheduler-service/target/dependency-check-report.html security-reports/dependency-check.html
-  echo "Report moved successfully"
+if [ -f "$REPORT_SRC" ]; then
+  mv "$REPORT_SRC" "$REPORT_DST"
+  echo "✅ Report moved to $REPORT_DST"
 else
-  echo "❌ Error: dependency-check-report.html not found in expected location"
-  echo "Looking for report files..."
-  find . -name "dependency-check-report.html" -type f 2>/dev/null || echo "No dependency-check-report.html files found"
+  echo "❌ Report not found at $REPORT_SRC"
+  find . -name "dependency-check-report.html" -type f || echo "No report found"
   exit 1
 fi
 
-echo "Committing OWASP report..."
-
-# Configure git
-git config --global user.name 'github-actions[bot]'
-git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-
-# Fetch latest changes and checkout the correct branch
-git fetch origin
-
-# Determine branch name based on environment
-if [ -n "$GITHUB_HEAD_REF" ]; then
-  branch_name="$GITHUB_HEAD_REF"
-elif [ -n "$GITHUB_REF_NAME" ]; then
-  branch_name="$GITHUB_REF_NAME"
-else
-  branch_name=$(git rev-parse --abbrev-ref HEAD)
+# Configure Git for CI
+if [ -n "$CI" ]; then
+  git config user.name "github-actions[bot]"
+  git config user.email "github-actions[bot]@users.noreply.github.com"
 fi
 
-echo "Checking out branch: $branch_name"
-git checkout "$branch_name"
+# Determine current or target branch
+branch_name="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME:-$(git rev-parse --abbrev-ref HEAD)}}"
+echo "📌 Using branch: $branch_name"
 
-# Pull latest changes to avoid conflicts
-git pull origin "$branch_name" --rebase || echo "Rebase failed, continuing..."
+# Handle detached HEAD
+if [ "$(git rev-parse --abbrev-ref HEAD)" = "HEAD" ]; then
+  echo "🔧 Detached HEAD detected, checking out branch $branch_name"
+  git checkout -b "$branch_name"
+fi
 
-# Add and commit the report
-git add security-reports/dependency-check.html
+# Rebase in case of remote changes
+git pull origin "$branch_name" --rebase || echo "⚠️ Rebase failed, continuing..."
+
+# Add, commit and push report
+git add "$REPORT_DST"
 
 if git diff --staged --quiet; then
-  echo "No changes to commit - report unchanged"
+  echo "ℹ️ No changes to commit"
 else
   git commit -m "Add OWASP Dependency-Check report [ci skip]"
   git push origin "$branch_name"
-  echo "✅ OWASP report committed and pushed successfully"
+  echo "✅ Report committed and pushed"
 fi
