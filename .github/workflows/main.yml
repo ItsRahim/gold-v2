@@ -11,6 +11,7 @@ on:
       - 'rgts-proto-service/**'
       - 'rgts-kafka-service/**'
       - 'rgts-pricing-service/**'
+      - 'rgts-python-api'
       - '.github/**'
 
 jobs:
