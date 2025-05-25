@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @ActiveProfiles("test")
 @Import(ApiExceptionHandler.class)
-@TestPropertySource("classpath:application.yml")
+@TestPropertySource("classpath:bootstrap.yml")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public abstract class BaseControllerTest {
   private final ObjectMapper objectMapper = new ObjectMapper();
