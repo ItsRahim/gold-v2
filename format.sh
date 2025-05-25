@@ -38,14 +38,22 @@ done
 if [ -n "$CI" ]; then
   git fetch origin
 
-  git checkout "$GITHUB_REF_NAME"
+  ref="$GITHUB_REF"
+  branch_name="${ref#refs/heads/}"
+  branch_name="${branch_name#refs/pull/}"
+  branch_name="${branch_name%/merge}"
+  branch_name="${branch_name%/head}"
+
+  echo "Detected branch: $branch_name"
+
+  git checkout -B "$branch_name"
 
   git config user.name "github-actions[bot]"
   git config user.email "github-actions[bot]@users.noreply.github.com"
 
   git commit -m "Pre-commit java formatting" || echo "No changes to commit"
 
-  git push origin HEAD:refs/heads/"$GITHUB_REF_NAME"
+  git push origin HEAD:"refs/heads/$branch_name"
 else
   git push origin "$current_branch"
 fi
