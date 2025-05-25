@@ -34,7 +34,6 @@ for file in $modified_files; do
   git add "$file"
 done
 
-# Commit and push
 if [ -n "$CI" ]; then
   if [ -n "$GITHUB_HEAD_REF" ]; then
     branch_name="$GITHUB_HEAD_REF"
@@ -44,9 +43,17 @@ if [ -n "$CI" ]; then
 
   echo "Detected branch: $branch_name"
 
-  git checkout "$branch_name"
-
-  git pull origin "$branch_name" --rebase
+  current_head=$(git rev-parse --abbrev-ref HEAD)
+  if [ "$current_head" = "HEAD" ]; then
+    echo "In detached HEAD state, checking out branch: $branch_name"
+    git checkout -B "$branch_name" "origin/$branch_name"
+  else
+    echo "Already on branch: $current_head"
+    if [ "$current_head" != "$branch_name" ]; then
+      git checkout "$branch_name"
+    fi
+    git pull origin "$branch_name" --rebase
+  fi
 
   git config user.name "github-actions[bot]"
   git config user.email "github-actions[bot]@users.noreply.github.com"
