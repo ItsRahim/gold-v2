@@ -5,6 +5,8 @@ on:
     branches:
       - main
     paths:
+      - 'rgts-config-server/**'
+      - 'rgts-eureka-server/**'
       - 'rgts-common/**'
       - 'rgts-proto-service/**'
       - 'rgts-kafka-service/**'
@@ -15,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        folder: [ "rgts-pricing-service" ]
+        folder: [ "rgts-config-server", "rgts-eureka-server", "rgts-pricing-service", ]
 
     services:
       redis:

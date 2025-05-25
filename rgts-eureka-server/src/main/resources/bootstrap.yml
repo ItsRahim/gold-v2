@@ -13,6 +13,12 @@ eureka:
     register-with-eureka: false
     fetch-registry: false
     service-url:
-      defaultZone: http://${EUREKA_HOSTNAME:localhost}:${SERVER_PORT:8761}/eureka
+      defaultZone: http://${eureka.instance.hostname}:${SERVER_PORT:8761}/eureka
   server:
     enable-self-preservation: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

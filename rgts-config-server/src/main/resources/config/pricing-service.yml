@@ -8,6 +8,15 @@ spring:
   flyway:
     table: flyway_pricing_service_history
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
 logging:
   level:
     com.rahim: DEBUG
