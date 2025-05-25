@@ -7,6 +7,8 @@ import com.rahim.proto.util.ProtobufDerSerUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
 /** Kafka consumer service for processing gold price updates. */
@@ -17,7 +19,7 @@ public class KafkaConsumerService {
   private final IUpdateGoldPriceService updateGoldPriceService;
 
   @KafkaListener(topics = "gold.price.update", groupId = "gold-price-group")
-  public void listen(byte[] data) {
+  public void listen(@Payload byte[] data, Acknowledgment ack) {
     try {
       GoldPriceInfo goldPriceInfo = deserialiseProtobuf(data);
       if (goldPriceInfo == null) {
@@ -32,6 +34,7 @@ public class KafkaConsumerService {
       }
 
       updateGoldPriceService.updateBasePrice(goldPriceUpdateDTO);
+      ack.acknowledge();
     } catch (Exception e) {
       log.error("Failed to process Kafka message", e);
     }
