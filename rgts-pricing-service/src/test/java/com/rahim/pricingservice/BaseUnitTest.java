@@ -11,6 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional
 @SpringBootTest
-@TestPropertySource("classpath:application.yml")
+@TestPropertySource("classpath:bootstrap.yml")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public abstract class BaseUnitTest {}
