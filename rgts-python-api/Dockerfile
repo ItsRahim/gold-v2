@@ -2,23 +2,26 @@ FROM python:3.13-slim
 
 WORKDIR /app
 
-COPY Pipfile ./
-COPY Pipfile.lock ./
-
-RUN apt-get update \
-    && apt-get install -y libpq-dev build-essential \
+RUN apt-get update && apt-get install -y \
+    libpq-dev \
+    build-essential \
+    gcc \
+    python3-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-RUN pip install pipenv && pipenv --version
+RUN pip install --no-cache-dir pipenv
+
+COPY Pipfile Pipfile.lock ./
+
+RUN pipenv install --deploy --system
 
 COPY . .
 
-RUN python -m pipenv install --deploy --system
-
-COPY startup.sh /app/startup.sh
 RUN chmod +x /app/startup.sh
+
 CMD ["/app/startup.sh"]
 
 EXPOSE 8000
+
 LABEL authors="Rahim Ahmed"
