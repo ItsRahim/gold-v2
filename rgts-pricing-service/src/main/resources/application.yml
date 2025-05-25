@@ -34,12 +34,12 @@ spring:
     table: flyway_${spring.application.name}_history
   data:
     redis:
-      host: localhost
-      port: 6379
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
 
 kafka:
   security-protocol: PLAINTEXT
-  bootstrap-servers: localhost:9093
+  bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVER:localhost:9093}
   #  ssl:
   #    key-store-location: ${kafka.keystore.file}
   #    key-password: '{cipher}password'
