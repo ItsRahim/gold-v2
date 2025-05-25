@@ -162,7 +162,8 @@ class QueryGoldTypeServiceTest extends BaseUnitTest {
 
   @Test
   void shouldFindGoldTypeByName() {
-    when(goldTypeRepository.findGoldTypeByNameIgnoreCase(goldType1.getName())).thenReturn(Optional.of(goldType1));
+    when(goldTypeRepository.findGoldTypeByNameIgnoreCase(goldType1.getName()))
+        .thenReturn(Optional.of(goldType1));
     GoldTypeResponseDTO result = queryGoldTypeService.getGoldTypeByName(goldType1.getName());
 
     assertThat(result).isNotNull();
