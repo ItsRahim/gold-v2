@@ -14,10 +14,9 @@ import com.rahim.pricingservice.enums.WeightUnit;
 import com.rahim.pricingservice.repository.GoldTypeRepository;
 import com.rahim.pricingservice.service.price.IUpdateGoldPriceService;
 import com.rahim.pricingservice.service.purity.IGoldPurityQueryService;
+import com.rahim.pricingservice.service.type.impl.AddGoldTypeService;
 import java.math.BigDecimal;
 import java.time.Instant;
-
-import com.rahim.pricingservice.service.type.impl.AddGoldTypeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;

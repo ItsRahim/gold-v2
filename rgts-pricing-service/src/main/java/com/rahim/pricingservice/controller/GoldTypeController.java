@@ -6,6 +6,7 @@ import com.rahim.pricingservice.dto.response.GoldTypeResponseDTO;
 import com.rahim.pricingservice.entity.GoldType;
 import com.rahim.pricingservice.service.type.IAddGoldTypeService;
 import com.rahim.pricingservice.service.type.IQueryGoldTypeService;
+import com.rahim.pricingservice.util.GoldResponseMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -105,7 +106,7 @@ public class GoldTypeController {
             content =
                 @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = GoldType.class))),
+                    schema = @Schema(implementation = GoldTypeResponseDTO.class))),
         @ApiResponse(
             responseCode = "404",
             description = "Gold type not found",
@@ -116,10 +117,41 @@ public class GoldTypeController {
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
       })
   @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<GoldType> getGoldTypeById(
+  public ResponseEntity<GoldTypeResponseDTO> getGoldTypeById(
       @Parameter(description = "Unique identifier of the gold type", example = "1")
           @PathVariable("id")
           long id) {
-    return ResponseEntity.status(HttpStatus.OK).body(queryGoldTypeService.getGoldTypeById(id));
+    GoldType goldType = queryGoldTypeService.getGoldTypeById(id);
+    GoldTypeResponseDTO response = GoldResponseMapper.mapToGoldType(goldType);
+    return ResponseEntity.status(HttpStatus.OK).body(response);
+  }
+
+  @Operation(
+      summary = "Retrieve gold type by name",
+      description = "Returns the details of a specific gold type by its unique name.")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Gold type retrieved successfully",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = GoldTypeResponseDTO.class))),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Gold type not found",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Internal server error",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
+      })
+  @GetMapping(params = "name", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<GoldTypeResponseDTO> getGoldTypeByName(
+      @Parameter(description = "The name of the gold type", example = "Gold Sovereign")
+          @RequestParam("name")
+          String name) {
+    return ResponseEntity.status(HttpStatus.OK).body(queryGoldTypeService.getGoldTypeByName(name));
   }
 }
