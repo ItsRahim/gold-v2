@@ -43,6 +43,19 @@ if [ -n "$CI" ]; then
 
   echo "Detected branch: $branch_name"
 
+  current_head=$(git rev-parse --abbrev-ref HEAD)
+  if [ "$current_head" = "HEAD" ]; then
+    echo "In detached HEAD state, checking out branch: $branch_name"
+    git checkout -B "$branch_name" "origin/$branch_name"
+  else
+    echo "Already on branch: $current_head"
+    if [ "$current_head" != "$branch_name" ]; then
+      git checkout "$branch_name"
+    fi
+  fi
+
+  git pull origin "$branch_name" --rebase || echo "Rebase failed, continuing..."
+
   git config user.name "github-actions[bot]"
   git config user.email "github-actions[bot]@users.noreply.github.com"
 
