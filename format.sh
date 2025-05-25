@@ -36,7 +36,20 @@ for file in $modified_files; do
 done
 
 # Commit and push
-git commit -m "Pre-commit java formatting"
-git push origin "$current_branch"
+
+if [ -n "$CI" ]; then
+  git fetch origin
+
+  git checkout "$GITHUB_REF_NAME"
+
+  git config user.name "github-actions[bot]"
+  git config user.email "github-actions[bot]@users.noreply.github.com"
+
+  git commit -m "Pre-commit java formatting" || echo "No changes to commit"
+
+  git push origin HEAD:refs/heads/"$GITHUB_REF_NAME"
+else
+  git push origin "$current_branch"
+fi
 
 echo "✅ Code formatted, committed, and pushed to $current_branch"
