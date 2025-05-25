@@ -62,6 +62,8 @@ jobs:
 
       - name: Run formatting script
         run: ./format.sh
+        env:
+          GITHUB_REF_NAME: ${{ github.ref_name }}
 
   test:
     runs-on: ubuntu-latest

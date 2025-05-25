@@ -8,7 +8,7 @@ if [ "$current_branch" == "main" ]; then
   exit 0
 fi
 
-# Check if there are any uncommitted changes
+# Skip uncommitted check in CI
 if [ -n "$CI" ]; then
   echo "Running in CI, skipping uncommitted changes check"
 else
@@ -30,13 +30,11 @@ if [ -z "$modified_files" ]; then
   exit 0
 fi
 
-# Stage files one by one
 for file in $modified_files; do
   git add "$file"
 done
 
 # Commit and push
-
 if [ -n "$CI" ]; then
   git fetch origin
 
