@@ -36,8 +36,6 @@ done
 
 # Commit and push
 if [ -n "$CI" ]; then
-  git fetch origin
-
   if [ -n "$GITHUB_HEAD_REF" ]; then
     branch_name="$GITHUB_HEAD_REF"
   else
@@ -46,11 +44,15 @@ if [ -n "$CI" ]; then
 
   echo "Detected branch: $branch_name"
 
+  git checkout "$branch_name"
+
+  git pull origin "$branch_name" --rebase
+
   git config user.name "github-actions[bot]"
   git config user.email "github-actions[bot]@users.noreply.github.com"
 
   git commit -m "Pre-commit java formatting" || echo "No changes to commit"
-  git push origin HEAD:"$branch_name"
+  git push origin "$branch_name"
 else
   git commit -m "Pre-commit java formatting" || echo "No changes to commit"
   git push origin "$current_branch"
