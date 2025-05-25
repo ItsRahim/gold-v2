@@ -81,7 +81,7 @@ public class AddGoldTypeService implements IAddGoldTypeService {
       throw new BadRequestException("Invalid weight unit: " + request.getUnit());
     } catch (Exception e) {
       log.error(
-          "Unexpected error while adding gold type '{}': {}", request.getName(), e.getMessage(), e);
+          "Unexpected error while adding gold type '{}': {}", request.getName(), e.getMessage());
       throw new ServiceException("Unexpected error occurred while adding gold type");
     }
   }
