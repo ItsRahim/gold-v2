@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: pricing-service
+
+  config:
+    import: "configserver:"
+
+  cloud:
+    config:
+      name: database-config,eureka-client-config,flyway-config,kafka-config,redis-config,${spring.application.name}
+      discovery:
+        enabled: true
+        service-id: CONFIG-SERVER
+      enabled: true

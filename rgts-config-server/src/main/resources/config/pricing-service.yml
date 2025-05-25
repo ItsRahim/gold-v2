@@ -1,0 +1,15 @@
+server:
+  port: ${SERVER_PORT:8080}
+
+spring:
+  application:
+    name: pricing-service
+
+  flyway:
+    table: flyway_pricing_service_history
+
+logging:
+  level:
+    com.rahim: DEBUG
+    org.springframework: INFO
+
