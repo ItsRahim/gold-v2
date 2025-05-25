@@ -1,9 +1,10 @@
 server:
-  port: 8080
+  port: ${SERVER_PORT:8080}
 
 spring:
   application:
     name: pricing-service
+
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/gold}
@@ -18,20 +19,23 @@ spring:
       max-lifetime: 30000
       auto-commit: true
       pool-name: HikariCP
+
   jpa:
     hibernate:
       ddl-auto: update
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: false
     properties:
       hibernate:
         format_sql: true
-    show-sql: false
+
   flyway:
     enabled: true
+    baseline-on-migrate: true
     baseline-version: 0
     clean-disabled: false
-    baseline-on-migrate: true
-    table: flyway_${spring.application.name}_history
+    table: flyway_pricing-service_history
+
   data:
     redis:
       host: ${SPRING_DATA_REDIS_HOST:localhost}
@@ -40,12 +44,6 @@ spring:
 kafka:
   security-protocol: PLAINTEXT
   bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVER:localhost:9093}
-  #  ssl:
-  #    key-store-location: ${kafka.keystore.file}
-  #    key-password: '{cipher}password'
-  #    trust-store-location: ${kafka.truststore.file}
-  #    trust-store-password: '{cipher}password'
-  #    protocol: TLSv1.2
   producer:
     key-serializer: org.apache.kafka.common.serialization.StringSerializer
     value-serializer: org.apache.kafka.common.serialization.ByteArraySerializer
