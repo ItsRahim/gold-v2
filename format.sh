@@ -30,7 +30,10 @@ if [ -z "$modified_files" ]; then
   exit 0
 fi
 
-git add "$modified_files"
+# Stage files one by one
+for file in $modified_files; do
+  git add "$file"
+done
 
 # Detect branch name in CI or local
 branch_name="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME:-$(git rev-parse --abbrev-ref HEAD)}}"
