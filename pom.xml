@@ -15,8 +15,8 @@
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <rgts.version>1.0-SNAPSHOT</rgts.version>
-        <spring.version>3.5.0</spring.version>
-        <spring-cloud.version>2024.0.1</spring-cloud.version>
+        <spring.version>3.4.6</spring.version>
+        <spring-cloud.version>4.2.1</spring-cloud.version>
         <spring-grpc.version>0.8.0</spring-grpc.version>
         <spring-doc.version>2.8.8</spring-doc.version>
         <spring-kafka.version>3.3.6</spring-kafka.version>
@@ -29,6 +29,9 @@
         <zipkin.version>3.5.0</zipkin.version>
         <postgres.version>42.7.5</postgres.version>
         <flyway.version>11.8.2</flyway.version>
+        <jackson.version>2.18.4</jackson.version>
+        <slf4j.version>2.0.17</slf4j.version>
+        <logback.version>1.5.18</logback.version>
         <h2.version>2.3.232</h2.version>
         <mockito.version>5.18.0</mockito.version>
         <junit.version>5.12.2</junit.version>
@@ -150,6 +153,27 @@
                 <version>${spring-cloud.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-bootstrap</artifactId>
+                <version>${spring-cloud.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
+                <version>${spring-cloud.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+                <version>${spring-cloud.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
                 <groupId>org.springframework.grpc</groupId>
                 <artifactId>spring-grpc-spring-boot-starter</artifactId>
                 <version>${spring-grpc.version}</version>
@@ -160,13 +184,6 @@
                 <scope>runtime</scope>
                 <optional>true</optional>
                 <version>${spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-dependencies</artifactId>
-                <version>${spring-cloud.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.springframework.grpc</groupId>
@@ -261,6 +278,41 @@
                 <version>${flyway.version}</version>
                 <scope>runtime</scope>
             </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jul-to-slf4j</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jcl-over-slf4j</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${logback.version}</version>
+            </dependency>
             <!-- Test Dependencies -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
@@ -318,7 +370,6 @@
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
-                            <version>${lombok.version}</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
@@ -327,12 +378,18 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>3.5.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
                 <configuration>
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
-                            <version>${lombok.version}</version>
                         </exclude>
                     </excludes>
                 </configuration>

@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/gold}
+    username: ${DATABASE_USERNAME:postgres}
+    password: ${DATABASE_PASSWORD:password}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-timeout: 20000
+      minimum-idle: 2
+      maximum-pool-size: 5
+      idle-timeout: 10000
+      max-lifetime: 30000
+      auto-commit: true
+      pool-name: HikariCP
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
