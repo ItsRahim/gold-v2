@@ -41,6 +41,16 @@ spring:
       host: ${SPRING_DATA_REDIS_HOST:localhost}
       port: ${SPRING_DATA_REDIS_PORT:6379}
 
+eureka:
+  client:
+    service-url:
+      defaultZone: http://${EUREKA_SERVER_HOST:localhost}:${EUREKA_SERVER_PORT:8761}/eureka
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+
 kafka:
   security-protocol: PLAINTEXT
   bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVER:localhost:9093}
