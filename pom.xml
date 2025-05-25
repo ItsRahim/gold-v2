@@ -32,7 +32,7 @@
         <h2.version>2.3.232</h2.version>
         <mockito.version>5.18.0</mockito.version>
         <junit.version>5.12.2</junit.version>
-        <java-fixture.version>2.12.0</java-fixture.version>
+        <java-fixture.version>2.12.1</java-fixture.version>
 
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
         <maven-surefire-plugin.version>3.5.3</maven-surefire-plugin.version>
