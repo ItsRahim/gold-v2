@@ -9,10 +9,14 @@ if [ "$current_branch" == "main" ]; then
 fi
 
 # Check if there are any uncommitted changes
-if ! git diff-index --quiet HEAD --; then
-  echo "❌ Error: There are uncommitted changes. Please commit or stash them first."
-  git status --porcelain
-  exit 1
+if [ -n "$CI" ]; then
+  echo "Running in CI, skipping uncommitted changes check"
+else
+  if ! git diff-index --quiet HEAD --; then
+    echo "❌ Error: There are uncommitted changes. Please commit or stash them first."
+    git status --porcelain
+    exit 1
+  fi
 fi
 
 # Format the code
