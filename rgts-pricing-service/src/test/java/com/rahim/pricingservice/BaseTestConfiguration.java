@@ -50,7 +50,7 @@ public class BaseTestConfiguration {
   }
 
   @BeforeEach
-  public void setupRedisData() {
+  void setupRedisData() {
     for (int i = 1; i <= 24; i++) {
       String key = i + "K";
       GoldPurity goldPurity = new GoldPurity(i, key, i, 24, false);
@@ -71,7 +71,7 @@ public class BaseTestConfiguration {
   }
 
   @AfterEach
-  public void tearDown() {
+  void tearDown() {
     for (int i = 1; i <= 24; i++) {
       String key = i + "K";
       redisService.deleteKey(key);
