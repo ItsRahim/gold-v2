@@ -14,7 +14,7 @@ COPY rgts-python-api/Pipfile rgts-python-api/Pipfile.lock ./
 RUN python -m pipenv install --deploy --system
 
 COPY rgts-python-api/startup.sh /app/startup.sh
-COPY . .
+COPY rgts-python-api /app
 
 RUN chmod +x /app/startup.sh
 
