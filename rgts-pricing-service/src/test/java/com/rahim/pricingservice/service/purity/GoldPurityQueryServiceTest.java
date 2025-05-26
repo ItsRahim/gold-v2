@@ -4,7 +4,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 import com.rahim.common.exception.EntityNotFoundException;
-import com.rahim.pricingservice.BaseUnitTest;
+import com.rahim.pricingservice.BaseTestConfiguration;
 import com.rahim.pricingservice.entity.GoldPurity;
 import com.rahim.pricingservice.service.purity.impl.GoldPurityQueryService;
 import org.junit.jupiter.api.Test;
@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @created 04/05/2025
  * @author Rahim Ahmed
  */
-class GoldPurityQueryServiceTest extends BaseUnitTest {
+class GoldPurityQueryServiceTest extends BaseTestConfiguration {
 
   @Autowired private GoldPurityQueryService goldPurityQueryService;
 

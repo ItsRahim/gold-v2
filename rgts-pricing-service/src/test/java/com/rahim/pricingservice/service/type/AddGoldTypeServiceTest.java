@@ -6,7 +6,7 @@ import static org.mockito.Mockito.*;
 import com.rahim.cachemanager.service.RedisService;
 import com.rahim.common.exception.BadRequestException;
 import com.rahim.common.exception.DuplicateEntityException;
-import com.rahim.pricingservice.BaseUnitTest;
+import com.rahim.pricingservice.BaseTestConfiguration;
 import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
 import com.rahim.pricingservice.entity.GoldPrice;
 import com.rahim.pricingservice.entity.GoldPurity;
@@ -18,7 +18,6 @@ import com.rahim.pricingservice.service.type.impl.AddGoldTypeService;
 import java.math.BigDecimal;
 import java.time.Instant;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -26,12 +25,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 
-/**
- * @author Rahim Ahmed
- * @created 24/03/2025
- */
-@Disabled("Temporarily ignored in CI")
-class AddGoldTypeServiceTest extends BaseUnitTest {
+
+class AddGoldTypeServiceTest extends BaseTestConfiguration {
 
   @Autowired @InjectMocks private AddGoldTypeService addGoldTypeService;
 
