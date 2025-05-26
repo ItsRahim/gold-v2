@@ -1,6 +1,7 @@
 package com.rahim.common.handler;
 
 import com.rahim.common.exception.ApiException;
+import com.rahim.common.exception.EntityNotFoundException;
 import com.rahim.common.response.ErrorResponse;
 import java.util.List;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,12 @@ public class ApiExceptionHandler {
   @ExceptionHandler(ApiException.class)
   public ResponseEntity<ErrorResponse> apiExceptionHandler(ApiException ex) {
     ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), ex.getHttpStatus());
+    return ResponseEntity.status(errorResponse.getStatus()).body(errorResponse);
+  }
+
+  @ExceptionHandler(EntityNotFoundException.class)
+  public ResponseEntity<ErrorResponse> entityNotFoundHandler(EntityNotFoundException ex) {
+    ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), HttpStatus.NOT_FOUND);
     return ResponseEntity.status(errorResponse.getStatus()).body(errorResponse);
   }
 
