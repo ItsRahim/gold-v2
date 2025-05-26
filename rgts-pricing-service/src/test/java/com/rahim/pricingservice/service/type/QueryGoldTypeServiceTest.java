@@ -8,7 +8,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.rahim.common.exception.EntityNotFoundException;
-import com.rahim.pricingservice.BaseUnitTest;
+import com.rahim.pricingservice.BaseTestConfiguration;
 import com.rahim.pricingservice.dto.response.GoldTypeResponseDTO;
 import com.rahim.pricingservice.entity.GoldPurity;
 import com.rahim.pricingservice.entity.GoldType;
@@ -34,7 +34,7 @@ import org.springframework.data.domain.Sort;
  * @author Rahim Ahmed
  * @created 21/05/2025
  */
-class QueryGoldTypeServiceTest extends BaseUnitTest {
+class QueryGoldTypeServiceTest extends BaseTestConfiguration {
 
   @Mock private GoldTypeRepository goldTypeRepository;
 

@@ -5,14 +5,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.rahim.common.handler.ApiExceptionHandler;
-import com.rahim.pricingservice.BaseControllerTest;
+import com.rahim.pricingservice.BaseTestConfiguration;
 import com.rahim.pricingservice.constant.Endpoints;
 import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
 import com.rahim.pricingservice.enums.WeightUnit;
 import com.rahim.pricingservice.service.type.IAddGoldTypeService;
 import java.math.BigDecimal;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
-@Disabled("Temporarily ignored in CI")
-class GoldTypeControllerTest extends BaseControllerTest {
+class GoldTypeControllerTest extends BaseTestConfiguration {
 
   private MockMvc mockMvc;
 
@@ -59,7 +57,7 @@ class GoldTypeControllerTest extends BaseControllerTest {
         .andExpect(jsonPath("$.purity").value("22K"))
         .andExpect(jsonPath("$.weight").value("10 g"))
         .andExpect(jsonPath("$.description").value("Test gold"))
-        .andExpect(jsonPath("$.price").value(730.60));
+        .andExpect(jsonPath("$.price").value(11000.00));
   }
 
   @Test
@@ -128,19 +126,22 @@ class GoldTypeControllerTest extends BaseControllerTest {
 
   @Test
   void shouldReturn200AndInitialPageOfGoldTypes() throws Exception {
-    addGoldTypeService.addGoldType(
+    AddGoldTypeRequest request1 =
         new AddGoldTypeRequest(
-            "1 Carat", "22K", BigDecimal.ONE, WeightUnit.GRAM.getValue(), "Desc"));
-    addGoldTypeService.addGoldType(
+            "A Gold Necklace", "22K", BigDecimal.ONE, WeightUnit.GRAM.getValue(), "Desc");
+    addGoldTypeService.addGoldType(request1);
+
+    AddGoldTypeRequest request2 =
         new AddGoldTypeRequest(
-            "10 Carat", "22K", BigDecimal.ONE, WeightUnit.GRAM.getValue(), "Desc"));
+            "B Gold Necklace", "22K", BigDecimal.ONE, WeightUnit.GRAM.getValue(), "Desc");
+    addGoldTypeService.addGoldType(request2);
 
     mockMvc
         .perform(get(Endpoints.GOLD_TYPE_ENDPOINT))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.content", hasSize(2)))
         .andExpect(jsonPath("$.totalElements").value(2))
-        .andExpect(jsonPath("$.content[0].name").value("1 Carat"))
-        .andExpect(jsonPath("$.content[1].name").value("10 Carat"));
+        .andExpect(jsonPath("$.content[0].name").value(request1.getName()))
+        .andExpect(jsonPath("$.content[1].name").value(request2.getName()));
   }
 }

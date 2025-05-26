@@ -1,4 +1,3 @@
 Cleanup on the exceptions being thrown, when they're being caught and the logs
-Refactor the code and organise it better
 Implement ELK, prometheus, grafana
-Implement a script to do a sonarqube scan on local
+Remove the GRPC code, libraries. Possibly H2
