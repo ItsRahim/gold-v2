@@ -53,10 +53,10 @@ class GoldTypeControllerTest extends BaseTestConfiguration {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestToJson(request)))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.name").value("Necklace"))
-        .andExpect(jsonPath("$.purity").value("22K"))
-        .andExpect(jsonPath("$.weight").value("10 g"))
-        .andExpect(jsonPath("$.description").value("Test gold"))
+        .andExpect(jsonPath("$.name").value(request.getName()))
+        .andExpect(jsonPath("$.purity").value(request.getCaratLabel()))
+        .andExpect(jsonPath("$.weight").value(request.getWeight() + " " + request.getUnit()))
+        .andExpect(jsonPath("$.description").value(request.getDescription()))
         .andExpect(jsonPath("$.price").value(11000.00));
   }
 
