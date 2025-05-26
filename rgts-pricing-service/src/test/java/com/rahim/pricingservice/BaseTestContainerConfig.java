@@ -16,12 +16,12 @@ public abstract class BaseTestContainerConfig {
 
   @SuppressWarnings("resource")
   static final PostgreSQLContainer<?> postgres =
-      new PostgreSQLContainer<>(DockerImageName.parse("postgres:15"))
+      new PostgreSQLContainer<>(DockerImageName.parse("postgres:latest"))
           .withDatabaseName("rgts-test-db");
 
   @Bean
   @ServiceConnection
   RedisContainer redisContainer() {
-    return new RedisContainer(DockerImageName.parse("redis:6.2.1"));
+    return new RedisContainer(DockerImageName.parse("redis:latest"));
   }
 }
