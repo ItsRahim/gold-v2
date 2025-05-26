@@ -2,7 +2,7 @@ package com.rahim.pricingservice.service.price;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.rahim.pricingservice.BaseUnitTest;
+import com.rahim.pricingservice.BaseTestConfiguration;
 import com.rahim.pricingservice.entity.GoldPurity;
 import com.rahim.pricingservice.enums.WeightUnit;
 import com.rahim.pricingservice.exception.GoldPriceCalculationException;
@@ -18,7 +18,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class GoldPriceCalculationTest extends BaseUnitTest {
+public class GoldPriceCalculationTest extends BaseTestConfiguration {
   @Autowired private GoldPriceCalculationService goldPriceCalculationService;
 
   private static final BigDecimal TROY_OUNCE_TO_GRAMS = BigDecimal.valueOf(31.1035);
