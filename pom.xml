@@ -27,7 +27,7 @@
         <javax-annotation.version>1.3.2</javax-annotation.version>
         <micrometer.version>1.15.0</micrometer.version>
         <zipkin.version>3.5.0</zipkin.version>
-        <postgres.version>42.7.5</postgres.version>
+        <postgres.version>42.7.6</postgres.version>
         <flyway.version>11.8.2</flyway.version>
         <jackson.version>2.19.0</jackson.version>
         <slf4j.version>2.0.17</slf4j.version>
