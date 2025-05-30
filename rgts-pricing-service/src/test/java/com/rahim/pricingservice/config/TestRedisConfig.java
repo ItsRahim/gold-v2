@@ -16,24 +16,22 @@ import org.springframework.data.redis.core.RedisTemplate;
 @Profile("test")
 public class TestRedisConfig {
 
-    private final RedisContainer redisContainer;
+  private final RedisContainer redisContainer;
 
-    public TestRedisConfig(RedisContainer redisContainer) {
-        this.redisContainer = redisContainer;
-    }
+  public TestRedisConfig(RedisContainer redisContainer) {
+    this.redisContainer = redisContainer;
+  }
 
-    @Bean
-    public RedisConnectionFactory redisConnectionFactory() {
-        return new LettuceConnectionFactory(
-                redisContainer.getHost(),
-                redisContainer.getFirstMappedPort()
-        );
-    }
+  @Bean
+  public RedisConnectionFactory redisConnectionFactory() {
+    return new LettuceConnectionFactory(
+        redisContainer.getHost(), redisContainer.getFirstMappedPort());
+  }
 
-    @Bean
-    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
-        RedisTemplate<String, Object> template = new RedisTemplate<>();
-        template.setConnectionFactory(connectionFactory);
-        return template;
-    }
+  @Bean
+  public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
+    RedisTemplate<String, Object> template = new RedisTemplate<>();
+    template.setConnectionFactory(connectionFactory);
+    return template;
+  }
 }
