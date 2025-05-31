@@ -30,7 +30,7 @@ jobs:
       - name: SonarQube Scan
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=ItsRahim_gold-v2 -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+        run: mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=ItsRahim_gold-v2 -Dsonar.token=${{ secrets.SONAR_TOKEN }}
 
   security-scan:
     runs-on: ubuntu-latest
