@@ -41,6 +41,7 @@
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
         <maven-surefire-plugin.version>3.5.3</maven-surefire-plugin.version>
         <spotify-fmt-plugin.version>2.27</spotify-fmt-plugin.version>
+        <jacoco.version>0.8.13</jacoco.version>
 
         <sonar.organization>rahim-ahmed</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
@@ -441,6 +442,25 @@
                 <groupId>com.spotify.fmt</groupId>
                 <artifactId>fmt-maven-plugin</artifactId>
                 <version>${spotify-fmt-plugin.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
