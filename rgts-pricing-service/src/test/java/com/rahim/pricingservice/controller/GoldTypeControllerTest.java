@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import com.jayway.jsonpath.JsonPath;
 import com.rahim.common.handler.ApiExceptionHandler;
 import com.rahim.pricingservice.BaseTestConfiguration;
 import com.rahim.pricingservice.constant.Endpoints;
@@ -17,6 +18,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
@@ -151,13 +153,20 @@ class GoldTypeControllerTest extends BaseTestConfiguration {
         new AddGoldTypeRequest(
             "A Gold Necklace", "22K", BigDecimal.ONE, WeightUnit.GRAM.getValue(), "Desc");
 
-    mockMvc.perform(
-        post(Endpoints.GOLD_TYPE_ENDPOINT)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(requestToJson(request)));
+    MvcResult postResult =
+        mockMvc
+            .perform(
+                post(Endpoints.GOLD_TYPE_ENDPOINT)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(requestToJson(request)))
+            .andExpect(status().isOk())
+            .andReturn();
+
+    String responseContent = postResult.getResponse().getContentAsString();
+    Integer id = JsonPath.read(responseContent, "$.id");
 
     mockMvc
-        .perform(get(Endpoints.GOLD_TYPE_ENDPOINT + "/{id}", 1))
+        .perform(get(Endpoints.GOLD_TYPE_ENDPOINT + "/{id}", id.longValue()))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.name").value(request.getName()))
         .andExpect(jsonPath("$.purity").value(request.getCaratLabel()))

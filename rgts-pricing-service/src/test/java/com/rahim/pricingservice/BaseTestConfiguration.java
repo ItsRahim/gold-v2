@@ -34,7 +34,7 @@ import java.math.BigDecimal;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class BaseTestConfiguration {
 
-  @Autowired RedisService redisService;
+  @Autowired private RedisService redisService;
 
   @Autowired private DataSource dataSource;
 
