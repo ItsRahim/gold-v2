@@ -1,5 +1,37 @@
+# Ignore everything by default
+**
+
+# Allow just the required project files
+!rgts-python-api/alembic/
+!rgts-python-api/alembic.ini
+!rgts-python-api/backend/
+!rgts-python-api/Pipfile
+!rgts-python-api/Pipfile.lock
+!rgts-python-api/startup.sh
+
+# Still ignore cache and virtual envs inside included folders
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+**/*.pyd
+**/*.log
+
+# Ignore IDE and environment files
 .env
-.gitignore
-.idea
+.env.*
+.idea/
 *.iml
+.vscode/
+*.swp
+
+# Git and dev tools
+.git/
+.gitignore
 Dockerfile
+.dockerignore
+
+# Optional: ignore extras
+tests/
+docs/
+examples/
+*.txt
