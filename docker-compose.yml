@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   postgres:
     image: postgres:latest
@@ -102,11 +100,12 @@ services:
     depends_on:
       - postgres
       - redis
+      - kafka
     networks:
       - my-network
 
   eureka-server:
-    image: ghcr.io/itsrahim/rgts-pricing-service:latest
+    image: ghcr.io/itsrahim/rgts-eureka-server:latest
     ports:
       - "8761:8761"
     environment:
