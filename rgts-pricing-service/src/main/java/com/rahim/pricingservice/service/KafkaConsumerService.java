@@ -4,6 +4,8 @@ import com.rahim.pricingservice.dto.payload.GoldPriceUpdateDTO;
 import com.rahim.pricingservice.service.price.IUpdateGoldPriceService;
 import com.rahim.proto.protobuf.GoldPriceInfo;
 import com.rahim.proto.util.ProtobufDerSerUtil;
+import io.github.springwolf.core.asyncapi.annotations.AsyncListener;
+import io.github.springwolf.core.asyncapi.annotations.AsyncOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -18,6 +20,12 @@ import org.springframework.stereotype.Service;
 public class KafkaConsumerService {
   private final IUpdateGoldPriceService updateGoldPriceService;
 
+  @AsyncListener(
+      operation =
+          @AsyncOperation(
+              channelName = "gold.price.update",
+              description = "Consumes GoldPriceInfo Protobuf object as a byte array",
+              payloadType = GoldPriceInfo.class))
   @KafkaListener(topics = "gold.price.update", groupId = "gold-price-group")
   public void listen(@Payload byte[] data, Acknowledgment ack) {
     try {

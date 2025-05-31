@@ -22,3 +22,15 @@ logging:
     com.rahim: DEBUG
     org.springframework: INFO
 
+springwolf:
+  enabled: true
+  docket:
+    base-package: com.rahim
+    info:
+      title: ${spring.application.name}
+      version: 1.0
+      description: Pricing Service Async Communication
+    servers:
+      kafka-server:
+        protocol: kafka
+        host: ${kafka.bootstrap-servers}
