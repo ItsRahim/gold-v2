@@ -2,14 +2,14 @@ package com.rahim.pricingservice;
 
 import static com.rahim.pricingservice.BaseTestContainerConfig.postgres;
 
-import javax.sql.DataSource;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rahim.cachemanager.service.RedisService;
 import com.rahim.common.handler.ApiExceptionHandler;
 import com.rahim.common.util.DateUtil;
 import com.rahim.pricingservice.entity.GoldPrice;
 import com.rahim.pricingservice.entity.GoldPurity;
+import java.math.BigDecimal;
+import javax.sql.DataSource;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -21,8 +21,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
 
 /**
  * @created 26/05/2025

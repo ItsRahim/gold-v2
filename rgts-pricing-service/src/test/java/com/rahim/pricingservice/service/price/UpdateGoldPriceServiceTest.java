@@ -13,7 +13,6 @@ import com.rahim.pricingservice.repository.GoldPriceRepository;
 import com.rahim.pricingservice.repository.GoldPurityRepository;
 import com.rahim.pricingservice.service.price.impl.UpdateGoldPriceService;
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
