@@ -35,7 +35,7 @@
         <mockito.version>5.18.0</mockito.version>
         <junit.version>5.13.0</junit.version>
         <java-fixture.version>2.12.1</java-fixture.version>
-        <test-container.version>1.21.0</test-container.version>
+        <test-container.version>1.21.1</test-container.version>
         <redis-test-container.version>2.2.4</redis-test-container.version>
 
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
