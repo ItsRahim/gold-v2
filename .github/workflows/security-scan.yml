@@ -1,7 +1,7 @@
 name: Nightly Sonar and OWASP Scan
 on:
   schedule:
-    - "0 3 * * *"
+    - cron: "0 3 * * *"
 jobs:
   code-scan:
     runs-on: ubuntu-latest
