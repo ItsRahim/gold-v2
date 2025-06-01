@@ -1,5 +1,7 @@
 package com.rahim.authenticationservice.controller;
 
+import static com.rahim.authenticationservice.constants.Endpoints.*;
+
 import com.rahim.authenticationservice.dto.internal.AuthResult;
 import com.rahim.authenticationservice.dto.request.LoginUserRequest;
 import com.rahim.authenticationservice.dto.request.RefreshTokenRequest;
@@ -12,20 +14,17 @@ import com.rahim.authenticationservice.entity.User;
 import com.rahim.authenticationservice.service.AuthenticationService;
 import com.rahim.authenticationservice.service.JwtService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
-
-import static com.rahim.authenticationservice.constants.Endpoints.*;
 
 /**
  * @created 01/06/2025
@@ -231,10 +230,8 @@ public class AuthenticationController {
               "isExpired", jwtService.isTokenExpired(token)));
     } catch (Exception e) {
       log.error("Failed to get token info: {}", e.getMessage());
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of(
-          "error", "Invalid token",
-          "message", e.getMessage()
-      ));
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+          .body(Map.of("error", "Invalid token", "message", e.getMessage()));
     }
   }
 }

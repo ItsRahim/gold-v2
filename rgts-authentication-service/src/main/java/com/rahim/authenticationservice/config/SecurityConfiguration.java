@@ -1,5 +1,10 @@
 package com.rahim.authenticationservice.config;
 
+import static com.rahim.authenticationservice.constants.Endpoints.*;
+
+import java.time.Duration;
+import java.util.Arrays;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -17,12 +22,6 @@ import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWrite
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import java.time.Duration;
-import java.util.Arrays;
-import java.util.List;
-
-import static com.rahim.authenticationservice.constants.Endpoints.*;
 
 /**
  * @created 01/06/2025

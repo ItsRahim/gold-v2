@@ -12,6 +12,9 @@ import com.rahim.authenticationservice.repository.UserRepository;
 import com.rahim.common.exception.DuplicateEntityException;
 import com.rahim.common.exception.EntityNotFoundException;
 import com.rahim.kafkaservice.service.IKafkaService;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -20,10 +23,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.Optional;
 
 /**
  * @created 01/06/2025

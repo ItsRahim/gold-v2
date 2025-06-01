@@ -1,15 +1,14 @@
 package com.rahim.authenticationservice.repository;
 
 import com.rahim.authenticationservice.entity.RefreshToken;
+import java.time.Instant;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
-import java.time.Instant;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * @created 01/06/2025
@@ -37,19 +36,15 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Inte
       "SELECT COUNT(rt) > 0 FROM RefreshToken rt WHERE rt.token = :token AND rt.revoked = false AND rt.expiresAt > :now")
   boolean existsByTokenAndValid(@Param("token") String token, @Param("now") Instant now);
 
-  /**
-   * Revoke all active tokens for a user
-   */
+  /** Revoke all active tokens for a user */
   @Modifying
   @Query(
       "UPDATE RefreshToken rt SET rt.revoked = true, rt.revokedAt = :now WHERE rt.userId = :userId AND rt.revoked = false")
   void revokeAllTokensForUser(@Param("userId") Integer userId, @Param("now") Instant now);
 
-  /**
-   * Revoke all active tokens for a user (convenience method)
-   */
+  /** Revoke all active tokens for a user (convenience method) */
   default void revokeAllTokensForUser(Integer userId) {
-      revokeAllTokensForUser(userId, Instant.now());
+    revokeAllTokensForUser(userId, Instant.now());
   }
 
   /** Revoke a specific token */

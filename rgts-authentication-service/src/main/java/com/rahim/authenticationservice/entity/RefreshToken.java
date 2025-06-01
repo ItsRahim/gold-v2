@@ -1,9 +1,8 @@
 package com.rahim.authenticationservice.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
-
 import java.time.Instant;
+import lombok.*;
 
 /**
  * @created 01/06/2025
