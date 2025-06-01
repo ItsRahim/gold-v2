@@ -52,6 +52,34 @@ services:
     networks:
       - my-network
 
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: zipkin
+    ports:
+      - "9411:9411"
+    networks:
+      - my-network
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+    networks:
+      - my-network
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    networks:
+      - my-network
+
   sonarqube:
     image: sonarqube:latest
     container_name: sonarqube
@@ -115,12 +143,25 @@ services:
     networks:
       - my-network
 
+  gateway-service:
+    image: ghcr.io/itsrahim/rgts-gateway-service:latest
+    ports:
+      - "8081:8081"
+    environment:
+      - SERVER_PORT=8081
+      - EUREKA_SERVER_DEFAULT_ZONE=http://eureka-server:8761/eureka
+    depends_on:
+      - eureka-server
+    command: [ "java", "-jar", "/app/gateway-service.jar" ]
+    networks:
+      - my-network
+
   pricing-service:
     image: ghcr.io/itsrahim/rgts-pricing-service:latest
     ports:
-      - "8080:8080"
+      - "8081:8081"
     environment:
-      - SERVER_PORT=8080
+      - SERVER_PORT=8081
       - EUREKA_SERVER_DEFAULT_ZONE=http://eureka-server:8761/eureka
       - DATABASE_URL=jdbc:postgresql://postgres:5432/gold
       - DATABASE_USERNAME=postgres

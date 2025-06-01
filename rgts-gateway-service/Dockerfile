@@ -21,17 +21,13 @@ COPY rgts-scheduler-service/pom.xml rgts-scheduler-service/
 COPY rgts-user-service/pom.xml rgts-user-service/
 
 # Download dependencies
-RUN mvn dependency:go-offline -pl rgts-pricing-service -am
+RUN mvn dependency:go-offline -pl rgts-gateway-service -am
 
 # Copy sources
-COPY rgts-common/src rgts-common/src
-COPY rgts-cache-manager/src rgts-cache-manager/src
-COPY rgts-kafka-service/src rgts-kafka-service/src
-COPY rgts-proto-service/src rgts-proto-service/src
-COPY rgts-pricing-service/src rgts-pricing-service/src
+COPY rgts-gateway-service/src rgts-gateway-service/src
 
 # Package the target service and dependencies
-RUN mvn clean package -pl rgts-pricing-service -am -DskipTests
+RUN mvn clean package -pl rgts-gateway-service -am -DskipTests
 
 # Runtime stage
 FROM amazoncorretto:21.0.7-alpine
@@ -41,14 +37,14 @@ RUN addgroup -g 1001 -S appgroup && \
 
 WORKDIR /app
 
-COPY --from=build /app/rgts-pricing-service/target/*.jar app.jar
+COPY --from=build /app/rgts-gateway-service/target/*.jar app.jar
 
 RUN chown -R appuser:appgroup /app
 USER appuser
 
-EXPOSE 8081
+EXPOSE 8080
 
 HEALTHCHECK --interval=30s --timeout=3s --start-period=60s --retries=3 \
-    CMD curl -f http://localhost:8081/actuator/health || exit 1
+    CMD curl -f http://localhost:8080/actuator/health || exit 1
 
 ENTRYPOINT ["java", "-jar", "app.jar"]

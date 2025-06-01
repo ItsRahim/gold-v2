@@ -5,21 +5,22 @@ on:
     branches:
       - main
     paths:
+      - '.github/**'
+      - 'rgts-common/**'
       - 'rgts-config-server/**'
       - 'rgts-eureka-server/**'
-      - 'rgts-common/**'
-      - 'rgts-proto-service/**'
+      - 'rgts-gateway-service/**'
       - 'rgts-kafka-service/**'
       - 'rgts-pricing-service/**'
+      - 'rgts-proto-service/**'
       - 'rgts-python-api'
-      - '.github/**'
 
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        folder: [ "rgts-config-server", "rgts-eureka-server", "rgts-pricing-service" ]
+        folder: [ "rgts-config-server", "rgts-eureka-server", "rgts-gateway-service", "rgts-pricing-service" ]
 
     steps:
       - name: Checkout code
@@ -49,7 +50,7 @@ jobs:
     needs: build
     strategy:
       matrix:
-        folder: [ "rgts-eureka-server", "rgts-pricing-service", "rgts-python-api" ]
+        folder: [ "rgts-eureka-server", "rgts-gateway-service", "rgts-pricing-service", "rgts-python-api" ]
 
     steps:
       - name: Checkout code
