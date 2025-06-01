@@ -13,7 +13,6 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
@@ -50,8 +49,17 @@ public class SecurityConfiguration {
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    return http.csrf(AbstractHttpConfigurer::disable)
-        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+    return http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        .csrf(
+            csrf ->
+                csrf.ignoringRequestMatchers(
+                    SIGNUP,
+                    LOGIN,
+                    RESEND,
+                    FORGOT_PASSWORD,
+                    RESET_PASSWORD,
+                    "/swagger-ui/**",
+                    "/swagger-ui.html"))
         .authorizeHttpRequests(
             auth ->
                 auth.requestMatchers(

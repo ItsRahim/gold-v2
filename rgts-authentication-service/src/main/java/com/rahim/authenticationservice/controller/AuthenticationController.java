@@ -201,7 +201,7 @@ public class AuthenticationController {
       return ResponseEntity.status(HttpStatus.OK).body("Logged out successfully");
     } catch (Exception e) {
       log.error("Logout failed: {}", e.getMessage());
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Logout failed: " + e.getMessage());
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Logout failed due to an error");
     }
   }
 
