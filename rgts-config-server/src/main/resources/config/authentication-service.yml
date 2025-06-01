@@ -8,7 +8,28 @@ spring:
 security:
   jwt:
     secret: ${JWT_SECRET:uQw1v6Qw1v6Qw1v6Qw1v6Qw1v6Qw1v6Qw1v6Qw1v6Qw1v6Qw1v6Qw1v6Qw1v6Qw==}
-    expiration: ${JWT_EXPIRATION:3600000}
+    expiration: ${JWT_EXPIRATION:1800000}
+    refresh-expiration: ${JWT_REFRESH_EXPIRATION:604800000}
+
+app:
+  cors:
+    allowed-origins:
+      - ${REACT_URL:http://localhost:3000}
+      - ${API_GATEWAY:http://localhost:8080}
+      - ${DOMAIN_URL:https://mydomain.com}
+    allowed-methods:
+      - "GET"
+      - "POST"
+      - "PUT"
+      - "DELETE"
+      - "OPTIONS"
+    allowed-headers:
+      - "Authorization"
+      - "Content-Type"
+      - "Accept"
+      - "X-Requested-With"
+      - "Cache-Control"
+    allow-credentials: true
 
 logging:
   level:

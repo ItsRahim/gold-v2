@@ -7,7 +7,6 @@ import lombok.Data;
  * @author Rahim Ahmed
  */
 @Data
-public class LoginUserRequest {
-  private String username;
-  private String password;
+public class RefreshTokenRequest {
+    private String refreshToken;
 }

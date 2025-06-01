@@ -1,19 +1,28 @@
 package com.rahim.authenticationservice.dto.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.*;
 
 /**
  * @created 01/06/2025
  * @author Rahim Ahmed
  */
-@Getter
-@Setter
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class LoginResponse {
-  private String token;
-  private long expiresAt;
+  @JsonProperty("access_token")
+  private String accessToken;
+
+  @JsonProperty("refresh_token")
+  private String refreshToken;
+
+  @JsonProperty("token_type")
+  private String tokenType;
+
+  @JsonProperty("expires_in")
+  private long expiresIn;
+
+  private SignupResponse user;
 }
