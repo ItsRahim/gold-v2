@@ -4,5 +4,5 @@ spring:
     baseline-on-migrate: true
     baseline-version: 0
     clean-disabled: false
-    default-schema: public
-    schemas: rgts
+    schemas: ${spring.application.name}
+    default-schema: ${spring.application.name}

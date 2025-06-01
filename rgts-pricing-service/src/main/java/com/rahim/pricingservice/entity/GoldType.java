@@ -14,7 +14,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "gold_types", schema = "rgts")
+@Table(name = "gold_types", schema = "pricing-service")
 public class GoldType {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

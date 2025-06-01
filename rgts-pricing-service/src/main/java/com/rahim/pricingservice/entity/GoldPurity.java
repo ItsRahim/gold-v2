@@ -13,7 +13,7 @@ import org.hibernate.annotations.ColumnDefault;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "gold_purities", schema = "rgts")
+@Table(name = "gold_purities", schema = "pricing-service")
 public class GoldPurity implements Serializable {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

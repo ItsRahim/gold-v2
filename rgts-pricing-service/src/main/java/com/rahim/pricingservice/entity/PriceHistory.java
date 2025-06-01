@@ -12,7 +12,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "price_history", schema = "rgts")
+@Table(name = "price_history", schema = "pricing-service")
 public class PriceHistory {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
