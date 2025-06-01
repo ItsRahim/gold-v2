@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: email-service
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: '{cipher}0ecb2bad82f5c5676209da1f514894185b82d7f119f817fbe92daf5b1913c54ed94bb9907251ef77a2086cfb861fd346'
+    password: '{cipher}0363f6b11cd611622f0b974cd2abca7e62d49ee9f6cd8ee43d3d22c90f47715fc30333a287b4357433ff547562793500'
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+logging:
+  package: com.rahim.emailservice
+  level:
+    com.rahim.emailservice: DEBUG
+    org.springframework: INFO
