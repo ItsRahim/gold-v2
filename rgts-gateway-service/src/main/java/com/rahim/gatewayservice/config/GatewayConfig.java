@@ -1,13 +1,13 @@
 package com.rahim.gatewayservice.config;
 
+import static com.rahim.gatewayservice.constants.UriConstants.*;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.GatewayFilterSpec;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import static com.rahim.gatewayservice.constants.UriConstants.*;
 
 /**
  * @created 01/06/2025
