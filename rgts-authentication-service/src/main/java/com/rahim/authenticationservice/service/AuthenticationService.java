@@ -12,11 +12,10 @@ import com.rahim.authenticationservice.repository.UserRepository;
 import com.rahim.common.exception.DuplicateEntityException;
 import com.rahim.common.exception.EntityNotFoundException;
 import com.rahim.kafkaservice.service.IKafkaService;
+import jakarta.servlet.http.HttpServletRequest;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
-
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
