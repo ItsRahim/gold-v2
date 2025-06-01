@@ -6,7 +6,6 @@ import jakarta.validation.constraints.Size;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
-
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.security.core.GrantedAuthority;

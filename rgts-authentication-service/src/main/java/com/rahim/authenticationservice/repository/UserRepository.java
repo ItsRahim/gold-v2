@@ -1,10 +1,9 @@
 package com.rahim.authenticationservice.repository;
 
 import com.rahim.authenticationservice.entity.User;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
-import java.util.Optional;
 
 /**
  * @created 01/06/2025
