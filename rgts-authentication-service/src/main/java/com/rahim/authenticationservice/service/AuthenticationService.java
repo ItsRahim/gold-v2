@@ -6,14 +6,13 @@ import com.rahim.authenticationservice.dto.request.VerifyUserRequest;
 import com.rahim.authenticationservice.entity.User;
 import com.rahim.authenticationservice.repository.UserRepository;
 import com.rahim.kafkaservice.service.IKafkaService;
+import java.time.Instant;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.time.Instant;
-import java.util.Optional;
 
 /**
  * @created 01/06/2025
