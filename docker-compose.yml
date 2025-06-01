@@ -143,12 +143,25 @@ services:
     networks:
       - my-network
 
+  gateway-service:
+    image: ghcr.io/itsrahim/rgts-gateway-service:latest
+    ports:
+      - "8081:8081"
+    environment:
+      - SERVER_PORT=8081
+      - EUREKA_SERVER_DEFAULT_ZONE=http://eureka-server:8761/eureka
+    depends_on:
+      - eureka-server
+    command: [ "java", "-jar", "/app/gateway-service.jar" ]
+    networks:
+      - my-network
+
   pricing-service:
     image: ghcr.io/itsrahim/rgts-pricing-service:latest
     ports:
-      - "8080:8080"
+      - "8081:8081"
     environment:
-      - SERVER_PORT=8080
+      - SERVER_PORT=8081
       - EUREKA_SERVER_DEFAULT_ZONE=http://eureka-server:8761/eureka
       - DATABASE_URL=jdbc:postgresql://postgres:5432/gold
       - DATABASE_USERNAME=postgres
