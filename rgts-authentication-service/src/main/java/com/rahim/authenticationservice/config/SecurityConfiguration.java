@@ -47,32 +47,23 @@ public class SecurityConfiguration {
   @Value("${app.cors.allow-credentials:true}")
   private boolean allowCredentials;
 
+  private static final String[] ALLOWED_MATCHERS = {
+    AUTH_SERVICE_WILDCARD,
+    SIGNUP,
+    LOGIN,
+    RESEND,
+    FORGOT_PASSWORD,
+    RESET_PASSWORD,
+    "/swagger-ui/**",
+    "/swagger-ui.html"
+  };
+
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     return http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
-        .csrf(
-            csrf ->
-                csrf.ignoringRequestMatchers(
-                    SIGNUP,
-                    LOGIN,
-                    RESEND,
-                    FORGOT_PASSWORD,
-                    RESET_PASSWORD,
-                    "/swagger-ui/**",
-                    "/swagger-ui.html"))
+        .csrf(csrf -> csrf.ignoringRequestMatchers(ALLOWED_MATCHERS))
         .authorizeHttpRequests(
-            auth ->
-                auth.requestMatchers(
-                        SIGNUP,
-                        LOGIN,
-                        RESEND,
-                        FORGOT_PASSWORD,
-                        RESET_PASSWORD,
-                        "/swagger-ui/**",
-                        "/swagger-ui.html")
-                    .permitAll()
-                    .anyRequest()
-                    .authenticated())
+            auth -> auth.requestMatchers(ALLOWED_MATCHERS).permitAll().anyRequest().authenticated())
         .sessionManagement(
             session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .headers(

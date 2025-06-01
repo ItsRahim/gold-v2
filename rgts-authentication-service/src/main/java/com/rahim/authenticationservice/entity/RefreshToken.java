@@ -45,9 +45,6 @@ public class RefreshToken {
   @Column(name = "revoked_at")
   private Instant revokedAt;
 
-  @Column(name = "device_info")
-  private String deviceInfo;
-
   @Column(name = "ip_address", length = 45)
   private String ipAddress;
 

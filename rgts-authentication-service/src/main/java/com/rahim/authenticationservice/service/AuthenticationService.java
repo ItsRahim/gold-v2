@@ -15,6 +15,8 @@ import com.rahim.kafkaservice.service.IKafkaService;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
+
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -76,7 +78,7 @@ public class AuthenticationService {
     }
   }
 
-  public AuthResult login(LoginUserRequest loginUserRequest) {
+  public AuthResult login(LoginUserRequest loginUserRequest, HttpServletRequest httpRequest) {
     User user = findByUsername(loginUserRequest.getUsername());
 
     if (!user.isEnabled()) {
@@ -95,6 +97,7 @@ public class AuthenticationService {
             .expiresAt(Instant.now().plusMillis(jwtService.getRefreshExpirationTime()))
             .createdAt(Instant.now())
             .revoked(false)
+            .ipAddress(httpRequest.getRemoteAddr())
             .build();
     refreshTokenRepository.save(tokenEntity);
 

@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -95,10 +96,10 @@ public class AuthenticationController {
     @ApiResponse(responseCode = "500", description = "Internal server error")
   })
   @PostMapping(LOGIN)
-  public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginUserRequest request) {
+  public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginUserRequest request, HttpServletRequest httpRequest) {
     log.info("Login attempt for username: {}", request.getUsername());
 
-    AuthResult authResult = authenticationService.login(request);
+    AuthResult authResult = authenticationService.login(request, httpRequest);
     User authenticatedUser = authResult.user;
     String refreshToken = authResult.refreshToken;
     String accessToken = jwtService.generateToken(authenticatedUser);
