@@ -12,7 +12,7 @@ spring:
 
   cloud:
     config:
-      name: zipkin-config,${spring.application.name}
+      name: jwt-config,zipkin-config,${spring.application.name}
       discovery:
         enabled: true
         service-id: CONFIG-SERVER

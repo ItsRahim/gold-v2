@@ -63,6 +63,10 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Inte
   @Query("DELETE FROM RefreshToken rt WHERE rt.revoked = true AND rt.revokedAt < :before")
   int deleteRevokedTokensOlderThan(@Param("before") Instant before);
 
+  @Modifying
+  @Query("DELETE FROM RefreshToken rt WHERE rt.userId = :userId")
+  int purgeTokenForUser(@Param("userId") int userId);
+
   /** Count active tokens for a user */
   @Query(
       "SELECT COUNT(rt) FROM RefreshToken rt WHERE rt.userId = :userId AND rt.revoked = false AND rt.expiresAt > :now")

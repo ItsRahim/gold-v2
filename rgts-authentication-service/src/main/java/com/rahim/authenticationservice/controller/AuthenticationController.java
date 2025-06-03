@@ -13,12 +13,14 @@ import com.rahim.authenticationservice.dto.response.SignupResponse;
 import com.rahim.authenticationservice.entity.User;
 import com.rahim.authenticationservice.service.AuthenticationService;
 import com.rahim.authenticationservice.service.JwtService;
+import com.rahim.authenticationservice.util.JwtUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -96,7 +98,8 @@ public class AuthenticationController {
     @ApiResponse(responseCode = "500", description = "Internal server error")
   })
   @PostMapping(LOGIN)
-  public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginUserRequest request, HttpServletRequest httpRequest) {
+  public ResponseEntity<LoginResponse> login(
+      @Valid @RequestBody LoginUserRequest request, HttpServletRequest httpRequest) {
     log.info("Login attempt for username: {}", request.getUsername());
 
     AuthResult authResult = authenticationService.login(request, httpRequest);
@@ -108,7 +111,7 @@ public class AuthenticationController {
         LoginResponse.builder()
             .accessToken(accessToken)
             .refreshToken(refreshToken)
-            .expiresIn(jwtService.getExpirationTime())
+            .expiryTime(JwtUtil.calculateExpiryTime(jwtService.getExpirationTime()))
             .tokenType("Bearer")
             .user(
                 SignupResponse.builder()
@@ -146,7 +149,7 @@ public class AuthenticationController {
             LoginResponse.builder()
                 .accessToken(newAccessToken)
                 .refreshToken(newRefreshToken)
-                .expiresIn(jwtService.getExpirationTime())
+                .expiryTime(JwtUtil.calculateExpiryTime(jwtService.getExpirationTime()))
                 .tokenType("Bearer")
                 .build();
 

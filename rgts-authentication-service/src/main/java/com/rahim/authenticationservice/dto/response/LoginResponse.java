@@ -21,8 +21,8 @@ public class LoginResponse {
   @JsonProperty("token_type")
   private String tokenType;
 
-  @JsonProperty("expires_in")
-  private long expiresIn;
+  @JsonProperty("expiry_time")
+  private String expiryTime;
 
   private SignupResponse user;
 }

@@ -12,7 +12,7 @@ spring:
 
   cloud:
     config:
-      name: database-config,eureka-client-config,flyway-config,kafka-config,zipkin-config,${spring.application.name}
+      name: database-config,eureka-client-config,flyway-config,jwt-config,kafka-config,zipkin-config,${spring.application.name}
       discovery:
         enabled: true
         service-id: CONFIG-SERVER

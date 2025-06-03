@@ -90,6 +90,8 @@ public class AuthenticationService {
             loginUserRequest.getUsername(), loginUserRequest.getPassword()));
 
     String refreshToken = jwtService.generateRefreshToken(user);
+    deleteOldRefreshTokens(user.getUsername(), user.getId());
+
     RefreshToken tokenEntity =
         RefreshToken.builder()
             .token(refreshToken)
@@ -133,6 +135,13 @@ public class AuthenticationService {
     }
   }
 
+  private void deleteOldRefreshTokens(String username, int userId) {
+    int purgedAmount = refreshTokenRepository.purgeTokenForUser(userId);
+    if (purgedAmount > 0) {
+      log.info("Purged {} old refresh token(s) for user: {}", purgedAmount, username);
+    }
+  }
+
   private void logoutWithDatabase(String refreshToken) {
     try {
       String username = jwtService.extractUsername(refreshToken);
@@ -168,24 +177,6 @@ public class AuthenticationService {
     } catch (Exception e) {
       log.error("Database logout failed: {}", e.getMessage());
       throw new RuntimeException("Failed to logout with database strategy", e);
-    }
-  }
-
-  public void logoutFromAllDevices(String username) {
-    try {
-      User user = findByUsername(username);
-      if (refreshTokenRepository != null) {
-        refreshTokenRepository.revokeAllTokensForUser(user.getId());
-        log.info("All refresh tokens revoked for user: {}", username);
-      } else {
-        log.warn("Cannot logout from all devices - refresh token repository not available");
-        throw new UnsupportedOperationException(
-            "Logout from all devices not supported without database");
-      }
-
-    } catch (Exception e) {
-      log.error("Failed to logout from all devices: {}", e.getMessage());
-      throw new RuntimeException("Failed to logout from all devices", e);
     }
   }
 
