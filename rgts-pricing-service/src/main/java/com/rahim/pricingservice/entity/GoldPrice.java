@@ -14,7 +14,7 @@ import org.hibernate.annotations.ColumnDefault;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "gold_prices", schema = "rgts")
+@Table(name = "gold_prices", schema = "pricing-service")
 public class GoldPrice implements Serializable {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
