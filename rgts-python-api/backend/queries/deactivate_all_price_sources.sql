@@ -1,1 +1,1 @@
-UPDATE rgts.price_sources SET is_active = FALSE
+UPDATE python-api.price_sources SET is_active = FALSE
