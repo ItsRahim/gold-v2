@@ -23,6 +23,7 @@ import org.hibernate.annotations.OnDeleteAction;
     indexes = {@Index(name = "idx_user_2fa_user_id", columnList = "user_id", unique = true)})
 public class User2fa {
   @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
   @ColumnDefault("gen_random_uuid()")
   @Column(name = "id", nullable = false)
   private UUID id;

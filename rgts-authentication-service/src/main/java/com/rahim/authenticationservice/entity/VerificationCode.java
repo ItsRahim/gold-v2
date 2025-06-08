@@ -26,6 +26,7 @@ import org.hibernate.annotations.OnDeleteAction;
     })
 public class VerificationCode {
   @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
   @ColumnDefault("gen_random_uuid()")
   @Column(name = "id", nullable = false)
   private UUID id;

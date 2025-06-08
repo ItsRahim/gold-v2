@@ -4,6 +4,7 @@ import com.rahim.authenticationservice.enums.LoginFailureReason;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.net.InetAddress;
 import java.time.OffsetDateTime;
@@ -22,39 +23,37 @@ import java.util.UUID;
 @Table(
     name = "login_attempts",
     indexes = {
-      @Index(name = "idx_login_attempts_user_id", columnList = "user_id"),
+      @Index(name = "idx_login_attempts_identifier", columnList = "identifier"),
+      @Index(name = "idx_login_attempts_ip_address", columnList = "ip_address"),
       @Index(name = "idx_login_attempts_attempted_at", columnList = "attempted_at")
     })
 public class LoginAttempt {
 
-  @Id @GeneratedValue private UUID id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  @ColumnDefault("gen_random_uuid()")
+  @Column(name = "id", nullable = false)
+  private UUID id;
 
   @NotNull
-  @Column(name = "email_or_username", nullable = false)
-  private String emailOrUsername;
+  @Column(name = "identifier", nullable = false)
+  private String identifier;
 
-  @ManyToOne
-  @JoinColumn(name = "user_id")
-  private User user;
+  @Column(name = "ip_address")
+  private InetAddress ipAddress;
 
   @NotNull
-  @Column(nullable = false)
-  private boolean success;
+  @Column(name = "success", nullable = false)
+  private Boolean success;
 
   @Enumerated(EnumType.STRING)
   @Column(name = "failure_reason")
   private LoginFailureReason failureReason;
 
-  @Column(name = "ip_address")
-  private InetAddress ipAddress;
-
   @Column(name = "user_agent")
   private String userAgent;
 
-  @Column(name = "geo_location")
-  private String geoLocation;
-
   @NotNull
   @Column(name = "attempted_at", nullable = false)
-  private OffsetDateTime attemptedAt = OffsetDateTime.now();
+  private OffsetDateTime attemptedAt;
 }

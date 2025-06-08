@@ -4,8 +4,11 @@ import com.rahim.authenticationservice.enums.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+
+import java.util.UUID;
 
 @Builder
 @AllArgsConstructor
@@ -15,9 +18,12 @@ import org.hibernate.annotations.OnDeleteAction;
 @Entity
 @Table(name = "user_roles", schema = "authentication-service")
 public class UserRole {
-  @EmbeddedId private UserRoleId id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  @ColumnDefault("gen_random_uuid()")
+  @Column(name = "id", nullable = false)
+  private UUID id;
 
-  @MapsId("userId")
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @OnDelete(action = OnDeleteAction.CASCADE)
   @JoinColumn(name = "user_id", nullable = false)

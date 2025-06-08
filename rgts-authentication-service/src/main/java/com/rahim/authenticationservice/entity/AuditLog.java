@@ -3,6 +3,9 @@ package com.rahim.authenticationservice.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.net.InetAddress;
 import java.time.OffsetDateTime;
@@ -19,30 +22,32 @@ import java.util.UUID;
 @Setter
 @Entity
 @Table(
-    name = "audit_logs",
+    name = "audit_log",
     indexes = {
-      @Index(name = "idx_audit_logs_user_id", columnList = "user_id"),
-      @Index(name = "idx_audit_logs_timestamp", columnList = "timestamp")
+      @Index(name = "idx_audit_log_user_id", columnList = "user_id"),
+      @Index(name = "idx_audit_log_created_at", columnList = "created_at")
     })
 public class AuditLog {
 
-  @Id @GeneratedValue private UUID id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  @ColumnDefault("gen_random_uuid()")
+  @Column(name = "id", nullable = false)
+  private UUID id;
 
-  @ManyToOne
-  @JoinColumn(name = "user_id")
+  @NotNull
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @OnDelete(action = OnDeleteAction.SET_NULL)
+  @JoinColumn(name = "user_id", nullable = false)
   private User user;
 
   @NotNull
-  @Column(nullable = false, length = 100)
+  @Column(name = "action", nullable = false, length = 100)
   private String action;
 
   @NotNull
-  @Column(nullable = false, length = 100)
+  @Column(name = "resource", nullable = false, length = 100)
   private String resource;
-
-  @NotNull
-  @Column(nullable = false, length = 20)
-  private String severity = "INFO";
 
   @Column(name = "ip_address")
   private InetAddress ipAddress;
@@ -51,10 +56,14 @@ public class AuditLog {
   @Column(name = "user_agent")
   private String userAgent;
 
-  @Column(columnDefinition = "jsonb")
+  @NotNull
+  @Column(name = "success", nullable = false)
+  private Boolean success;
+
+  @Column(name = "details", columnDefinition = "jsonb")
   private String details;
 
   @NotNull
-  @Column(nullable = false)
-  private OffsetDateTime timestamp = OffsetDateTime.now();
+  @Column(name = "created_at", nullable = false)
+  private OffsetDateTime created_at;
 }
