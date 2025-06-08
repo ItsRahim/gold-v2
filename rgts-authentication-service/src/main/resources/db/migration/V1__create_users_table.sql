@@ -9,14 +9,16 @@ CREATE TABLE IF NOT EXISTS users
     first_name         VARCHAR(50)  NOT NULL,
     last_name          VARCHAR(50)  NOT NULL,
     phone_number       VARCHAR(20),
-    enabled            BOOLEAN               DEFAULT FALSE,
-    email_verified     BOOLEAN               DEFAULT FALSE,
-    phone_verified     BOOLEAN               DEFAULT FALSE,
+    enabled            BOOLEAN      NOT NULL DEFAULT FALSE,
+    email_verified     BOOLEAN      NOT NULL DEFAULT FALSE,
+    phone_verified     BOOLEAN      NOT NULL DEFAULT FALSE,
     locale             VARCHAR(10),
     timezone           VARCHAR(50),
     created_at         TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
     updated_at         TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
     last_login         TIMESTAMPTZ,
+    account_expired    BOOLEAN      NOT NULL DEFAULT FALSE,
+    account_locked     BOOLEAN      NOT NULL DEFAULT FALSE,
     password_change_at TIMESTAMPTZ
 );
 

@@ -43,8 +43,9 @@ public class LoginAttempt {
   private InetAddress ipAddress;
 
   @NotNull
+  @ColumnDefault("false")
   @Column(name = "success", nullable = false)
-  private Boolean success;
+  private boolean success;
 
   @Enumerated(EnumType.STRING)
   @Column(name = "failure_reason")

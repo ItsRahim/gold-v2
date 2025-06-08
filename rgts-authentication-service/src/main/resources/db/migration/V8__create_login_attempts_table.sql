@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS login_attempts
     id             UUID PRIMARY KEY      DEFAULT gen_random_uuid(),
     identifier     VARCHAR(100) NOT NULL,
     ip_address     INET         NOT NULL,
-    success        BOOLEAN      NOT NULL,
+    success        BOOLEAN      NOT NULL DEFAULT FALSE,
     failure_reason VARCHAR(100),
     user_agent     TEXT,
     attempted_at   TIMESTAMPTZ  NOT NULL DEFAULT NOW()

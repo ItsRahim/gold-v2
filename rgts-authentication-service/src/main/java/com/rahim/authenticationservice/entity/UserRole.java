@@ -17,7 +17,12 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@Table(name = "user_roles", schema = "authentication-service")
+@Table(
+    name = "user_roles",
+    indexes = {
+      @Index(name = "idx_user_roles_user_id", columnList = "user_id"),
+    },
+    schema = "authentication-service")
 public class UserRole {
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
@@ -33,5 +38,5 @@ public class UserRole {
   @NotNull
   @Enumerated(EnumType.STRING)
   @Column(name = "role", nullable = false, length = 20)
-  private Set<Role> role;
+  private Role role;
 }

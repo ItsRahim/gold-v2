@@ -40,8 +40,8 @@ public class User2fa {
   private String secret;
 
   @ColumnDefault("false")
-  @Column(name = "enabled")
-  private Boolean enabled;
+  @Column(name = "enabled", nullable = false)
+  private boolean enabled;
 
   @Column(name = "backup_codes")
   private List<String> backupCodes;

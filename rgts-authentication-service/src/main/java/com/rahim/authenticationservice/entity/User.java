@@ -4,9 +4,14 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.OffsetDateTime;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
+
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @Builder
 @AllArgsConstructor
@@ -29,7 +34,7 @@ import org.hibernate.annotations.ColumnDefault;
           name = "users_email_key",
           columnNames = {"email"})
     })
-public class User {
+public class User implements UserDetails {
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
   @ColumnDefault("gen_random_uuid()")
@@ -65,16 +70,18 @@ public class User {
   private String phoneNumber;
 
   @ColumnDefault("false")
-  @Column(name = "enabled")
-  private Boolean enabled;
+  @Column(name = "enabled", nullable = false)
+  private boolean enabled;
 
+  @NotNull
   @ColumnDefault("false")
-  @Column(name = "email_verified")
-  private Boolean emailVerified;
+  @Column(name = "email_verified", nullable = false)
+  private boolean emailVerified;
 
+  @NotNull
   @ColumnDefault("false")
-  @Column(name = "phone_verified")
-  private Boolean phoneVerified;
+  @Column(name = "phone_verified", nullable = false)
+  private boolean phoneVerified;
 
   @Size(max = 10)
   @Column(name = "locale", length = 10)
@@ -97,6 +104,51 @@ public class User {
   @Column(name = "last_login")
   private OffsetDateTime lastLogin;
 
+  @NotNull
+  @ColumnDefault("false")
+  @Column(name = "account_expired", nullable = false)
+  private boolean accountExpired;
+
+  @NotNull
+  @ColumnDefault("false")
+  @Column(name = "account_locked", nullable = false)
+  private boolean accountLocked;
+
   @Column(name = "password_change_at")
   private OffsetDateTime passwordChangeAt;
+
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  private Set<UserRole> userRoles = new HashSet<>();
+
+  @Override
+  public Collection<? extends GrantedAuthority> getAuthorities() {
+    return userRoles.stream()
+        .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getRole().name()))
+        .collect(Collectors.toSet());
+  }
+
+  @Override
+  public boolean isAccountNonExpired() {
+    return !accountExpired;
+  }
+
+  @Override
+  public boolean isAccountNonLocked() {
+    return !accountLocked;
+  }
+
+  @Override
+  public boolean isCredentialsNonExpired() {
+    if (passwordChangeAt == null) {
+      return true;
+    }
+
+    OffsetDateTime expirationThreshold = passwordChangeAt.plusDays(90);
+    return OffsetDateTime.now().isBefore(expirationThreshold);
+  }
+
+  @Override
+  public boolean isEnabled() {
+    return enabled;
+  }
 }
