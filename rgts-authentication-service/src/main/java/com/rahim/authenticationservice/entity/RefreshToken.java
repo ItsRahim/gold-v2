@@ -43,7 +43,7 @@ public class RefreshToken {
 
   @NotNull
   @Column(name = "created_at", nullable = false)
-  private OffsetDateTime createdAt = OffsetDateTime.now();
+  private OffsetDateTime createdAt;
 
   @Column(name = "last_used_at")
   private OffsetDateTime lastUsedAt;

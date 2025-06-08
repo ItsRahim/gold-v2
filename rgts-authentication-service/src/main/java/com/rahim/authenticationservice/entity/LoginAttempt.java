@@ -1,5 +1,6 @@
 package com.rahim.authenticationservice.entity;
 
+import com.rahim.authenticationservice.enums.LoginFailureReason;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -40,8 +41,9 @@ public class LoginAttempt {
   @Column(nullable = false)
   private boolean success;
 
+  @Enumerated(EnumType.STRING)
   @Column(name = "failure_reason")
-  private String failureReason;
+  private LoginFailureReason failureReason;
 
   @Column(name = "ip_address")
   private InetAddress ipAddress;
