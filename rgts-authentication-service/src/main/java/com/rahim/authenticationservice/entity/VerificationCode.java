@@ -1,5 +1,6 @@
 package com.rahim.authenticationservice.entity;
 
+import com.rahim.authenticationservice.enums.VerificationType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -44,8 +45,9 @@ public class VerificationCode {
 
   @Size(max = 20)
   @NotNull
+  @Enumerated(EnumType.STRING)
   @Column(name = "type", nullable = false, length = 20)
-  private String type;
+  private VerificationType type;
 
   @NotNull
   @ColumnDefault("now()")

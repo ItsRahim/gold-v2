@@ -50,10 +50,12 @@ public class User {
   @Column(name = "password", nullable = false, length = Integer.MAX_VALUE)
   private String password;
 
+  @NotNull
   @Size(max = 50)
   @Column(name = "first_name", length = 50)
   private String firstName;
 
+  @NotNull
   @Size(max = 50)
   @Column(name = "last_name", length = 50)
   private String lastName;
