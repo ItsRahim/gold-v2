@@ -8,6 +8,7 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.util.Set;
 import java.util.UUID;
 
 @Builder
@@ -32,5 +33,5 @@ public class UserRole {
   @NotNull
   @Enumerated(EnumType.STRING)
   @Column(name = "role", nullable = false, length = 20)
-  private Role role;
+  private Set<Role> role;
 }
