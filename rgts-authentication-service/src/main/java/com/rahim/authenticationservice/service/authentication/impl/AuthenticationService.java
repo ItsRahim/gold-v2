@@ -5,7 +5,6 @@ import com.rahim.authenticationservice.dto.request.RegisterRequest;
 import com.rahim.authenticationservice.dto.response.RegisterResponse;
 import com.rahim.authenticationservice.entity.User;
 import com.rahim.authenticationservice.enums.Role;
-import com.rahim.authenticationservice.exception.VerificationException;
 import com.rahim.authenticationservice.repository.UserRepository;
 import com.rahim.authenticationservice.service.authentication.IAuthenticationService;
 import com.rahim.authenticationservice.service.role.IRoleService;
@@ -13,7 +12,7 @@ import com.rahim.authenticationservice.service.verification.IVerificationService
 import com.rahim.authenticationservice.util.RequestUtils;
 import com.rahim.common.exception.BadRequestException;
 import com.rahim.common.exception.DuplicateEntityException;
-import com.rahim.common.exception.UnknownException;
+import com.rahim.common.exception.ServiceException;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.OffsetDateTime;
 import java.util.Optional;
@@ -73,9 +72,9 @@ public class AuthenticationService implements IAuthenticationService {
       log.debug("Initiating email verification process for user: {}", user.getId());
       verificationService.sendEmailVerification(user);
       log.info("Email verification initiated successfully for user: {}", user.getId());
-    } catch (VerificationException e) {
+    } catch (Exception e) {
       log.error("Verification failed for user: {}. Error: {}", user.getId(), e.getMessage(), e);
-      throw new UnknownException("Failed to complete registration: " + e.getMessage());
+      throw new ServiceException("Failed to complete registration");
     }
 
     log.info("Registration completed successfully for user: {}", user.getId());

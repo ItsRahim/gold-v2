@@ -3,6 +3,7 @@ package com.rahim.authenticationservice.service.verification.impl;
 import com.rahim.authenticationservice.entity.User;
 import com.rahim.authenticationservice.entity.VerificationCode;
 import com.rahim.authenticationservice.enums.VerificationType;
+import com.rahim.authenticationservice.exception.SendEmailException;
 import com.rahim.authenticationservice.exception.VerificationException;
 import com.rahim.authenticationservice.repository.VerificationCodeRepository;
 import com.rahim.authenticationservice.service.verification.IVerificationService;
@@ -10,6 +11,7 @@ import com.rahim.common.util.DateUtil;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
+import com.rahim.kafkaservice.constants.KafkaTopics;
 import com.rahim.kafkaservice.service.IKafkaService;
 import com.rahim.proto.protobuf.email.AccountVerificationData;
 import com.rahim.proto.protobuf.email.EmailRequest;
@@ -43,8 +45,6 @@ public class VerificationService implements IVerificationService {
       OffsetDateTime now = DateUtil.nowUtc();
       OffsetDateTime expiresAt = DateUtil.addMinutesToNowUtc(VERIFICATION_CODE_EXPIRATION_MINUTES);
 
-      log.debug("Generated verification code. Created at: {}, Expires at: {}", now, expiresAt);
-
       VerificationCode verificationCodeEntity =
           VerificationCode.builder()
               .user(user)
@@ -55,18 +55,13 @@ public class VerificationService implements IVerificationService {
               .attempts(0)
               .build();
 
-      log.debug("Built verification code entity: {}", verificationCodeEntity);
       verificationCodeRepository.save(verificationCodeEntity);
-      sendVerificationEmail(verificationCodeEntity);
       log.debug("Successfully saved verification code");
 
+      sendEmail(verificationCodeEntity);
     } catch (Exception e) {
-      log.error(
-          "Failed to create verification code for user: {}. Error: {}",
-          user.getId(),
-          e.getMessage(),
-          e);
-      throw new VerificationException("Failed to create verification code", e);
+      log.error("Failed to create verification code for user: {}", e.getMessage());
+      throw new VerificationException("Failed to create verification code for user");
     }
   }
 
@@ -112,7 +107,7 @@ public class VerificationService implements IVerificationService {
     return RandomStringUtils.randomAlphanumeric(VERIFICATION_CODE_LENGTH).toUpperCase();
   }
 
-  private void sendVerificationEmail(VerificationCode verificationCodeEntity) {
+  private void sendEmail(VerificationCode verificationCodeEntity) {
     try {
       String email = verificationCodeEntity.getUser().getEmail();
       String firstName = verificationCodeEntity.getUser().getFirstName();
@@ -137,14 +132,11 @@ public class VerificationService implements IVerificationService {
               .setVerificationData(accountVerificationData)
               .build();
 
-      kafkaService.sendMessage("AHAHA", emailRequest);
+      kafkaService.sendMessage(KafkaTopics.EMAIL_REQUEST, emailRequest);
+      log.info("Verification code sent successfully to user: {}", username);
     } catch (Exception e) {
-      log.error(
-          "Failed to send verification email for code: {}. Error: {}",
-          verificationCodeEntity.getCode(),
-          e.getMessage(),
-          e);
-      throw new VerificationException("Failed to send verification email", e);
+      log.error("Failed to send verification code: {}. Error: {}", verificationCodeEntity.getCode(), e.getMessage(), e);
+      throw new SendEmailException("Failed to send verification code: " + e.getMessage());
     }
   }
 }
