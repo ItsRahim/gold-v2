@@ -5,7 +5,7 @@ package com.rahim.kafkaservice.constants;
  * @author Rahim Ahmed
  */
 public final class KafkaTopics {
-    private KafkaTopics() {}
+  private KafkaTopics() {}
 
-    public static final String EMAIL_REQUEST = "email-request";
+  public static final String EMAIL_REQUEST = "email-request";
 }

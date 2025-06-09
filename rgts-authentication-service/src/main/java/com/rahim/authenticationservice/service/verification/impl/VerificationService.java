@@ -8,14 +8,13 @@ import com.rahim.authenticationservice.exception.VerificationException;
 import com.rahim.authenticationservice.repository.VerificationCodeRepository;
 import com.rahim.authenticationservice.service.verification.IVerificationService;
 import com.rahim.common.util.DateUtil;
-import java.time.OffsetDateTime;
-import java.util.UUID;
-
 import com.rahim.kafkaservice.constants.KafkaTopics;
 import com.rahim.kafkaservice.service.IKafkaService;
 import com.rahim.proto.protobuf.email.AccountVerificationData;
 import com.rahim.proto.protobuf.email.EmailRequest;
 import com.rahim.proto.protobuf.email.EmailTemplate;
+import java.time.OffsetDateTime;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.RandomStringUtils;
@@ -135,7 +134,11 @@ public class VerificationService implements IVerificationService {
       kafkaService.sendMessage(KafkaTopics.EMAIL_REQUEST, emailRequest);
       log.info("Verification code sent successfully to user: {}", username);
     } catch (Exception e) {
-      log.error("Failed to send verification code: {}. Error: {}", verificationCodeEntity.getCode(), e.getMessage(), e);
+      log.error(
+          "Failed to send verification code: {}. Error: {}",
+          verificationCodeEntity.getCode(),
+          e.getMessage(),
+          e);
       throw new SendEmailException("Failed to send verification code: " + e.getMessage());
     }
   }
