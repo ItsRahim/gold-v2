@@ -9,6 +9,8 @@ import com.rahim.authenticationservice.service.verification.IVerificationService
 import com.rahim.common.util.DateUtil;
 import java.time.OffsetDateTime;
 import java.util.UUID;
+
+import com.rahim.kafkaservice.service.IKafkaService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.RandomStringUtils;
@@ -25,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(rollbackFor = Exception.class)
 public class VerificationService implements IVerificationService {
   private final VerificationCodeRepository verificationCodeRepository;
+  private final IKafkaService kafkaService;
 
   private static final int VERIFICATION_CODE_EXPIRATION_MINUTES = 30;
   private static final int VERIFICATION_CODE_LENGTH = 6;
@@ -51,6 +54,7 @@ public class VerificationService implements IVerificationService {
 
       log.debug("Built verification code entity: {}", verificationCodeEntity);
       verificationCodeRepository.save(verificationCodeEntity);
+      sendVerificationEmail(verificationCodeEntity);
       log.debug("Successfully saved verification code");
 
     } catch (Exception e) {
@@ -103,5 +107,18 @@ public class VerificationService implements IVerificationService {
 
   private String generateVerificationCode() {
     return RandomStringUtils.randomAlphanumeric(VERIFICATION_CODE_LENGTH).toUpperCase();
+  }
+
+  private void sendVerificationEmail(VerificationCode verificationCodeEntity) {
+    try {
+      String email = verificationCodeEntity.getUser().getEmail();
+    } catch (Exception e) {
+        log.error(
+            "Failed to send verification email for code: {}. Error: {}",
+            verificationCodeEntity.getCode(),
+            e.getMessage(),
+            e);
+        throw new VerificationException("Failed to send verification email", e);
+    }
   }
 }
