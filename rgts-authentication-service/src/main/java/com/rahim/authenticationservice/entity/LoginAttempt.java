@@ -3,12 +3,11 @@ package com.rahim.authenticationservice.entity;
 import com.rahim.authenticationservice.enums.LoginFailureReason;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
-
 import java.net.InetAddress;
 import java.time.OffsetDateTime;
 import java.util.UUID;
+import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 /**
  * @created 08/06/2025

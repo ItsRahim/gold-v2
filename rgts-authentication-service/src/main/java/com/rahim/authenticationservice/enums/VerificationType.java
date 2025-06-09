@@ -5,8 +5,8 @@ package com.rahim.authenticationservice.enums;
  * @author Rahim Ahmed
  */
 public enum VerificationType {
-    EMAIL,
-    PHONE,
-    PASSWORD_RESET,
-    TWO_FACTOR_AUTHENTICATION,
+  EMAIL,
+  PHONE,
+  PASSWORD_RESET,
+  TWO_FACTOR_AUTHENTICATION,
 }

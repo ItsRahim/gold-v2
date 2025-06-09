@@ -1,16 +1,14 @@
 package com.rahim.authenticationservice.entity;
 
 import com.rahim.authenticationservice.enums.BlacklistReason;
-import com.rahim.authenticationservice.enums.TokenType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import java.time.OffsetDateTime;
+import java.util.UUID;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-
-import java.time.OffsetDateTime;
-import java.util.UUID;
 
 /**
  * @created 08/06/2025

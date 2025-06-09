@@ -5,11 +5,11 @@ package com.rahim.authenticationservice.enums;
  * @author Rahim Ahmed
  */
 public enum LoginFailureReason {
-    WRONG_PASSWORD,
-    ACCOUNT_LOCKED,
-    USER_NOT_FOUND,
-    TOKEN_EXPIRED,
-    MFA_REQUIRED,
-    MFA_FAILED,
-    UNKNOWN
+  WRONG_PASSWORD,
+  ACCOUNT_LOCKED,
+  USER_NOT_FOUND,
+  TOKEN_EXPIRED,
+  MFA_REQUIRED,
+  MFA_FAILED,
+  UNKNOWN
 }

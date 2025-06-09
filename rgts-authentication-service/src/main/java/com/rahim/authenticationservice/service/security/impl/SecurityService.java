@@ -1,11 +1,10 @@
 package com.rahim.authenticationservice.service.security.impl;
 
 import com.rahim.authenticationservice.service.security.ISecurityService;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.util.UUID;
 
 @Slf4j
 @Service

@@ -8,6 +8,7 @@ import lombok.experimental.SuperBuilder;
 
 /**
  * Base response class for all API responses
+ *
  * @created 09/06/2025
  * @author Rahim Ahmed
  */
@@ -16,6 +17,6 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BaseResponse {
-    private String message;
-    private ResponseStatus status;
+  private String message;
+  private ResponseStatus status;
 }
