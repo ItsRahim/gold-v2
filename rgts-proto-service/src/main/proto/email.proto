@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package com.rahim.proto.protobuf.email;
+
+option java_multiple_files = true;
+
+enum EmailTemplate {
+  UNKNOWN = 0;
+  WELCOME = 1;
+  PASSWORD_RESET = 2;
+  VERIFICATION_REQUEST = 3;
+  VERIFICATION_SUCCESS = 4;
+}
+
+message AccountVerificationData {
+  string verificationCode = 1;
+  string expirationTime = 2;
+}
+
+message Email {
+  string recipientEmail = 1;
+  string subject = 2;
+  string body = 3;
+  EmailTemplate template = 4;
+  string firstName = 5;
+  string lastName = 6;
+  string username = 7;
+  oneof emailData {
+    AccountVerificationData accountVerificationData = 8;
+  }
+}
