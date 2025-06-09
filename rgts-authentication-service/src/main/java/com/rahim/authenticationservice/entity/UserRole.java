@@ -3,12 +3,11 @@ package com.rahim.authenticationservice.entity;
 import com.rahim.authenticationservice.enums.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import java.util.UUID;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-
-import java.util.UUID;
 
 @Builder
 @AllArgsConstructor

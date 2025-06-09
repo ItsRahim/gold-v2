@@ -1,9 +1,8 @@
 package com.rahim.authenticationservice.dto.response;
 
+import java.util.UUID;
 import lombok.Data;
 import lombok.experimental.SuperBuilder;
-
-import java.util.UUID;
 
 /**
  * @created 09/06/2025
@@ -12,7 +11,7 @@ import java.util.UUID;
 @Data
 @SuperBuilder
 public class RegisterResponse extends BaseResponse {
-    private UUID id;
-    private String username;
-    private String email;
+  private UUID id;
+  private String username;
+  private String email;
 }

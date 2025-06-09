@@ -2,14 +2,13 @@ package com.rahim.authenticationservice.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import java.net.InetAddress;
+import java.time.OffsetDateTime;
+import java.util.UUID;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-
-import java.net.InetAddress;
-import java.time.OffsetDateTime;
-import java.util.UUID;
 
 /**
  * @created 08/06/2025

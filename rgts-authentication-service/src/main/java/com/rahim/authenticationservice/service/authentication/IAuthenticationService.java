@@ -4,7 +4,6 @@ import com.rahim.authenticationservice.dto.request.RegisterRequest;
 import com.rahim.authenticationservice.dto.response.RegisterResponse;
 import com.rahim.authenticationservice.entity.User;
 import jakarta.servlet.http.HttpServletRequest;
-
 import java.util.Optional;
 
 /**

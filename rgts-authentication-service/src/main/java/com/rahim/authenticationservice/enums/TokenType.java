@@ -5,6 +5,6 @@ package com.rahim.authenticationservice.enums;
  * @author Rahim Ahmed
  */
 public enum TokenType {
-    ACCESS,
-    REFRESH
+  ACCESS,
+  REFRESH
 }

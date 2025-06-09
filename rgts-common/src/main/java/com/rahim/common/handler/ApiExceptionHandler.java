@@ -5,7 +5,6 @@ import com.rahim.common.exception.EntityNotFoundException;
 import com.rahim.common.exception.UnknownException;
 import com.rahim.common.response.ErrorResponse;
 import java.util.List;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
