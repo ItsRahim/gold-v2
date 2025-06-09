@@ -11,6 +11,9 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import com.rahim.kafkaservice.service.IKafkaService;
+import com.rahim.proto.protobuf.email.AccountVerificationData;
+import com.rahim.proto.protobuf.email.EmailRequest;
+import com.rahim.proto.protobuf.email.EmailTemplate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.RandomStringUtils;
@@ -112,13 +115,36 @@ public class VerificationService implements IVerificationService {
   private void sendVerificationEmail(VerificationCode verificationCodeEntity) {
     try {
       String email = verificationCodeEntity.getUser().getEmail();
+      String firstName = verificationCodeEntity.getUser().getFirstName();
+      String lastName = verificationCodeEntity.getUser().getLastName();
+      String username = verificationCodeEntity.getUser().getUsername();
+      String verificationCode = verificationCodeEntity.getCode();
+      String expirationTime = DateUtil.formatOffsetDateTime(verificationCodeEntity.getExpiresAt());
+
+      AccountVerificationData accountVerificationData =
+          AccountVerificationData.newBuilder()
+              .setVerificationCode(verificationCode)
+              .setExpirationTime(expirationTime)
+              .build();
+
+      EmailRequest emailRequest =
+          EmailRequest.newBuilder()
+              .setRecipientEmail(email)
+              .setTemplate(EmailTemplate.VERIFICATION_REQUEST)
+              .setFirstName(firstName)
+              .setLastName(lastName)
+              .setUsername(username)
+              .setVerificationData(accountVerificationData)
+              .build();
+
+      kafkaService.sendMessage("AHAHA", emailRequest);
     } catch (Exception e) {
-        log.error(
-            "Failed to send verification email for code: {}. Error: {}",
-            verificationCodeEntity.getCode(),
-            e.getMessage(),
-            e);
-        throw new VerificationException("Failed to send verification email", e);
+      log.error(
+          "Failed to send verification email for code: {}. Error: {}",
+          verificationCodeEntity.getCode(),
+          e.getMessage(),
+          e);
+      throw new VerificationException("Failed to send verification email", e);
     }
   }
 }
