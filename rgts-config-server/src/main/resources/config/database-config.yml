@@ -6,11 +6,11 @@ spring:
     password: ${DATABASE_PASSWORD:password}
     driver-class-name: org.postgresql.Driver
     hikari:
-      connection-timeout: 20000
-      minimum-idle: 2
-      maximum-pool-size: 5
-      idle-timeout: 10000
-      max-lifetime: 30000
+      connection-timeout: 30000
+      minimum-idle: 5
+      maximum-pool-size: 15
+      idle-timeout: 300000
+      max-lifetime: 1200000
       auto-commit: true
       pool-name: HikariCP
 
@@ -22,3 +22,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        jdbc:
+          batch_size: 50
+        order_inserts: true
+        order_updates: true

@@ -1,1 +1,1 @@
-UPDATE rgts.price_sources SET is_active = TRUE WHERE id = :id
+UPDATE python-api.price_sources SET is_active = TRUE WHERE id = :id

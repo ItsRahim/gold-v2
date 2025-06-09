@@ -1,1 +1,1 @@
-SELECT 1 FROM rgts.price_sources WHERE name = :name
+SELECT 1 FROM python-api.price_sources WHERE name = :name
