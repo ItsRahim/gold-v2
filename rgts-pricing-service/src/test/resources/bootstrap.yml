@@ -22,6 +22,8 @@ spring:
     locations: classpath:db/migration
     baseline-on-migrate: true
     clean-disabled: false
+    schemas: ${spring.application.name}
+    default-schema: ${spring.application.name}
 
 eureka:
   client:
