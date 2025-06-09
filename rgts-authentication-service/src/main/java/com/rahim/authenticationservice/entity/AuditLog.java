@@ -23,6 +23,7 @@ import java.util.UUID;
 @Entity
 @Table(
     name = "audit_log",
+    schema = "authentication-service",
     indexes = {
       @Index(name = "idx_audit_log_user_id", columnList = "user_id"),
       @Index(name = "idx_audit_log_created_at", columnList = "created_at")
@@ -51,10 +52,6 @@ public class AuditLog {
 
   @Column(name = "ip_address")
   private InetAddress ipAddress;
-
-  @Lob
-  @Column(name = "user_agent")
-  private String userAgent;
 
   @NotNull
   @Column(name = "success", nullable = false)

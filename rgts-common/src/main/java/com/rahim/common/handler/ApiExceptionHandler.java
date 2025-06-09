@@ -2,8 +2,10 @@ package com.rahim.common.handler;
 
 import com.rahim.common.exception.ApiException;
 import com.rahim.common.exception.EntityNotFoundException;
+import com.rahim.common.exception.UnknownException;
 import com.rahim.common.response.ErrorResponse;
 import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -44,10 +46,11 @@ public class ApiExceptionHandler {
     return ResponseEntity.badRequest().body(errorResponse);
   }
 
-  @ExceptionHandler
+  @ExceptionHandler(UnknownException.class)
   public ResponseEntity<ErrorResponse> exceptionHandler(Exception ex) {
     ErrorResponse errorResponse =
-        new ErrorResponse(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        new ErrorResponse(
+            "Internal Server Error: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     return ResponseEntity.status(errorResponse.getStatus()).body(errorResponse);
   }
 }

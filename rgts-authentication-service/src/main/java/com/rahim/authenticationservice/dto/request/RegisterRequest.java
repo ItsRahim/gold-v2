@@ -1,5 +1,6 @@
 package com.rahim.authenticationservice.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 /**
@@ -8,10 +9,16 @@ import lombok.Data;
  */
 @Data
 public class RegisterRequest {
-  String username;
-  String email;
-  String password;
-  String firstName;
-  String lastName;
-  String phoneNumber;
+    private String email;
+    private String username;
+    private String password;
+
+    @JsonProperty("first_name")
+    private String firstName;
+
+    @JsonProperty("last_name")
+    private String lastName;
+
+    @JsonProperty("phone_number")
+    private String phoneNumber;
 }

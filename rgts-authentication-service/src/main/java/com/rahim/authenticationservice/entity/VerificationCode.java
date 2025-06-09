@@ -43,7 +43,6 @@ public class VerificationCode {
   @Column(name = "code", nullable = false, length = 6)
   private String code;
 
-  @Size(max = 20)
   @NotNull
   @Enumerated(EnumType.STRING)
   @Column(name = "type", nullable = false, length = 20)

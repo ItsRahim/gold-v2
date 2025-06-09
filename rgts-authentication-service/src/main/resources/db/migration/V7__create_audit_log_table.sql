@@ -5,7 +5,6 @@ CREATE TABLE IF NOT EXISTS audit_log
     action     VARCHAR(100) NOT NULL,
     resource   VARCHAR(100),
     ip_address INET,
-    user_agent TEXT,
     success    BOOLEAN      NOT NULL,
     details    JSONB,
     created_at TIMESTAMPTZ  NOT NULL DEFAULT NOW()

@@ -3,6 +3,7 @@ package com.rahim.authenticationservice.service.verification.impl;
 import com.rahim.authenticationservice.entity.User;
 import com.rahim.authenticationservice.entity.VerificationCode;
 import com.rahim.authenticationservice.enums.VerificationType;
+import com.rahim.authenticationservice.exception.VerificationException;
 import com.rahim.authenticationservice.repository.VerificationCodeRepository;
 import com.rahim.authenticationservice.service.verification.IVerificationService;
 import com.rahim.common.util.DateUtil;
@@ -31,27 +32,36 @@ public class VerificationService implements IVerificationService {
 
   @Override
   public void sendEmailVerification(User user) {
-    log.debug("Starting email verification for user: {}", user.getId());
-    String verificationCode = generateVerificationCode();
-    OffsetDateTime now = DateUtil.nowUtc();
-    OffsetDateTime expiresAt =
-        DateUtil.addMinutesToNowUtc(now, VERIFICATION_CODE_EXPIRATION_MINUTES);
+    try {
+      log.debug("Starting email verification for user: {}", user.getId());
+      String verificationCode = generateVerificationCode();
+      OffsetDateTime now = DateUtil.nowUtc();
+      OffsetDateTime expiresAt = DateUtil.addMinutesToNowUtc(VERIFICATION_CODE_EXPIRATION_MINUTES);
 
-    log.debug("Generated verification code. Created at: {}, Expires at: {}", now, expiresAt);
+      log.debug("Generated verification code. Created at: {}, Expires at: {}", now, expiresAt);
 
-    VerificationCode verificationCodeEntity =
-        VerificationCode.builder()
-            .user(user)
-            .code(verificationCode)
-            .type(VerificationType.EMAIL)
-            .createdAt(now)
-            .expiresAt(expiresAt)
-            .attempts(0)
-            .build();
+      VerificationCode verificationCodeEntity =
+          VerificationCode.builder()
+              .user(user)
+              .code(verificationCode)
+              .type(VerificationType.EMAIL)
+              .createdAt(now)
+              .expiresAt(expiresAt)
+              .attempts(0)
+              .build();
 
-    log.debug("Built verification code entity: {}", verificationCodeEntity.toString());
-    verificationCodeRepository.save(verificationCodeEntity);
-    log.debug("Successfully saved verification code");
+      log.debug("Built verification code entity: {}", verificationCodeEntity);
+      verificationCodeRepository.save(verificationCodeEntity);
+      log.debug("Successfully saved verification code");
+
+    } catch (Exception e) {
+      log.error(
+          "Failed to create verification code for user: {}. Error: {}",
+          user.getId(),
+          e.getMessage(),
+          e);
+      throw new VerificationException("Failed to create verification code", e);
+    }
   }
 
   @Override

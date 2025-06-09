@@ -22,6 +22,7 @@ import java.util.UUID;
 @Entity
 @Table(
     name = "login_attempts",
+    schema = "authentication-service",
     indexes = {
       @Index(name = "idx_login_attempts_identifier", columnList = "identifier"),
       @Index(name = "idx_login_attempts_ip_address", columnList = "ip_address"),
