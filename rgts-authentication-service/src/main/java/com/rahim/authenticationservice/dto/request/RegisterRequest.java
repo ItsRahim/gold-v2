@@ -1,15 +1,13 @@
 package com.rahim.authenticationservice.dto.request;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 /**
  * @created 08/06/2025
  * @author Rahim Ahmed
  */
-@Getter
-@Setter
-public class SignupRequest {
+@Data
+public class RegisterRequest {
   String username;
   String email;
   String password;

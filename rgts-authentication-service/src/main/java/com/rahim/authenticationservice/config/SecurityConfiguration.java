@@ -48,8 +48,8 @@ public class SecurityConfiguration {
   private boolean allowCredentials;
 
   private static final String[] ALLOWED_MATCHERS = {
-    Endpoints.LOGIN,
-    Endpoints.REGISTER,
+    Endpoints.LOGIN_ENDPOINT,
+    Endpoints.REGISTER_ENDPOINT,
     Endpoints.REFRESH_TOKEN,
     Endpoints.VALIDATE_TOKEN,
     Endpoints.API_DOCS,

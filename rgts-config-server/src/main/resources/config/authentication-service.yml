@@ -23,3 +23,8 @@ app:
       - "X-Requested-With"
       - "Cache-Control"
     allow-credentials: true
+
+logging:
+  level:
+    com.rahim: DEBUG
+    org.springframework: INFO

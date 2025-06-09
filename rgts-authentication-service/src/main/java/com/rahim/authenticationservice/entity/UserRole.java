@@ -8,7 +8,6 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import java.util.Set;
 import java.util.UUID;
 
 @Builder

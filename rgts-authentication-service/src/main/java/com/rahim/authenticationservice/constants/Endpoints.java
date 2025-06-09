@@ -11,8 +11,11 @@ public final class Endpoints {
   public static final String AUTH_SERVICE = API_VERSION + "/auth";
 
   // Authentication endpoints
-  public static final String LOGIN = AUTH_SERVICE + "/login";
-  public static final String REGISTER = AUTH_SERVICE + "/register";
+  public static final String LOGIN = "/login";
+  public static final String LOGIN_ENDPOINT = AUTH_SERVICE + LOGIN;
+
+  public static final String REGISTER = "/register";
+  public static final String REGISTER_ENDPOINT = AUTH_SERVICE + REGISTER;
 
   // Token management endpoints
   public static final String TOKENS = AUTH_SERVICE + "/tokens";
