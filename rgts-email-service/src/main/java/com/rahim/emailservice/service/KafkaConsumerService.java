@@ -17,14 +17,14 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class KafkaConsumerService {
 
-    @KafkaListener(topics = "email-request", groupId = "email-service-group")
-    public void consumeEmailRequest(@Payload byte[] emailRequest, Acknowledgment ack) {
-        try {
-            EmailRequest request = EmailRequest.parseFrom(emailRequest);
-            log.info("Received email request: {}", request);
+  @KafkaListener(topics = "email-request", groupId = "email-service-group")
+  public void consumeEmailRequest(@Payload byte[] emailRequest, Acknowledgment ack) {
+    try {
+      EmailRequest request = EmailRequest.parseFrom(emailRequest);
+      log.info("Received email request: {}", request);
 
-        } catch (Exception e) {
-            log.error("Failed to process email request", e);
-        }
+    } catch (Exception e) {
+      log.error("Failed to process email request", e);
     }
+  }
 }
