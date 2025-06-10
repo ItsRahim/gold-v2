@@ -32,3 +32,6 @@ eureka:
     health-check-url-path: /actuator/health
     secure-port-enabled: false
     non-secure-port-enabled: true
+
+encrypt:
+  key: ${ENCRYPT_KEY}
