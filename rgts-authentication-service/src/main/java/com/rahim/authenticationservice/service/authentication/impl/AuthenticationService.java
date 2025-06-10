@@ -73,7 +73,7 @@ public class AuthenticationService implements IAuthenticationService {
       verificationService.sendEmailVerification(user);
       log.info("Email verification initiated successfully for user: {}", user.getId());
     } catch (Exception e) {
-      log.error("Verification failed for user: {}. Error: {}", user.getId(), e.getMessage(), e);
+      log.error("Verification failed for user: {}. Error: {}", user.getId(), e.getMessage());
       throw new ServiceException("Failed to complete registration");
     }
 
