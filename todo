@@ -3,3 +3,5 @@ Implement ELK, prometheus, grafana
 Remove the GRPC code, libraries. Possibly H2
 Improve exception handling and logging in pricing-service
 Email verification add button to click and verify email - future work
+Hash verification token/code using bcrypt and compare the hashes
+Use mailhog to test the email behaviour

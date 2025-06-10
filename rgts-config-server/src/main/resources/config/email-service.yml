@@ -5,16 +5,16 @@ spring:
   application:
     name: email-service
   mail:
-    host: smtp.gmail.com
-    port: 587
-    username: '{cipher}3d74e41852d89163da36e82f4ef1b542921ff48933a70b201046d5d93140cbf863cfd981d8bc2f0755b3b58ee3914372'
-    password: '{cipher}af6710d1ecadfe34800e0173e6eefbcb96014a568fa4c76449303b2a81124cb6139cdabfeaca3f0b55fc8a4a413acf21'
+    host: localhost
+    port: 1025
+    username: '{cipher}242b15b8a6e0cf1db2c00f4e91d7d408c76e193bde8bef1cbc1d250ca52e48a4f18c716405840e06ebd1ab51eeb9fb7e'
+    password: '{cipher}ab34a8a4455cfa501b5ad9c14e7b418c7299fe4353ade32581a4eeb367737b88'
     properties:
       mail:
         smtp:
-          auth: true
+          auth: false
           starttls:
-            enable: true
+            enable: false
 
 logging:
   level:
