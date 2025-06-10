@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Verification</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.6;
+            color: #2C1810;
+            background: linear-gradient(135deg, #FDF8F0 0%, #FAF5E8 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #FFFEF9;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(218, 165, 32, 0.1), 0 8px 16px rgba(184, 134, 11, 0.08);
+            overflow: hidden;
+            border: 1px solid rgba(218, 165, 32, 0.15);
+            position: relative;
+        }
+
+        .email-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #DAA520, #B8860B, #FFD700, #DAA520);
+            background-size: 300% 300%;
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, #DAA520 0%, #B8860B 50%, #CD853F 100%);
+            padding: 50px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 2px, transparent 2px);
+            background-size: 30px 30px;
+            animation: float 20s linear infinite;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            100% {
+                transform: translate(-30px, -30px) rotate(360deg);
+            }
+        }
+
+        .header h1 {
+            color: #FFFEF9;
+            font-size: 2.4em;
+            font-weight: 800;
+            margin-bottom: 12px;
+            position: relative;
+            z-index: 2;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            color: rgba(255, 254, 249, 0.95);
+            font-size: 1.1em;
+            position: relative;
+            z-index: 2;
+            font-weight: 400;
+        }
+
+        .content {
+            padding: 50px 40px;
+            background: #FFFEF9;
+        }
+
+        .greeting {
+            font-size: 1.4em;
+            color: #2C1810;
+            margin-bottom: 30px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #DAA520, #B8860B);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .message {
+            font-size: 1.1em;
+            color: #4A3728;
+            margin-bottom: 40px;
+            line-height: 1.8;
+            font-weight: 400;
+        }
+
+        .verification-section {
+            background: linear-gradient(135deg, #FAF5E8 0%, #F5F0E3 100%);
+            border-radius: 16px;
+            padding: 40px 30px;
+            text-align: center;
+            margin: 40px 0;
+            border: 2px solid rgba(218, 165, 32, 0.2);
+            position: relative;
+            box-shadow: 0 8px 24px rgba(218, 165, 32, 0.08);
+        }
+
+        .verification-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #DAA520, #FFD700, #B8860B);
+            border-radius: 16px 16px 0 0;
+        }
+
+        .verification-code {
+            font-size: 2.8em;
+            font-weight: 900;
+            background: linear-gradient(135deg, #DAA520, #FFD700, #B8860B);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-family: 'SF Mono', 'Monaco', 'Cascadia Code', monospace;
+            letter-spacing: 12px;
+            margin: 25px 0;
+            padding: 25px 30px;
+            background-color: #FFFEF9;
+            border-radius: 12px;
+            box-shadow: inset 0 2px 4px rgba(218, 165, 32, 0.1),
+            0 4px 12px rgba(218, 165, 32, 0.15);
+            border: 2px solid rgba(218, 165, 32, 0.3);
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .verification-code:hover {
+            transform: translateY(-2px);
+            box-shadow: inset 0 2px 4px rgba(218, 165, 32, 0.1),
+            0 8px 20px rgba(218, 165, 32, 0.2);
+        }
+
+        .code-label {
+            font-size: 0.9em;
+            color: #8B6914;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 700;
+        }
+
+        .expiration-notice {
+            background: linear-gradient(135deg, #FFF8DC 0%, #FFFACD 100%);
+            border: 2px solid #DAA520;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 30px 0;
+            position: relative;
+            box-shadow: 0 4px 12px rgba(218, 165, 32, 0.1);
+        }
+
+        .expiration-notice .icon {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #DAA520, #B8860B);
+            border-radius: 50%;
+            margin-right: 12px;
+            position: relative;
+            vertical-align: middle;
+        }
+
+        .expiration-notice .icon::before {
+            content: '⏰';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 14px;
+        }
+
+        .expiration-text {
+            color: #8B6914;
+            font-weight: 600;
+            display: inline-block;
+            vertical-align: middle;
+            font-size: 1.05em;
+        }
+
+        .instructions {
+            background: linear-gradient(135deg, #FAF5E8 0%, #F5F0E3 100%);
+            border-left: 6px solid #DAA520;
+            padding: 30px 25px;
+            margin: 30px 0;
+            border-radius: 0 12px 12px 0;
+            box-shadow: 0 4px 12px rgba(218, 165, 32, 0.08);
+        }
+
+        .instructions h3 {
+            color: #2C1810;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #DAA520, #B8860B);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .instructions ol {
+            color: #4A3728;
+            padding-left: 25px;
+        }
+
+        .instructions li {
+            margin-bottom: 12px;
+            line-height: 1.7;
+            font-weight: 500;
+        }
+
+        .footer {
+            background: linear-gradient(135deg, #2C1810 0%, #1A0F08 100%);
+            color: #FAF5E8;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #DAA520, #FFD700, #B8860B);
+        }
+
+        .footer p {
+            margin-bottom: 12px;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .footer .company-name {
+            font-weight: 800;
+            background: linear-gradient(135deg, #DAA520, #FFD700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 1.2em;
+            letter-spacing: 0.5px;
+        }
+
+        .security-notice {
+            background: linear-gradient(135deg, #F0F8E8 0%, #E8F5E8 100%);
+            border: 2px solid #90C695;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 25px 0;
+            font-size: 0.95em;
+            color: #2D5016;
+            box-shadow: 0 4px 12px rgba(144, 198, 149, 0.1);
+        }
+
+        .security-notice .icon {
+            display: inline-block;
+            margin-right: 10px;
+            font-size: 1.1em;
+        }
+
+        .support-section {
+            margin-top: 35px;
+            padding-top: 25px;
+            border-top: 2px solid rgba(218, 165, 32, 0.2);
+            color: #4A3728;
+            font-size: 0.98em;
+            background: linear-gradient(135deg, #FAF5E8 0%, #F5F0E3 100%);
+            padding: 25px;
+            border-radius: 12px;
+        }
+
+        .support-section p {
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        .support-section a {
+            color: #DAA520;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .support-section a:hover {
+            color: #B8860B;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+
+            .email-container {
+                margin: 0;
+                border-radius: 16px;
+            }
+
+            .header {
+                padding: 40px 25px;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .content {
+                padding: 40px 25px;
+            }
+
+            .verification-code {
+                font-size: 2.2em;
+                letter-spacing: 8px;
+                padding: 20px 25px;
+            }
+
+            .verification-section {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="email-container">
+    <div class="header">
+        <h1>🏆 Email Verification</h1>
+        <p>Verify your email</p>
+    </div>
+
+    <div class="content">
+        <div class="greeting">
+            Hello <span th:text="${recipientName}"></span>! ✨
+        </div>
+
+        <div class="message">
+            Welcome to Rahim's Gold Tracking Software!
+            To complete your registration and secure your account (<strong th:text="${username}"></strong>),
+            please verify your email address using the verification code below.
+        </div>
+
+        <div class="verification-section">
+            <div class="code-label">Your Verification Code</div>
+            <div class="verification-code" th:text="${verificationCode}"></div>
+        </div>
+
+        <div class="expiration-notice">
+            <span class="icon"></span>
+            <span class="expiration-text">
+                This code expires on <strong th:text="${expirationTime}"></strong>
+            </span>
+        </div>
+
+        <div class="instructions">
+            <h3>📋 How to verify your email:</h3>
+            <ol>
+                <li>Return to your gold tracking application where you started registration</li>
+                <li>Enter the verification code shown above</li>
+                <li>Click the "Verify Email" or "Confirm" button</li>
+                <li>Your account will be activated immediately</li>
+            </ol>
+        </div>
+
+        <div class="security-notice">
+            <span class="icon">🔒</span>
+            <strong>Security Notice:</strong> If you didn't request this verification, please ignore this email. Your
+            account remains secure and protected.
+        </div>
+
+        <div class="support-section">
+            <p>If you're experiencing any issues with verification, our support team is ready to assist you.</p>
+            <p style="margin-top: 18px;">
+                <strong>Need assistance?</strong> Contact us at <a href="mailto:support@goldtracker.com">support@rgts.com</a>
+            </p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>This email was sent to verify your gold tracking account registration.</p>
+        <p>© 2025 <span class="company-name">RGTS</span>. All rights reserved.</p>
+        <p style="font-size: 0.88em; margin-top: 18px; opacity: 0.7;">
+            This is an automated message. Please do not reply directly to this email.
+        </p>
+    </div>
+</div>
+</body>
+</html>

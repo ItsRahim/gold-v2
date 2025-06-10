@@ -16,13 +16,14 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class KafkaConsumerService {
+  private final IEmailRequestHandler emailRequestHandler;
 
   @KafkaListener(topics = "email-request", groupId = "email-service-group")
   public void consumeEmailRequest(@Payload byte[] emailRequest, Acknowledgment ack) {
     try {
       EmailRequest request = EmailRequest.parseFrom(emailRequest);
-      log.info("Received email request: {}", request);
-
+      emailRequestHandler.handleEmailRequest(request);
+      ack.acknowledge();
     } catch (Exception e) {
       log.error("Failed to process email request", e);
     }
