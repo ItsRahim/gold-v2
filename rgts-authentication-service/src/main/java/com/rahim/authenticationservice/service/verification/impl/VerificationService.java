@@ -8,7 +8,6 @@ import com.rahim.authenticationservice.exception.VerificationException;
 import com.rahim.authenticationservice.repository.VerificationCodeRepository;
 import com.rahim.authenticationservice.service.verification.IVerificationService;
 import com.rahim.common.util.DateUtil;
-import com.rahim.kafkaservice.constants.KafkaTopics;
 import com.rahim.kafkaservice.service.IKafkaService;
 import com.rahim.proto.protobuf.email.AccountVerificationData;
 import com.rahim.proto.protobuf.email.EmailRequest;
@@ -131,7 +130,7 @@ public class VerificationService implements IVerificationService {
               .setVerificationData(accountVerificationData)
               .build();
 
-      kafkaService.sendMessage(KafkaTopics.EMAIL_REQUEST, emailRequest);
+      kafkaService.sendMessage("email-request", emailRequest);
       log.info("Verification code sent successfully to user: {}", username);
     } catch (Exception e) {
       log.error(

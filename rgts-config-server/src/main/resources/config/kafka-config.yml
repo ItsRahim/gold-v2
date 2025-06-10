@@ -1,22 +1,15 @@
-spring:
-  kafka:
-    security:
-      protocol: PLAINTEXT
-    bootstrap-servers: '{cipher}60cd81b26915799a66e0c1bdfd4476710cc05ee42783df63ce429a2371a893fc'
-    ssl:
-      trust-store-location: classpath:kafka.client.truststore.jks
-      trust-store-password: '{cipher}your-encrypted-truststore-password'
-      trust-store-type: JKS
-      key-store-location: classpath:kafka.client.keystore.jks
-      key-store-password: '{cipher}your-encrypted-keystore-password'
-      key-store-type: JKS
-      key-password: '{cipher}your-encrypted-key-password'
-      protocol: TLS
-      enabled-protocols: TLSv1.2,TLSv1.3
-      endpoint-identification-algorithm: https
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.apache.kafka.common.serialization.ByteArraySerializer
-    consumer:
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
+kafka:
+  security-protocol: PLAINTEXT
+  bootstrap-servers: '{cipher}60cd81b26915799a66e0c1bdfd4476710cc05ee42783df63ce429a2371a893fc'
+  ssl:
+    key-store-location: file://location-to-keystore-file
+    key-password: '{cipher}password'
+    trust-store-location: file://location-to-truststore-file
+    trust-store-password: '{cipher}password'
+    protocol: TLSv1.2
+  producer:
+    key-serializer: org.apache.kafka.common.serialization.StringSerializer
+    value-serializer: org.apache.kafka.common.serialization.ByteArraySerializer
+  consumer:
+    key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
