@@ -36,8 +36,6 @@ public class EmailSenderService implements IEmailSenderService {
     try {
       MimeMessage mimeMessage = createMimeMessage(recipientEmail, subject, emailContent);
       javaMailSender.send(mimeMessage);
-
-      log.info("Email sent successfully - To: {}, Subject: {}", recipientEmail, subject);
     } catch (MessagingException e) {
       log.error("Failed to create email message for recipient: {}", recipientEmail, e);
       throw new EmailSendingException("Failed to create email message");
