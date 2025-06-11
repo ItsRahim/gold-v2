@@ -3,10 +3,10 @@ package com.rahim.authenticationservice.service.verification.impl;
 import com.rahim.authenticationservice.entity.User;
 import com.rahim.authenticationservice.entity.VerificationCode;
 import com.rahim.authenticationservice.enums.VerificationType;
-import com.rahim.authenticationservice.exception.SendEmailException;
-import com.rahim.authenticationservice.exception.VerificationException;
 import com.rahim.authenticationservice.repository.VerificationCodeRepository;
 import com.rahim.authenticationservice.service.verification.IVerificationService;
+import com.rahim.common.exception.BadRequestException;
+import com.rahim.common.exception.ServiceException;
 import com.rahim.common.util.DateUtil;
 import com.rahim.kafkaservice.service.IKafkaService;
 import com.rahim.proto.protobuf.email.AccountVerificationData;
@@ -66,7 +66,7 @@ public class VerificationService implements IVerificationService {
       log.info("Email verification code sent successfully for user: {}", user.getId());
     } catch (Exception e) {
       log.error("Failed to create verification code for user: {}", e.getMessage());
-      throw new VerificationException("Failed to create verification code for user");
+      throw new ServiceException("Failed to create verification code for user");
     }
   }
 
@@ -74,13 +74,13 @@ public class VerificationService implements IVerificationService {
   public void sendPhoneVerification(User user) {}
 
   @Override
-  @Transactional(noRollbackFor = VerificationException.class)
+  @Transactional(noRollbackFor = BadRequestException.class)
   public boolean verifyEmail(UUID userId, String token) {
     return verifyCode(userId, token, VerificationType.EMAIL);
   }
 
   @Override
-  @Transactional(noRollbackFor = VerificationException.class)
+  @Transactional(noRollbackFor = BadRequestException.class)
   public boolean verifyPhone(UUID userId, String token) {
     return verifyCode(userId, token, VerificationType.PHONE);
   }
@@ -142,7 +142,7 @@ public class VerificationService implements IVerificationService {
       log.info("Verification code sent successfully to user: {}", username);
     } catch (Exception e) {
       log.error("Failed to send verification code: {}", e.getMessage(), e);
-      throw new SendEmailException("Failed to send verification code");
+      throw new ServiceException("Failed to send verification code");
     }
   }
 
@@ -152,7 +152,7 @@ public class VerificationService implements IVerificationService {
 
       if (StringUtils.isEmpty(token)) {
         log.error("Verification token is empty for user: {}", userId);
-        throw new VerificationException("Verification token is empty");
+        throw new BadRequestException("Verification token is empty");
       }
 
       Optional<VerificationCode> optionalVerificationCode =
@@ -160,7 +160,7 @@ public class VerificationService implements IVerificationService {
 
       if (optionalVerificationCode.isEmpty()) {
         log.warn("No verification code found for user: {}", userId);
-        throw new VerificationException("Verification code not found. Please request a new code.");
+        throw new BadRequestException("Verification code not found. Please request a new code.");
       }
 
       VerificationCode verificationCode = optionalVerificationCode.get();
@@ -169,7 +169,7 @@ public class VerificationService implements IVerificationService {
       if (verificationCodeAttempts >= MAX_VERIFICATION_ATTEMPTS) {
         log.warn("Maximum verification attempts exceeded for user: {}", userId);
         deleteVerificationCode(verificationCode);
-        throw new VerificationException(
+        throw new BadRequestException(
             "Maximum verification attempts exceeded. Request a new code.");
       }
 
@@ -179,23 +179,21 @@ public class VerificationService implements IVerificationService {
       if (!passwordEncoder.matches(token.trim().toUpperCase(), verificationCode.getCode())) {
         log.warn("Verification code does not match for user: {}", userId);
         verificationCodeRepository.save(verificationCode);
-        throw new VerificationException("Verification code does not match");
+        throw new BadRequestException("Verification code does not match");
       }
 
       if (verificationCode.getExpiresAt().isBefore(DateUtil.nowUtc())) {
         log.warn("Verification code expired for user: {}", userId);
         deleteVerificationCode(verificationCode);
-        throw new VerificationException("Verification code expired. Please request a new code.");
+        throw new BadRequestException("Verification code expired. Please request a new code.");
       }
 
       deleteVerificationCode(verificationCode);
       return true;
 
-    } catch (VerificationException e) {
-      throw e;
     } catch (Exception e) {
       log.error("Error verifying code for user {}: {}", userId, e.getMessage(), e);
-      throw new VerificationException("Error verifying code for user: " + userId);
+      throw new ServiceException("Error verifying code for user: " + userId);
     }
   }
 
@@ -206,7 +204,7 @@ public class VerificationService implements IVerificationService {
       log.info("Successfully deleted verification code: {}", verificationCode.getId());
     } catch (Exception e) {
       log.error("Failed to delete verification code: {}", e.getMessage(), e);
-      throw new VerificationException("Failed to delete verification code");
+      throw new ServiceException("Failed to delete verification code");
     }
   }
 }

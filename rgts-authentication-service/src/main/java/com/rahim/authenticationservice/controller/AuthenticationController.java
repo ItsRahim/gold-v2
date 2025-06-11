@@ -60,10 +60,6 @@ public class AuthenticationController {
       @RequestBody VerificationRequest verificationRequest, HttpServletRequest request) {
     VerificationResponse verificationResponse =
         authenticationService.verifyEmail(verificationRequest, request);
-    if (verificationResponse.getStatus().equals(ResponseStatus.SUCCESS)) {
-      return ResponseEntity.status(HttpStatus.OK).body(verificationResponse);
-    } else {
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(verificationResponse);
-    }
+    return ResponseEntity.status(HttpStatus.OK).body(verificationResponse);
   }
 }

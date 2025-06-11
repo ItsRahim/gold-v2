@@ -8,7 +8,6 @@ import com.rahim.authenticationservice.dto.response.UserData;
 import com.rahim.authenticationservice.dto.response.VerificationResponse;
 import com.rahim.authenticationservice.entity.User;
 import com.rahim.authenticationservice.enums.Role;
-import com.rahim.authenticationservice.exception.VerificationException;
 import com.rahim.authenticationservice.repository.UserRepository;
 import com.rahim.authenticationservice.service.authentication.IAuthenticationService;
 import com.rahim.authenticationservice.service.role.IRoleService;
@@ -141,18 +140,9 @@ public class AuthenticationService implements IAuthenticationService {
             .build();
       } else {
         log.warn("Verification code does not match for user with email: {}", email);
-        return VerificationResponse.builder()
-            .status(ResponseStatus.INVALID)
-            .message("Verification code does not match")
-            .userData(userData)
-            .build();
+        throw new BadRequestException(
+            "Verification code does not match for user with email: " + email);
       }
-    } catch (VerificationException e) {
-      log.warn("Invalid verification for user with email {}: {}", email, e.getMessage());
-      return VerificationResponse.builder()
-          .status(ResponseStatus.INVALID)
-          .message(e.getMessage())
-          .build();
     } catch (Exception e) {
       log.error(
           "Error during email verification for user with email {}: {}", email, e.getMessage(), e);
@@ -176,16 +166,30 @@ public class AuthenticationService implements IAuthenticationService {
     }
 
     String username = registerRequest.getUsername();
-    String password = registerRequest.getPassword();
-    String firstName = registerRequest.getFirstName();
-    String lastName = registerRequest.getLastName();
-    String phoneNumber = registerRequest.getPhoneNumber();
-
-    if (StringUtils.isAnyBlank(username, password, firstName, lastName)) {
-      log.error("Invalid registration request payload: {}", registerRequest);
-      throw new BadRequestException("Invalid registration request payload");
+    if (StringUtils.isEmpty(username)) {
+      log.error("Username is missing in registration request: {}", registerRequest);
+      throw new BadRequestException("Username is required");
     }
 
+    String password = registerRequest.getPassword();
+    if (StringUtils.isEmpty(password)) {
+      log.error("Password is missing in registration request for user: {}", username);
+      throw new BadRequestException("Password is required");
+    }
+
+    String firstName = registerRequest.getFirstName();
+    if (StringUtils.isEmpty(firstName)) {
+      log.error("First name is missing in registration request for user: {}", username);
+      throw new BadRequestException("First name is required");
+    }
+
+    String lastName = registerRequest.getLastName();
+    if (StringUtils.isEmpty(lastName)) {
+      log.error("Last name is missing in registration request for user: {}", username);
+      throw new BadRequestException("Last name is required");
+    }
+
+    String phoneNumber = registerRequest.getPhoneNumber();
     if (phoneNumber != null
         && !phoneNumber.isBlank()
         && userRepository.existsByPhoneNumber(phoneNumber)) {
