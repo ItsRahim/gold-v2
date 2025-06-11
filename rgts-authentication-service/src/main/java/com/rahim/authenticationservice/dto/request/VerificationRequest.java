@@ -8,6 +8,6 @@ import lombok.Data;
  */
 @Data
 public class VerificationRequest {
-  String email;
-  String verificationCode;
+  private String email;
+  private String verificationCode;
 }

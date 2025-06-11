@@ -13,6 +13,7 @@ import com.rahim.authenticationservice.repository.UserRepository;
 import com.rahim.authenticationservice.service.authentication.IAuthenticationService;
 import com.rahim.authenticationservice.service.role.IRoleService;
 import com.rahim.authenticationservice.service.verification.IVerificationService;
+import com.rahim.authenticationservice.util.EmailFormatUtil;
 import com.rahim.authenticationservice.util.RequestUtils;
 import com.rahim.common.exception.BadRequestException;
 import com.rahim.common.exception.DuplicateEntityException;
@@ -21,7 +22,7 @@ import com.rahim.common.util.DateUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.OffsetDateTime;
 import java.util.Optional;
-import java.util.regex.Pattern;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -41,8 +42,6 @@ public class AuthenticationService implements IAuthenticationService {
   private final IRoleService roleService;
   private final IVerificationService verificationService;
   private final BCryptPasswordEncoder passwordEncoder;
-
-  private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@(.+)$");
 
   @Override
   @Transactional(rollbackFor = Exception.class)
@@ -99,9 +98,9 @@ public class AuthenticationService implements IAuthenticationService {
     String email = verificationRequest.getEmail();
     String verificationCode = verificationRequest.getVerificationCode();
 
-    if (StringUtils.isEmpty(email)) {
-      log.error("Email is required for verification");
-      throw new BadRequestException("Email is required for verification");
+    if (EmailFormatUtil.isInvalidEmail(email)) {
+      log.error("Invalid email format provided in verification request: {}", email);
+      throw new BadRequestException("Invalid email format provided");
     }
 
     if (StringUtils.isEmpty(verificationCode)) {
@@ -171,7 +170,7 @@ public class AuthenticationService implements IAuthenticationService {
         "Validating registration request payload for user: {}", registerRequest.getUsername());
 
     String email = registerRequest.getEmail();
-    if (email == null || email.isBlank() || !EMAIL_PATTERN.matcher(email).matches()) {
+    if (EmailFormatUtil.isInvalidEmail(email)) {
       log.error("Invalid email format provided in registration request: {}", email);
       throw new BadRequestException("Invalid email format provided in registration request");
     }
