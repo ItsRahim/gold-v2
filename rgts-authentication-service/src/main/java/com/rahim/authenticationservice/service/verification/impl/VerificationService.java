@@ -17,6 +17,7 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.RandomStringUtils;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,19 +35,21 @@ public class VerificationService implements IVerificationService {
 
   private static final int VERIFICATION_CODE_EXPIRATION_MINUTES = 30;
   private static final int VERIFICATION_CODE_LENGTH = 6;
+  private final BCryptPasswordEncoder passwordEncoder;
 
   @Override
   public void sendEmailVerification(User user) {
     try {
       log.debug("Starting email verification for user: {}", user.getId());
       String verificationCode = generateVerificationCode();
+      String hashedVerificationCode = passwordEncoder.encode(verificationCode);
       OffsetDateTime now = DateUtil.nowUtc();
       OffsetDateTime expiresAt = DateUtil.addMinutesToNowUtc(VERIFICATION_CODE_EXPIRATION_MINUTES);
 
       VerificationCode verificationCodeEntity =
           VerificationCode.builder()
               .user(user)
-              .code(verificationCode)
+              .code(hashedVerificationCode)
               .type(VerificationType.EMAIL)
               .createdAt(now)
               .expiresAt(expiresAt)
@@ -55,8 +58,7 @@ public class VerificationService implements IVerificationService {
 
       verificationCodeRepository.save(verificationCodeEntity);
       log.debug("Successfully saved verification code");
-
-      sendEmail(verificationCodeEntity);
+      sendEmail(user, verificationCode, expiresAt);
     } catch (Exception e) {
       log.error("Failed to create verification code for user: {}", e.getMessage());
       throw new VerificationException("Failed to create verification code for user");
@@ -105,14 +107,13 @@ public class VerificationService implements IVerificationService {
     return RandomStringUtils.randomAlphanumeric(VERIFICATION_CODE_LENGTH).toUpperCase();
   }
 
-  private void sendEmail(VerificationCode verificationCodeEntity) {
+  private void sendEmail(User user, String verificationCode, OffsetDateTime expiresAt) {
     try {
-      String email = verificationCodeEntity.getUser().getEmail();
-      String firstName = verificationCodeEntity.getUser().getFirstName();
-      String lastName = verificationCodeEntity.getUser().getLastName();
-      String username = verificationCodeEntity.getUser().getUsername();
-      String verificationCode = verificationCodeEntity.getCode();
-      String expirationTime = DateUtil.formatOffsetDateTime(verificationCodeEntity.getExpiresAt());
+      String email = user.getEmail();
+      String firstName = user.getFirstName();
+      String lastName = user.getLastName();
+      String username = user.getUsername();
+      String expirationTime = DateUtil.formatOffsetDateTime(expiresAt);
 
       AccountVerificationData accountVerificationData =
           AccountVerificationData.newBuilder()
@@ -133,11 +134,7 @@ public class VerificationService implements IVerificationService {
       kafkaService.sendMessage("email-request", emailRequest);
       log.info("Verification code sent successfully to user: {}", username);
     } catch (Exception e) {
-      log.error(
-          "Failed to send verification code: {}. Error: {}",
-          verificationCodeEntity.getCode(),
-          e.getMessage(),
-          e);
+      log.error("Failed to send verification code: {}", e.getMessage(), e);
       throw new SendEmailException("Failed to send verification code");
     }
   }
