@@ -3,9 +3,6 @@ Implement ELK, Prometheus, and Grafana for monitoring and logging
 Cleanup on the exceptions being thrown, when they're being caught and the logs
 Resilience for kafka consumers and producers (retry, save to db, cron schedule to retry)
 
--- Proto Service --
-Remove the GRPC code, libraries.
-
 -- Pricing Service --
 Improve exception handling and logging in pricing-service
 
