@@ -3,7 +3,6 @@ package com.rahim.authenticationservice.entity;
 import com.rahim.authenticationservice.enums.VerificationType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 import lombok.*;
