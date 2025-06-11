@@ -99,12 +99,12 @@ public class AuthenticationService implements IAuthenticationService {
     String email = verificationRequest.getEmail();
     String verificationCode = verificationRequest.getVerificationCode();
 
-    if (email == null) {
+    if (StringUtils.isEmpty(email)) {
       log.error("Email is required for verification");
       throw new BadRequestException("Email is required for verification");
     }
 
-    if (verificationCode == null) {
+    if (StringUtils.isEmpty(verificationCode)) {
       log.error("Verification code is required");
       throw new BadRequestException("Verification code is required");
     }
