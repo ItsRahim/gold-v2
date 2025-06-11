@@ -1,14 +1,14 @@
 package com.rahim.emailservice.service;
 
+import static com.rahim.emailservice.BaseTestContainerConfig.getMailHogHttpEndpoint;
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+
 import com.rahim.emailservice.BaseTestConfiguration;
 import com.rahim.emailservice.service.impl.EmailSenderService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.RestTemplate;
-
-import static com.rahim.emailservice.BaseTestContainerConfig.getMailHogHttpEndpoint;
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 public class EmailSenderServiceTest extends BaseTestConfiguration {
 
