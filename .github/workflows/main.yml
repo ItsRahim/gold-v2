@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        folder: [ "rgts-config-server", "rgts-email-service", "rgts-eureka-server", "rgts-gateway-service", "rgts-pricing-service" ]
+        folder: [ "rgts-config-server", "rgts-eureka-server", "rgts-gateway-service", "rgts-pricing-service" ]
 
     steps:
       - name: Checkout code
