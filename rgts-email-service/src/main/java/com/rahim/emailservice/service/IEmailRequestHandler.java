@@ -7,5 +7,5 @@ import com.rahim.proto.protobuf.email.EmailRequest;
  * @author Rahim Ahmed
  */
 public interface IEmailRequestHandler {
-    void handleEmailRequest(EmailRequest emailRequest);
+  void handleEmailRequest(EmailRequest emailRequest);
 }

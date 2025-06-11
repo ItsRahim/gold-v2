@@ -1,5 +1,10 @@
 package com.rahim.emailservice.service;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
 import com.github.nylle.javafixture.Fixture;
 import com.rahim.common.util.DateUtil;
 import com.rahim.emailservice.TestEmailFactory;
@@ -8,19 +13,13 @@ import com.rahim.emailservice.exception.EmailProcessingException;
 import com.rahim.emailservice.service.impl.EmailRequestHandler;
 import com.rahim.proto.protobuf.email.EmailRequest;
 import com.rahim.proto.protobuf.email.EmailTemplate;
+import java.time.OffsetDateTime;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.junit.jupiter.api.extension.ExtendWith;
-
-import java.time.OffsetDateTime;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 
 /**
  * @created 11/06/2025

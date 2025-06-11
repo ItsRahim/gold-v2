@@ -1,5 +1,7 @@
 package com.rahim.emailservice.service.impl;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import com.rahim.emailservice.exception.EmailSendingException;
 import com.rahim.emailservice.service.IEmailSenderService;
 import jakarta.mail.MessagingException;
@@ -11,8 +13,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * @created 10/06/2025

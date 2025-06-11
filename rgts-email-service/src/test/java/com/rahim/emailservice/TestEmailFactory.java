@@ -4,7 +4,6 @@ import com.rahim.common.util.DateUtil;
 import com.rahim.proto.protobuf.email.AccountVerificationData;
 import com.rahim.proto.protobuf.email.EmailRequest;
 import com.rahim.proto.protobuf.email.EmailTemplate;
-
 import java.time.OffsetDateTime;
 
 /**

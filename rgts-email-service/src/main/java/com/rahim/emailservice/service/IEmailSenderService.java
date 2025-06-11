@@ -5,5 +5,5 @@ package com.rahim.emailservice.service;
  * @author Rahim Ahmed
  */
 public interface IEmailSenderService {
-    void sendEmail(String recipientEmail, String subject, String emailContent);
+  void sendEmail(String recipientEmail, String subject, String emailContent);
 }

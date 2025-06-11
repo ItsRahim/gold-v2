@@ -5,7 +5,7 @@ package com.rahim.emailservice.constants;
  * @author Rahim Ahmed
  */
 public final class EmailSubjects {
-    private EmailSubjects() {}
+  private EmailSubjects() {}
 
-    public static final String EMAIL_VERIFICATION = "Email Verification";
+  public static final String EMAIL_VERIFICATION = "Email Verification";
 }

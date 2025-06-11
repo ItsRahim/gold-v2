@@ -14,7 +14,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BaseEmail {
-    String firstName;
-    String lastName;
-    String username;
+  String firstName;
+  String lastName;
+  String username;
 }

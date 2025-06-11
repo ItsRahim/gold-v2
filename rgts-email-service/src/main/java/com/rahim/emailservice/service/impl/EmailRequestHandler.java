@@ -3,17 +3,16 @@ package com.rahim.emailservice.service.impl;
 import com.rahim.emailservice.constants.EmailSubjects;
 import com.rahim.emailservice.dto.EmailVerificationData;
 import com.rahim.emailservice.exception.EmailProcessingException;
-import com.rahim.emailservice.service.IEmailTemplateService;
 import com.rahim.emailservice.service.IEmailRequestHandler;
 import com.rahim.emailservice.service.IEmailSenderService;
+import com.rahim.emailservice.service.IEmailTemplateService;
 import com.rahim.proto.protobuf.email.EmailRequest;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @created 10/06/2025
