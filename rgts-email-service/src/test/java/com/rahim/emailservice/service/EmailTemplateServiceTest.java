@@ -1,12 +1,12 @@
 package com.rahim.emailservice.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.rahim.common.util.DateUtil;
 import com.rahim.emailservice.BaseTestConfiguration;
 import com.rahim.emailservice.dto.EmailVerificationData;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @created 11/06/2025
