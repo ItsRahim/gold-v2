@@ -259,6 +259,12 @@
                 <version>${lombok.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${apache.version}</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
                 <groupId>javax.annotation</groupId>
                 <artifactId>javax.annotation-api</artifactId>
                 <version>${javax-annotation.version}</version>
@@ -363,6 +369,12 @@
                 <groupId>com.github.nylle</groupId>
                 <artifactId>javafixture</artifactId>
                 <version>${java-fixture.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>testcontainers</artifactId>
+                <version>${test-container.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>

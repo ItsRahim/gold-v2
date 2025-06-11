@@ -1,4 +1,16 @@
+-- All --
+Implement ELK, Prometheus, and Grafana for monitoring and logging
 Cleanup on the exceptions being thrown, when they're being caught and the logs
-Implement ELK, prometheus, grafana
-Remove the GRPC code, libraries. Possibly H2
+Resilience for kafka consumers and producers (retry, save to db, cron schedule to retry)
+
+-- Proto Service --
+Remove the GRPC code, libraries.
+
+-- Pricing Service --
 Improve exception handling and logging in pricing-service
+
+-- Email Service --
+Email verification add button to click and verify email - future work
+
+-- Authentication Service --
+Hash verification token/code using bcrypt and compare the hashes

@@ -2,7 +2,6 @@ package com.rahim.common.handler;
 
 import com.rahim.common.exception.ApiException;
 import com.rahim.common.exception.EntityNotFoundException;
-import com.rahim.common.exception.UnknownException;
 import com.rahim.common.response.ErrorResponse;
 import java.util.List;
 import org.springframework.http.HttpStatus;
@@ -43,13 +42,5 @@ public class ApiExceptionHandler {
     String message = "Validation failed: " + String.join("; ", errors);
     ErrorResponse errorResponse = new ErrorResponse(message, HttpStatus.BAD_REQUEST);
     return ResponseEntity.badRequest().body(errorResponse);
-  }
-
-  @ExceptionHandler(UnknownException.class)
-  public ResponseEntity<ErrorResponse> exceptionHandler(Exception ex) {
-    ErrorResponse errorResponse =
-        new ErrorResponse(
-            "Internal Server Error: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-    return ResponseEntity.status(errorResponse.getStatus()).body(errorResponse);
   }
 }

@@ -1,6 +1,12 @@
 kafka:
   security-protocol: PLAINTEXT
-  bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVER:localhost:9093}
+  bootstrap-servers: '{cipher}60cd81b26915799a66e0c1bdfd4476710cc05ee42783df63ce429a2371a893fc'
+  ssl:
+    key-store-location: file://location-to-keystore-file
+    key-password: '{cipher}password'
+    trust-store-location: file://location-to-truststore-file
+    trust-store-password: '{cipher}password'
+    protocol: TLSv1.2
   producer:
     key-serializer: org.apache.kafka.common.serialization.StringSerializer
     value-serializer: org.apache.kafka.common.serialization.ByteArraySerializer

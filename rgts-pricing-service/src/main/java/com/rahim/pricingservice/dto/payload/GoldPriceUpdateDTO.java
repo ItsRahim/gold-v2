@@ -1,7 +1,7 @@
 package com.rahim.pricingservice.dto.payload;
 
 import com.rahim.common.util.DateUtil;
-import com.rahim.proto.protobuf.GoldPriceInfo;
+import com.rahim.proto.protobuf.price.GoldPriceInfo;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Instant;

@@ -1,9 +1,9 @@
 spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/gold}
-    username: ${DATABASE_USERNAME:postgres}
-    password: ${DATABASE_PASSWORD:password}
+    url: '{cipher}66452d7a1419b7e1bef328c9c31ed9354462d10d049cf38d0a87aa8fc4bf59e1d8aa427f36ce24ee226fcf2904be0c8e762c919c0b5b4e20dcaa5f719439f3f7'
+    username: '{cipher}47996f7df37d35a90f5166c6e312f0a0cf0316709cf3c767d897ccf1c1accc84'
+    password: '{cipher}5441b5882f415b2ba9944576fd8045597fb2ee50984b920cfc3b2f1b14fbec83'
     driver-class-name: org.postgresql.Driver
     hikari:
       connection-timeout: 30000

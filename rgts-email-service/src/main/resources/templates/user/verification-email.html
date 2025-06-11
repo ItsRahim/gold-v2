@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Email Verification</title>
+    <style>
+        :root {
+            --accent: rgb(234, 179, 8); /* amber-400 */
+            --accent-dark: rgb(202, 138, 4); /* amber-600 */
+            --text: rgb(24, 24, 27); /* neutral-900 */
+            --muted: rgb(113, 113, 122); /* zinc-500 */
+            --bg: rgb(250, 250, 250); /* zinc-50 */
+            --white: rgb(255, 255, 255);
+            --border: rgb(228, 228, 231); /* zinc-200 */
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            padding: 2rem;
+        }
+
+        .email-container {
+            max-width: 600px;
+            margin: auto;
+            background: var(--white);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .header {
+            background: var(--accent);
+            color: var(--white);
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+
+        .header p {
+            margin-top: 0.5rem;
+            font-size: 1rem;
+            opacity: 0.95;
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        .greeting {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .message {
+            font-size: 1rem;
+            color: var(--muted);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .verification-section {
+            background-color: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .code-label {
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            color: var(--accent-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .verification-code {
+            font-family: monospace;
+            font-size: 2rem;
+            font-weight: bold;
+            letter-spacing: 6px;
+            color: var(--accent-dark);
+            padding: 1rem;
+            border: 1px dashed var(--accent-dark);
+            border-radius: 8px;
+            background: var(--white);
+        }
+
+        .expiration-notice {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+            color: var(--muted);
+            margin-top: 1.5rem;
+        }
+
+        .instructions {
+            margin-top: 2rem;
+            padding-left: 1rem;
+        }
+
+        .instructions h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .instructions ol {
+            padding-left: 1.25rem;
+            color: var(--muted);
+        }
+
+        .instructions li {
+            margin-bottom: 0.5rem;
+            line-height: 1.5;
+        }
+
+        .security-notice {
+            margin-top: 2rem;
+            background: rgb(240, 253, 244); /* green-50 */
+            color: rgb(21, 128, 61); /* green-700 */
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid rgb(187, 247, 208); /* green-200 */
+            font-size: 0.95rem;
+        }
+
+        .support-section {
+            margin-top: 2rem;
+            border-top: 1px solid var(--border);
+            padding-top: 1.5rem;
+            font-size: 0.9rem;
+            color: var(--muted);
+        }
+
+        .support-section a {
+            color: var(--accent-dark);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .support-section a:hover {
+            text-decoration: underline;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 0.8rem;
+            background: var(--bg);
+            color: var(--muted);
+            padding: 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .footer .company-name {
+            font-weight: 700;
+            color: var(--accent-dark);
+        }
+
+        @media (max-width: 600px) {
+            .content {
+                padding: 1.5rem;
+            }
+
+            .verification-code {
+                font-size: 1.5rem;
+                letter-spacing: 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="email-container">
+    <div class="header">
+        <h1>Email Verification</h1>
+        <p>Please confirm your email to continue</p>
+    </div>
+
+    <div class="content">
+        <div class="greeting">Hello <span th:text="${recipientName}"></span>,</div>
+
+        <div class="message">
+            Welcome to Rahim's Gold Tracking Software.
+            To complete your registration for <strong th:text="${username}"></strong>, please enter the code below.
+        </div>
+
+        <div class="verification-section">
+            <div class="code-label">Verification Code</div>
+            <div class="verification-code" th:text="${verificationCode}"></div>
+        </div>
+
+        <div class="expiration-notice">
+            ⏰ This code expires on <strong th:text="${expirationTime}"></strong>
+        </div>
+
+        <div class="instructions">
+            <h3>How to verify:</h3>
+            <ol>
+                <li>Go back to the registration page</li>
+                <li>Enter the verification code above</li>
+                <li>Click “Verify”</li>
+                <li>Your account will be activated</li>
+            </ol>
+        </div>
+
+        <div class="security-notice">
+            🔒 If you didn't request this, ignore this email. Your account remains secure.
+        </div>
+
+        <div class="support-section">
+            <p>Need help? Our support team is ready to assist.</p>
+            <p>Email us at <a href="mailto:support@rgts.com">support@rgts.com</a></p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>This email was sent for account verification.</p>
+        <p>© 2025 <span class="company-name">RGTS</span>. All rights reserved.</p>
+        <p>This is an automated message. Please do not reply.</p>
+    </div>
+</div>
+</body>
+</html>
