@@ -41,22 +41,40 @@ public class AuthenticationController {
     @ApiResponse(responseCode = "500", description = "Internal server error")
   })
   @PostMapping(REGISTER)
-  public ResponseEntity<RegisterResponse> register(
+  public ResponseEntity<RegisterResponse> registerUser(
       @RequestBody RegisterRequest registerRequest, HttpServletRequest request) {
     RegisterResponse response = authenticationService.register(registerRequest, request);
     return ResponseEntity.status(HttpStatus.CREATED).body(response);
   }
 
   @Operation(
-      summary = "Verify user email",
-      description = "Verifies the user's email address using token and email as query parameters")
+      summary = "Verify user email via request body",
+      description =
+          "Verifies the user's email address using a verification code and email in the request body.")
+  @ApiResponses({
+    @ApiResponse(responseCode = "200", description = "Email verified successfully"),
+    @ApiResponse(responseCode = "400", description = "Invalid verification code or request data"),
+    @ApiResponse(responseCode = "500", description = "Internal server error")
+  })
+  @PostMapping(VERIFY_EMAIL)
+  public ResponseEntity<VerificationResponse> verifyEmailWithBody(
+      @RequestBody VerificationRequest verificationRequest, HttpServletRequest request) {
+    VerificationResponse verificationResponse =
+        authenticationService.verifyEmail(verificationRequest, request);
+    return ResponseEntity.status(HttpStatus.OK).body(verificationResponse);
+  }
+
+  @Operation(
+      summary = "Verify user email via link",
+      description =
+          "Verifies the user's email address using verification code and email as query parameters (for email verification links).")
   @ApiResponses({
     @ApiResponse(responseCode = "200", description = "Email verified successfully"),
     @ApiResponse(responseCode = "400", description = "Invalid verification code or email"),
     @ApiResponse(responseCode = "500", description = "Internal server error")
   })
   @GetMapping(VERIFY_EMAIL)
-  public ResponseEntity<VerificationResponse> verifyEmailViaLink(
+  public ResponseEntity<VerificationResponse> verifyEmailWithLink(
       @RequestParam("verificationCode") String verificationCode,
       @RequestParam("email") String email,
       HttpServletRequest request) {
