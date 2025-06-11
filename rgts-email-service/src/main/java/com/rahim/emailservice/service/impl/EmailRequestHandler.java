@@ -35,7 +35,6 @@ public class EmailRequestHandler implements IEmailRequestHandler {
         log.info("Doing something here for verification request");
         sendVerificationEmail(emailRequest);
       }
-      case VERIFICATION_SUCCESS -> log.info("Doing something here for password reset request");
       case UNKNOWN -> {
         log.warn("Received an unknown email request type: {}", emailRequest.getTemplate());
         throw new EmailProcessingException(
