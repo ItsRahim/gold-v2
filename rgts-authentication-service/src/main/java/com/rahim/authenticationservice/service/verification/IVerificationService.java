@@ -8,9 +8,9 @@ public interface IVerificationService {
 
   void sendPhoneVerification(User user);
 
-  boolean verifyEmail(String token);
+  boolean verifyEmail(UUID userId, String token);
 
-  boolean verifyPhone(UUID userId, String code);
+  boolean verifyPhone(UUID userId, String token);
 
   void regenerateEmailToken(UUID userId);
 

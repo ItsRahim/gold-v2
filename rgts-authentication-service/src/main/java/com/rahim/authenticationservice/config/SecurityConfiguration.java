@@ -47,6 +47,7 @@ public class SecurityConfiguration {
 
   private static final String[] ALLOWED_MATCHERS = {
     Endpoints.LOGIN_ENDPOINT,
+    Endpoints.VERIFY_ENDPOINT,
     Endpoints.REGISTER_ENDPOINT,
     Endpoints.REFRESH_TOKEN,
     Endpoints.VALIDATE_TOKEN,

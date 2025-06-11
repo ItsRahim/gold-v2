@@ -2,9 +2,13 @@ package com.rahim.authenticationservice.service.authentication.impl;
 
 import com.rahim.authenticationservice.dto.enums.ResponseStatus;
 import com.rahim.authenticationservice.dto.request.RegisterRequest;
+import com.rahim.authenticationservice.dto.request.VerificationRequest;
 import com.rahim.authenticationservice.dto.response.RegisterResponse;
+import com.rahim.authenticationservice.dto.response.UserData;
+import com.rahim.authenticationservice.dto.response.VerificationResponse;
 import com.rahim.authenticationservice.entity.User;
 import com.rahim.authenticationservice.enums.Role;
+import com.rahim.authenticationservice.exception.VerificationException;
 import com.rahim.authenticationservice.repository.UserRepository;
 import com.rahim.authenticationservice.service.authentication.IAuthenticationService;
 import com.rahim.authenticationservice.service.role.IRoleService;
@@ -13,15 +17,16 @@ import com.rahim.authenticationservice.util.RequestUtils;
 import com.rahim.common.exception.BadRequestException;
 import com.rahim.common.exception.DuplicateEntityException;
 import com.rahim.common.exception.ServiceException;
+import com.rahim.common.util.DateUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.OffsetDateTime;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -86,6 +91,75 @@ public class AuthenticationService implements IAuthenticationService {
         .username(user.getUsername())
         .email(user.getEmail())
         .build();
+  }
+
+  @Override
+  public VerificationResponse verifyEmail(
+      VerificationRequest verificationRequest, HttpServletRequest request) {
+
+    String email = verificationRequest.getEmail();
+    String verificationCode = verificationRequest.getVerificationCode();
+
+    if (email == null) {
+      log.error("Email is required for verification");
+      throw new BadRequestException("Email is required for verification");
+    }
+
+    if (verificationCode == null) {
+      log.error("Verification code is required");
+      throw new BadRequestException("Verification code is required");
+    }
+
+    User user =
+        userRepository
+            .findByEmail(email)
+            .orElseThrow(() -> new BadRequestException("User not found with email: " + email));
+
+    if (user.isEmailVerified()) {
+      log.warn("User with email {} is already verified", email);
+      throw new BadRequestException("User with email " + email + " is already verified");
+    }
+
+    try {
+      boolean matches = verificationService.verifyEmail(user.getId(), verificationCode);
+
+      UserData userData =
+          UserData.builder().username(user.getUsername()).email(user.getEmail()).build();
+
+      if (matches) {
+        log.info("Email verification successful for user with email: {}", email);
+
+        user.setEmailVerified(true);
+        user.setAccountLocked(false);
+        user.setUpdatedAt(DateUtil.nowUtc());
+        userRepository.save(user);
+
+        userData.setVerifiedAt(DateUtil.formatOffsetDateTime(user.getUpdatedAt()));
+
+        return VerificationResponse.builder()
+            .status(ResponseStatus.SUCCESS)
+            .message("Email verified successfully")
+            .userData(userData)
+            .build();
+      } else {
+        log.warn("Verification code does not match for user with email: {}", email);
+        return VerificationResponse.builder()
+            .status(ResponseStatus.INVALID)
+            .message("Verification code does not match")
+            .userData(userData)
+            .build();
+      }
+    } catch (VerificationException e) {
+      log.warn("Invalid verification for user with email {}: {}", email, e.getMessage());
+      return VerificationResponse.builder()
+          .status(ResponseStatus.INVALID)
+          .message(e.getMessage())
+          .build();
+    } catch (Exception e) {
+      log.error(
+          "Error during email verification for user with email {}: {}", email, e.getMessage(), e);
+      throw new ServiceException("Failed to verify email");
+    }
   }
 
   @Override

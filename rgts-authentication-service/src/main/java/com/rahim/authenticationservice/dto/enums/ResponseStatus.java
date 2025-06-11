@@ -10,5 +10,6 @@ public enum ResponseStatus {
   SUCCESS,
   ERROR,
   PENDING,
-  INVALID
+  INVALID,
+  FAILED,
 }

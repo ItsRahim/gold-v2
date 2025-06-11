@@ -2,8 +2,11 @@ package com.rahim.authenticationservice.controller;
 
 import static com.rahim.authenticationservice.constants.Endpoints.*;
 
+import com.rahim.authenticationservice.dto.enums.ResponseStatus;
 import com.rahim.authenticationservice.dto.request.RegisterRequest;
+import com.rahim.authenticationservice.dto.request.VerificationRequest;
 import com.rahim.authenticationservice.dto.response.RegisterResponse;
+import com.rahim.authenticationservice.dto.response.VerificationResponse;
 import com.rahim.authenticationservice.service.authentication.IAuthenticationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -14,10 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @created 08/06/2025
@@ -45,5 +45,25 @@ public class AuthenticationController {
       @RequestBody RegisterRequest registerRequest, HttpServletRequest request) {
     RegisterResponse response = authenticationService.register(registerRequest, request);
     return ResponseEntity.status(HttpStatus.CREATED).body(response);
+  }
+
+  @Operation(
+      summary = "Verify user email",
+      description = "Verifies the user's email address using a verification code")
+  @ApiResponses({
+    @ApiResponse(responseCode = "200", description = "Email verified successfully"),
+    @ApiResponse(responseCode = "400", description = "Invalid verification code or request data"),
+    @ApiResponse(responseCode = "500", description = "Internal server error")
+  })
+  @PostMapping(VERIFY_EMAIL)
+  public ResponseEntity<VerificationResponse> verifyEmail(
+      @RequestBody VerificationRequest verificationRequest, HttpServletRequest request) {
+    VerificationResponse verificationResponse =
+        authenticationService.verifyEmail(verificationRequest, request);
+    if (verificationResponse.getStatus().equals(ResponseStatus.SUCCESS)) {
+      return ResponseEntity.status(HttpStatus.OK).body(verificationResponse);
+    } else {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(verificationResponse);
+    }
   }
 }
