@@ -138,7 +138,7 @@ public class VerificationService implements IVerificationService {
           verificationCodeEntity.getCode(),
           e.getMessage(),
           e);
-      throw new SendEmailException("Failed to send verification code: " + e.getMessage());
+      throw new SendEmailException("Failed to send verification code");
     }
   }
 }
