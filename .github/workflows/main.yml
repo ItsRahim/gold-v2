@@ -51,7 +51,7 @@ jobs:
     needs: build
     strategy:
       matrix:
-        folder: [ "rgts-email-service", "rgts-eureka-server", "rgts-gateway-service", "rgts-pricing-service", "rgts-python-api" ]
+        folder: [ "rgts-eureka-server", "rgts-gateway-service", "rgts-pricing-service", "rgts-python-api" ]
 
     steps:
       - name: Checkout code
