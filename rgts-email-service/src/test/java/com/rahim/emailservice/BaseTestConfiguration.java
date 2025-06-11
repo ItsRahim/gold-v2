@@ -25,6 +25,8 @@ public class BaseTestConfiguration {
 
   @DynamicPropertySource
   static void overrideMailProperties(DynamicPropertyRegistry registry) {
+    registry.add("spring.mail.username", () -> "test@rgts.com");
+    registry.add("spring.mail.password", () -> "test");
     registry.add("spring.mail.host", mailhog::getHost);
     registry.add("spring.mail.port", () -> mailhog.getMappedPort(1025));
     registry.add("spring.mail.properties.mail.smtp.auth", () -> false);
