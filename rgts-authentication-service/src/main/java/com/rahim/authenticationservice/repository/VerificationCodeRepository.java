@@ -1,13 +1,11 @@
 package com.rahim.authenticationservice.repository;
 
 import com.rahim.authenticationservice.entity.VerificationCode;
-
+import com.rahim.authenticationservice.enums.VerificationType;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
-import com.rahim.authenticationservice.enums.VerificationType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

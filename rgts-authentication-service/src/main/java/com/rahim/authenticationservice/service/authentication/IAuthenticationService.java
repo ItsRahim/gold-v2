@@ -15,7 +15,8 @@ import java.util.Optional;
 public interface IAuthenticationService {
   RegisterResponse register(RegisterRequest registerRequest, HttpServletRequest request);
 
-  VerificationResponse verifyEmail(VerificationRequest verificationRequest, HttpServletRequest request);
+  VerificationResponse verifyEmail(
+      VerificationRequest verificationRequest, HttpServletRequest request);
 
   Optional<User> findByUsername(String username);
 }

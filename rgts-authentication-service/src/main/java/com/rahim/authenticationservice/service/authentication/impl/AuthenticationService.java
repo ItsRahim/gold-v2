@@ -21,7 +21,6 @@ import com.rahim.common.util.DateUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.OffsetDateTime;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
