@@ -1,5 +1,6 @@
 package com.rahim.authenticationservice.dto.request;
 
+import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -7,6 +8,7 @@ import lombok.Data;
  * @author Rahim Ahmed
  */
 @Data
+@Builder
 public class VerificationRequest {
   private String email;
   private String verificationCode;

@@ -82,6 +82,25 @@
             margin-bottom: 2rem;
         }
 
+        .verify-button {
+            display: inline-block;
+            margin-top: 1.5rem;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            text-align: center;
+            color: var(--white);
+            background-color: var(--accent-dark);
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        .verify-button:hover {
+            background-color: rgb(180, 116, 4);
+        }
+
         .code-label {
             font-size: 0.875rem;
             text-transform: uppercase;
@@ -204,6 +223,10 @@
         <div class="verification-section">
             <div class="code-label">Verification Code</div>
             <div class="verification-code" th:text="${verificationCode}"></div>
+            <a th:href="@{'http://localhost:9000/api/v2/auth/verify-email?verificationCode=' + ${verificationCode} + '&email=' + ${recipientEmail}}"
+               class="verify-button">
+                Verify
+            </a>
         </div>
 
         <div class="expiration-notice">

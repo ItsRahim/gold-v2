@@ -49,17 +49,21 @@ public class AuthenticationController {
 
   @Operation(
       summary = "Verify user email",
-      description = "Verifies the user's email address using a verification code")
+      description = "Verifies the user's email address using token and email as query parameters")
   @ApiResponses({
     @ApiResponse(responseCode = "200", description = "Email verified successfully"),
-    @ApiResponse(responseCode = "400", description = "Invalid verification code or request data"),
+    @ApiResponse(responseCode = "400", description = "Invalid verification code or email"),
     @ApiResponse(responseCode = "500", description = "Internal server error")
   })
-  @PostMapping(VERIFY_EMAIL)
-  public ResponseEntity<VerificationResponse> verifyEmail(
-      @RequestBody VerificationRequest verificationRequest, HttpServletRequest request) {
+  @GetMapping(VERIFY_EMAIL)
+  public ResponseEntity<VerificationResponse> verifyEmailViaLink(
+      @RequestParam("verificationCode") String verificationCode,
+      @RequestParam("email") String email,
+      HttpServletRequest request) {
+    VerificationRequest verificationRequest =
+        VerificationRequest.builder().email(email).verificationCode(verificationCode).build();
     VerificationResponse verificationResponse =
         authenticationService.verifyEmail(verificationRequest, request);
-    return ResponseEntity.status(HttpStatus.OK).body(verificationResponse);
+    return ResponseEntity.ok(verificationResponse);
   }
 }

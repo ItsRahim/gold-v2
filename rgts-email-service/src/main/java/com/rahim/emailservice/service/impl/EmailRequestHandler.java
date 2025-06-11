@@ -106,7 +106,7 @@ public class EmailRequestHandler implements IEmailRequestHandler {
               .expirationTime(expirationTime)
               .build();
 
-      String emailContent = emailGenerator.generateVerificationEmail(emailVerificationData);
+      String emailContent = emailGenerator.generateVerificationEmail(emailVerificationData, recipientEmail);
       emailSenderService.sendEmail(recipientEmail, EmailSubjects.EMAIL_VERIFICATION, emailContent);
       log.info("Verification email sent to: {}", recipientEmail);
     } catch (EmailProcessingException e) {

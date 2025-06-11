@@ -21,9 +21,11 @@ public class EmailTemplateService implements IEmailTemplateService {
   private static final String VERIFICATION_EMAIL_TEMPLATE = "user/verification-email";
 
   @Override
-  public String generateVerificationEmail(EmailVerificationData emailVerificationData) {
+  public String generateVerificationEmail(
+      EmailVerificationData emailVerificationData, String recipientEmail) {
     Context context = new Context();
 
+    context.setVariable("recipientEmail", recipientEmail);
     context.setVariable("firstName", emailVerificationData.getFirstName());
     context.setVariable("lastName", emailVerificationData.getLastName());
     context.setVariable("username", emailVerificationData.getUsername());
