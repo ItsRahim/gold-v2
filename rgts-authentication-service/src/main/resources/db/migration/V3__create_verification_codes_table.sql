@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS verification_codes
 (
     id         UUID PRIMARY KEY     DEFAULT gen_random_uuid(),
     user_id    UUID        NOT NULL REFERENCES users (id) ON DELETE CASCADE,
-    code       CHAR(6)     NOT NULL,
+    code       TEXT        NOT NULL,
     type       VARCHAR(20) NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     expires_at TIMESTAMPTZ NOT NULL,

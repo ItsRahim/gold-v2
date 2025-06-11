@@ -38,9 +38,8 @@ public class VerificationCode {
   @JoinColumn(name = "user_id", nullable = false)
   private User user;
 
-  @Size(max = 6)
   @NotNull
-  @Column(name = "code", nullable = false, length = 6)
+  @Column(name = "code", nullable = false, length = Integer.MAX_VALUE)
   private String code;
 
   @NotNull

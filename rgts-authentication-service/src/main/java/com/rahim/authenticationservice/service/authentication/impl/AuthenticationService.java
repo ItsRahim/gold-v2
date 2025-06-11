@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,7 +36,7 @@ public class AuthenticationService implements IAuthenticationService {
   private final UserRepository userRepository;
   private final IRoleService roleService;
   private final IVerificationService verificationService;
-  private final PasswordEncoder passwordEncoder;
+  private final BCryptPasswordEncoder passwordEncoder;
 
   private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@(.+)$");
 
