@@ -34,7 +34,7 @@ public class EmailRequestHandler implements IEmailRequestHandler {
 
     switch (emailRequest.getTemplate()) {
       case VERIFICATION_REQUEST -> {
-        log.info("Doing something here for verification request");
+        log.debug("Generating verification email for: {}", emailRequest.getRecipientEmail());
         sendVerificationEmail(emailRequest);
       }
       case UNKNOWN -> {
