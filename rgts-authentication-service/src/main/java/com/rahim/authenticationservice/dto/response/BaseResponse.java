@@ -17,6 +17,6 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BaseResponse {
-  private String message;
   private ResponseStatus status;
+  private String message;
 }
