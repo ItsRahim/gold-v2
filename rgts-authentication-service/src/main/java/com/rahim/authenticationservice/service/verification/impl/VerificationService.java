@@ -152,7 +152,8 @@ public class VerificationService implements IVerificationService {
         verificationCodeRepository
             .findByUserIdAndType(userId, type)
             .orElseThrow(
-                () -> new EntityNotFoundException("Verification code not found. Request a new one."));
+                () ->
+                    new EntityNotFoundException("Verification code not found. Request a new one."));
 
     validateAttempts(code);
     validateToken(token, code.getCode());
@@ -171,7 +172,8 @@ public class VerificationService implements IVerificationService {
     VerificationCode code =
         verificationCodeRepository
             .findByCodeAndType(hashedToken, type)
-            .orElseThrow(() -> new EntityNotFoundException("Invalid or expired verification token."));
+            .orElseThrow(
+                () -> new EntityNotFoundException("Invalid or expired verification token."));
 
     UUID userId = code.getUser().getId();
     if (userId == null) {
