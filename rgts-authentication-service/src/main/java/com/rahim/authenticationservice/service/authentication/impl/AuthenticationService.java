@@ -15,9 +15,7 @@ import com.rahim.authenticationservice.service.role.IRoleService;
 import com.rahim.authenticationservice.service.verification.IVerificationService;
 import com.rahim.authenticationservice.util.EmailFormatUtil;
 import com.rahim.authenticationservice.util.RequestUtils;
-import com.rahim.common.exception.BadRequestException;
-import com.rahim.common.exception.DuplicateEntityException;
-import com.rahim.common.exception.ServiceException;
+import com.rahim.common.exception.*;
 import com.rahim.common.util.DateUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.OffsetDateTime;
@@ -94,11 +92,11 @@ public class AuthenticationService implements IAuthenticationService {
     User user =
         userRepository
             .findByEmail(email)
-            .orElseThrow(() -> new BadRequestException("User not found with email: " + email));
+            .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
 
     if (user.isEmailVerified()) {
       log.warn("Email already verified: {}", email);
-      throw new BadRequestException("User with email " + email + " is already verified");
+      throw new ResourceConflictException("User with email " + email + " is already verified");
     }
 
     try {
@@ -128,12 +126,12 @@ public class AuthenticationService implements IAuthenticationService {
               .findById(userId)
               .orElseThrow(
                   () ->
-                      new BadRequestException(
+                      new EntityNotFoundException(
                           "User not found with ID: " + userId + ". Unable to verify email."));
 
       if (user.isEmailVerified()) {
         log.warn("Email already verified: {}", user.getEmail());
-        throw new BadRequestException(
+        throw new ResourceConflictException(
             "User with email " + user.getEmail() + " is already verified");
       }
 
@@ -174,8 +172,8 @@ public class AuthenticationService implements IAuthenticationService {
     }
 
     String phone = request.getPhoneNumber();
-    if (StringUtils.isNotBlank(phone) && userRepository.existsByPhoneNumber(phone)) {
-      throw new BadRequestException("Phone number is already in use");
+    if (StringUtils.isBlank(phone)) {
+      throw new BadRequestException("Phone number is required");
     }
   }
 
@@ -188,6 +186,11 @@ public class AuthenticationService implements IAuthenticationService {
     if (userRepository.existsByEmail(request.getEmail())) {
       throw new DuplicateEntityException(
           "User with email " + request.getEmail() + " already exists.");
+    }
+
+    if (userRepository.existsByPhoneNumber(request.getPhoneNumber())) {
+      throw new DuplicateEntityException(
+          "User with phone number " + request.getPhoneNumber() + " already exists.");
     }
   }
 

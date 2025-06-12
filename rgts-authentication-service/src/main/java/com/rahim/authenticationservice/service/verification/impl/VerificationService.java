@@ -6,6 +6,7 @@ import com.rahim.authenticationservice.enums.VerificationType;
 import com.rahim.authenticationservice.repository.VerificationCodeRepository;
 import com.rahim.authenticationservice.service.verification.IVerificationService;
 import com.rahim.common.exception.BadRequestException;
+import com.rahim.common.exception.EntityNotFoundException;
 import com.rahim.common.exception.ServiceException;
 import com.rahim.common.util.DateUtil;
 import com.rahim.kafkaservice.service.IKafkaService;
@@ -151,7 +152,7 @@ public class VerificationService implements IVerificationService {
         verificationCodeRepository
             .findByUserIdAndType(userId, type)
             .orElseThrow(
-                () -> new BadRequestException("Verification code not found. Request a new one."));
+                () -> new EntityNotFoundException("Verification code not found. Request a new one."));
 
     validateAttempts(code);
     validateToken(token, code.getCode());
@@ -170,7 +171,7 @@ public class VerificationService implements IVerificationService {
     VerificationCode code =
         verificationCodeRepository
             .findByCodeAndType(hashedToken, type)
-            .orElseThrow(() -> new BadRequestException("Invalid or expired verification token."));
+            .orElseThrow(() -> new EntityNotFoundException("Invalid or expired verification token."));
 
     UUID userId = code.getUser().getId();
     if (userId == null) {
