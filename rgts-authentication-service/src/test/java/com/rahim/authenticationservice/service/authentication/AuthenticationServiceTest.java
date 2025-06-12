@@ -9,6 +9,4 @@ import org.mockito.junit.jupiter.MockitoExtension;
  * @author Rahim Ahmed
  */
 @ExtendWith(MockitoExtension.class)
-class AuthenticationServiceTest extends BaseTestConfiguration {
-
-}
+class AuthenticationServiceTest extends BaseTestConfiguration {}

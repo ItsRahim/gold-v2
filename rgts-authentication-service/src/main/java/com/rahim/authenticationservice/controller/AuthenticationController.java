@@ -12,13 +12,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.UUID;
 
 /**
  * @created 08/06/2025
@@ -76,7 +75,9 @@ public class AuthenticationController {
   })
   @GetMapping(VERIFY_EMAIL)
   public ResponseEntity<VerificationResponse> verifyEmailWithLink(
-          @RequestParam("token") String verificationCode, @RequestParam("id") UUID verificationId, HttpServletRequest request) {
+      @RequestParam("token") String verificationCode,
+      @RequestParam("id") UUID verificationId,
+      HttpServletRequest request) {
     VerificationResponse verificationResponse =
         authenticationService.verifyEmail(verificationCode, verificationId, request);
     return ResponseEntity.ok(verificationResponse);

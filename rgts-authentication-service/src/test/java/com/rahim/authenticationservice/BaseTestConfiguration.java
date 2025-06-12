@@ -4,7 +4,6 @@ import static com.rahim.authenticationservice.BaseTestContainerConfig.postgres;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rahim.common.handler.ApiExceptionHandler;
-
 import javax.sql.DataSource;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.AfterEach;

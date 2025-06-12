@@ -55,8 +55,7 @@ public class EmailRequestHandler implements IEmailRequestHandler {
       List<String> missingFields = new ArrayList<>();
 
       String verificationCode = emailRequest.getVerificationData().getVerificationCode();
-      String verificationId =
-          emailRequest.getVerificationData().getVerificationId();
+      String verificationId = emailRequest.getVerificationData().getVerificationId();
       String expirationTime = emailRequest.getVerificationData().getExpirationTime();
       String firstName = emailRequest.getFirstName();
       String lastName = emailRequest.getLastName();

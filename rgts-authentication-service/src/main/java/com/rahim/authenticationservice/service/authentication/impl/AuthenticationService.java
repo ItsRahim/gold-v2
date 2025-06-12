@@ -119,9 +119,11 @@ public class AuthenticationService implements IAuthenticationService {
   }
 
   @Override
-  public VerificationResponse verifyEmail(String verificationCode, UUID verificationId, HttpServletRequest request) {
+  public VerificationResponse verifyEmail(
+      String verificationCode, UUID verificationId, HttpServletRequest request) {
     try {
-      UUID userId = verificationService.verifyCode(verificationCode, verificationId, VerificationType.EMAIL);
+      UUID userId =
+          verificationService.verifyCode(verificationCode, verificationId, VerificationType.EMAIL);
 
       User user =
           userRepository

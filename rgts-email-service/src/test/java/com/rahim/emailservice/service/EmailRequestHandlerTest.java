@@ -77,8 +77,7 @@ public class EmailRequestHandlerTest {
         emailRequest.getVerificationData().getVerificationCode(),
         capturedData.getVerificationCode());
     assertEquals(
-        emailRequest.getVerificationData().getVerificationId(),
-        capturedData.getVerificationId());
+        emailRequest.getVerificationData().getVerificationId(), capturedData.getVerificationId());
     assertEquals(
         emailRequest.getVerificationData().getExpirationTime(), capturedData.getExpirationTime());
   }
