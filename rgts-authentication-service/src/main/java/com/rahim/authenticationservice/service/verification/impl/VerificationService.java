@@ -172,7 +172,7 @@ public class VerificationService implements IVerificationService {
             .findByCodeAndType(hashedToken, type)
             .orElseThrow(() -> new BadRequestException("Invalid or expired verification token."));
 
-    UUID userId = code.getUser() != null ? code.getUser().getId() : null;
+    UUID userId = code.getUser().getId();
     if (userId == null) {
       throw new BadRequestException("Verification code does not belong to any user.");
     }
