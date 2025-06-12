@@ -7,5 +7,5 @@ import com.rahim.emailservice.dto.EmailVerificationData;
  * @author Rahim Ahmed
  */
 public interface IEmailTemplateService {
-  String generateVerificationEmail(EmailVerificationData emailVerificationData, String recipientEmail);
+  String generateVerificationEmail(EmailVerificationData emailVerificationData);
 }

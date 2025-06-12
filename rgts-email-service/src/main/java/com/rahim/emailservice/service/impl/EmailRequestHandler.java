@@ -54,16 +54,23 @@ public class EmailRequestHandler implements IEmailRequestHandler {
     try {
       List<String> missingFields = new ArrayList<>();
 
-      String verificationCode = emailRequest.getVerificationData().getVerificationCode();
+      String rawVerificationCode = emailRequest.getVerificationData().getRawVerificationCode();
+      String hashedVerificationCode =
+          emailRequest.getVerificationData().getHashedVerificationCode();
       String expirationTime = emailRequest.getVerificationData().getExpirationTime();
       String firstName = emailRequest.getFirstName();
       String lastName = emailRequest.getLastName();
       String username = emailRequest.getUsername();
       String recipientEmail = emailRequest.getRecipientEmail();
 
-      if (StringUtils.isBlank(verificationCode)) {
-        log.error("Missing field: verificationCode");
-        missingFields.add("verificationCode");
+      if (StringUtils.isBlank(rawVerificationCode)) {
+        log.error("Missing field: rawVerificationCode");
+        missingFields.add("rawVerificationCode");
+      }
+
+      if (StringUtils.isBlank(hashedVerificationCode)) {
+        log.error("Missing field: hashedVerificationCode");
+        missingFields.add("hashedVerificationCode");
       }
 
       if (StringUtils.isBlank(expirationTime)) {
@@ -102,11 +109,12 @@ public class EmailRequestHandler implements IEmailRequestHandler {
               .firstName(firstName)
               .lastName(lastName)
               .username(username)
-              .verificationCode(verificationCode)
+              .rawVerificationCode(rawVerificationCode)
+              .hashedVerificationCode(hashedVerificationCode)
               .expirationTime(expirationTime)
               .build();
 
-      String emailContent = emailGenerator.generateVerificationEmail(emailVerificationData, recipientEmail);
+      String emailContent = emailGenerator.generateVerificationEmail(emailVerificationData);
       emailSenderService.sendEmail(recipientEmail, EmailSubjects.EMAIL_VERIFICATION, emailContent);
       log.info("Verification email sent to: {}", recipientEmail);
     } catch (EmailProcessingException e) {

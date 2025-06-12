@@ -8,6 +8,7 @@ import com.rahim.authenticationservice.dto.response.UserData;
 import com.rahim.authenticationservice.dto.response.VerificationResponse;
 import com.rahim.authenticationservice.entity.User;
 import com.rahim.authenticationservice.enums.Role;
+import com.rahim.authenticationservice.enums.VerificationType;
 import com.rahim.authenticationservice.repository.UserRepository;
 import com.rahim.authenticationservice.service.authentication.IAuthenticationService;
 import com.rahim.authenticationservice.service.role.IRoleService;
@@ -19,15 +20,16 @@ import com.rahim.common.exception.DuplicateEntityException;
 import com.rahim.common.exception.ServiceException;
 import com.rahim.common.util.DateUtil;
 import jakarta.servlet.http.HttpServletRequest;
-import java.time.OffsetDateTime;
-import java.util.Optional;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.OffsetDateTime;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * @created 09/06/2025
@@ -37,6 +39,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService implements IAuthenticationService {
+
   private final UserRepository userRepository;
   private final IRoleService roleService;
   private final IVerificationService verificationService;
@@ -45,42 +48,25 @@ public class AuthenticationService implements IAuthenticationService {
   @Override
   @Transactional(rollbackFor = Exception.class)
   public RegisterResponse register(RegisterRequest registerRequest, HttpServletRequest request) {
-    log.info("Starting registration process for user: {}", registerRequest.getUsername());
+    log.info("Starting registration for user: {}", registerRequest.getUsername());
 
-    validatePayload(registerRequest);
+    validateRegisterRequest(registerRequest);
+    checkUserUniqueness(registerRequest);
 
-    log.debug("Checking if username {} already exists", registerRequest.getUsername());
-    if (userRepository.existsByUsername(registerRequest.getUsername())) {
-      log.warn("Registration failed: Username {} already exists", registerRequest.getUsername());
-      throw new DuplicateEntityException(
-          "User with username " + registerRequest.getUsername() + " already exists.");
-    }
-
-    log.debug("Checking if email {} already exists", registerRequest.getEmail());
-    if (userRepository.existsByEmail(registerRequest.getEmail())) {
-      log.warn("Registration failed: Email {} already exists", registerRequest.getEmail());
-      throw new DuplicateEntityException(
-          "User with email " + registerRequest.getEmail() + " already exists.");
-    }
-
-    log.debug("Creating new user entity for username: {}", registerRequest.getUsername());
     User user = createUser(registerRequest, request);
-    log.info("User created successfully with ID: {}", user.getId());
+    log.info("User created with ID: {}", user.getId());
 
-    log.debug("Assigning USER role to user: {}", user.getId());
     roleService.assignRoleToUser(user, Role.USER);
-    log.debug("Role USER assigned successfully to user: {}", user.getId());
+    log.debug("Assigned USER role to user ID: {}", user.getId());
 
     try {
-      log.debug("Initiating email verification process for user: {}", user.getId());
       verificationService.sendEmailVerification(user);
-      log.info("Email verification initiated successfully for user: {}", user.getId());
+      log.info("Email verification sent for user ID: {}", user.getId());
     } catch (Exception e) {
-      log.error("Verification failed for user: {}. Error: {}", user.getId(), e.getMessage());
+      log.error("Failed to send verification for user ID {}: {}", user.getId(), e.getMessage());
       throw new ServiceException("Failed to complete registration");
     }
 
-    log.info("Registration completed successfully for user: {}", user.getId());
     return RegisterResponse.builder()
         .message("User registered successfully. Please check your email to verify your account.")
         .status(ResponseStatus.PENDING)
@@ -93,17 +79,16 @@ public class AuthenticationService implements IAuthenticationService {
   @Override
   public VerificationResponse verifyEmail(
       VerificationRequest verificationRequest, HttpServletRequest request) {
-
     String email = verificationRequest.getEmail();
     String verificationCode = verificationRequest.getVerificationCode();
 
     if (EmailFormatUtil.isInvalidEmail(email)) {
-      log.error("Invalid email format provided in verification request: {}", email);
+      log.error("Invalid email: {}", email);
       throw new BadRequestException("Invalid email format provided");
     }
 
-    if (StringUtils.isEmpty(verificationCode)) {
-      log.error("Verification code is required");
+    if (StringUtils.isBlank(verificationCode)) {
+      log.error("Missing verification code for email: {}", email);
       throw new BadRequestException("Verification code is required");
     }
 
@@ -113,39 +98,50 @@ public class AuthenticationService implements IAuthenticationService {
             .orElseThrow(() -> new BadRequestException("User not found with email: " + email));
 
     if (user.isEmailVerified()) {
-      log.warn("User with email {} is already verified", email);
+      log.warn("Email already verified: {}", email);
       throw new BadRequestException("User with email " + email + " is already verified");
     }
 
     try {
-      boolean matches = verificationService.verifyEmail(user.getId(), verificationCode);
+      boolean isVerified = verificationService.verifyEmail(user.getId(), verificationCode);
 
-      UserData userData =
-          UserData.builder().username(user.getUsername()).email(user.getEmail()).build();
-
-      if (matches) {
-        log.info("Email verification successful for user with email: {}", email);
-
-        user.setEmailVerified(true);
-        user.setAccountLocked(false);
-        user.setUpdatedAt(DateUtil.nowUtc());
-        userRepository.save(user);
-
-        userData.setVerifiedAt(DateUtil.formatOffsetDateTime(user.getUpdatedAt()));
-
-        return VerificationResponse.builder()
-            .status(ResponseStatus.SUCCESS)
-            .message("Email verified successfully")
-            .userData(userData)
-            .build();
-      } else {
-        log.warn("Verification code does not match for user with email: {}", email);
+      if (!isVerified) {
+        log.warn("Verification failed for email: {}", email);
         throw new BadRequestException(
             "Verification code does not match for user with email: " + email);
       }
+
+      updateUserAfterVerification(user);
+      return buildVerificationResponse(user);
     } catch (Exception e) {
-      log.error(
-          "Error during email verification for user with email {}: {}", email, e.getMessage(), e);
+      log.error("Verification error for email {}: {}", email, e.getMessage(), e);
+      throw new ServiceException("Failed to verify email");
+    }
+  }
+
+  @Override
+  public VerificationResponse verifyEmail(String hashedToken, HttpServletRequest request) {
+    try {
+      UUID userId = verificationService.verifyCode(hashedToken, VerificationType.EMAIL);
+
+      User user =
+          userRepository
+              .findById(userId)
+              .orElseThrow(
+                  () ->
+                      new BadRequestException(
+                          "User not found with ID: " + userId + ". Unable to verify email."));
+
+      if (user.isEmailVerified()) {
+        log.warn("Email already verified: {}", user.getEmail());
+        throw new BadRequestException(
+            "User with email " + user.getEmail() + " is already verified");
+      }
+
+      updateUserAfterVerification(user);
+      return buildVerificationResponse(user);
+    } catch (Exception e) {
+      log.error("Verification error with token: {} - {}", hashedToken, e.getMessage(), e);
       throw new ServiceException("Failed to verify email");
     }
   }
@@ -155,72 +151,86 @@ public class AuthenticationService implements IAuthenticationService {
     return userRepository.findByUsername(username);
   }
 
-  private void validatePayload(RegisterRequest registerRequest) {
-    log.debug(
-        "Validating registration request payload for user: {}", registerRequest.getUsername());
+  // ------------------------ Private Helpers ------------------------
 
-    String email = registerRequest.getEmail();
-    if (EmailFormatUtil.isInvalidEmail(email)) {
-      log.error("Invalid email format provided in registration request: {}", email);
-      throw new BadRequestException("Invalid email format provided in registration request");
+  private void validateRegisterRequest(RegisterRequest request) {
+    if (EmailFormatUtil.isInvalidEmail(request.getEmail())) {
+      throw new BadRequestException("Invalid email format provided");
     }
 
-    String username = registerRequest.getUsername();
-    if (StringUtils.isEmpty(username)) {
-      log.error("Username is missing in registration request: {}", registerRequest);
+    if (StringUtils.isBlank(request.getUsername())) {
       throw new BadRequestException("Username is required");
     }
 
-    String password = registerRequest.getPassword();
-    if (StringUtils.isEmpty(password)) {
-      log.error("Password is missing in registration request for user: {}", username);
+    if (StringUtils.isBlank(request.getPassword())) {
       throw new BadRequestException("Password is required");
     }
 
-    String firstName = registerRequest.getFirstName();
-    if (StringUtils.isEmpty(firstName)) {
-      log.error("First name is missing in registration request for user: {}", username);
+    if (StringUtils.isBlank(request.getFirstName())) {
       throw new BadRequestException("First name is required");
     }
 
-    String lastName = registerRequest.getLastName();
-    if (StringUtils.isEmpty(lastName)) {
-      log.error("Last name is missing in registration request for user: {}", username);
+    if (StringUtils.isBlank(request.getLastName())) {
       throw new BadRequestException("Last name is required");
     }
 
-    String phoneNumber = registerRequest.getPhoneNumber();
-    if (phoneNumber != null
-        && !phoneNumber.isBlank()
-        && userRepository.existsByPhoneNumber(phoneNumber)) {
-      log.error("Phone number already exists: {}", phoneNumber);
+    String phone = request.getPhoneNumber();
+    if (StringUtils.isNotBlank(phone) && userRepository.existsByPhoneNumber(phone)) {
       throw new BadRequestException("Phone number is already in use");
     }
-
-    log.debug(
-        "Registration request payload validated successfully for user: {}",
-        registerRequest.getUsername());
   }
 
-  private User createUser(RegisterRequest registerRequest, HttpServletRequest request) {
-    User user =
+  private void checkUserUniqueness(RegisterRequest request) {
+    if (userRepository.existsByUsername(request.getUsername())) {
+      throw new DuplicateEntityException(
+          "User with username " + request.getUsername() + " already exists.");
+    }
+
+    if (userRepository.existsByEmail(request.getEmail())) {
+      throw new DuplicateEntityException(
+          "User with email " + request.getEmail() + " already exists.");
+    }
+  }
+
+  private User createUser(RegisterRequest request, HttpServletRequest httpRequest) {
+    return userRepository.save(
         User.builder()
-            .username(registerRequest.getUsername())
-            .email(registerRequest.getEmail())
-            .password(passwordEncoder.encode(registerRequest.getPassword()))
-            .firstName(registerRequest.getFirstName())
-            .lastName(registerRequest.getLastName())
-            .phoneNumber(registerRequest.getPhoneNumber())
+            .username(request.getUsername())
+            .email(request.getEmail())
+            .password(passwordEncoder.encode(request.getPassword()))
+            .firstName(request.getFirstName())
+            .lastName(request.getLastName())
+            .phoneNumber(request.getPhoneNumber())
             .emailVerified(false)
             .phoneVerified(false)
-            .locale(RequestUtils.getClientLocale(request))
-            .timezone(RequestUtils.getClientTimezone(request))
+            .locale(RequestUtils.getClientLocale(httpRequest))
+            .timezone(RequestUtils.getClientTimezone(httpRequest))
             .createdAt(OffsetDateTime.now())
             .updatedAt(OffsetDateTime.now())
             .accountExpired(false)
             .accountLocked(true)
+            .build());
+  }
+
+  private void updateUserAfterVerification(User user) {
+    user.setEmailVerified(true);
+    user.setAccountLocked(false);
+    user.setUpdatedAt(DateUtil.nowUtc());
+    userRepository.save(user);
+  }
+
+  private VerificationResponse buildVerificationResponse(User user) {
+    UserData userData =
+        UserData.builder()
+            .username(user.getUsername())
+            .email(user.getEmail())
+            .verifiedAt(DateUtil.formatOffsetDateTime(user.getUpdatedAt()))
             .build();
 
-    return userRepository.save(user);
+    return VerificationResponse.builder()
+        .status(ResponseStatus.SUCCESS)
+        .message("Email verified successfully")
+        .userData(userData)
+        .build();
   }
 }

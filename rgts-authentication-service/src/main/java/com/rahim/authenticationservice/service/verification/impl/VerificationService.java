@@ -12,62 +12,61 @@ import com.rahim.kafkaservice.service.IKafkaService;
 import com.rahim.proto.protobuf.email.AccountVerificationData;
 import com.rahim.proto.protobuf.email.EmailRequest;
 import com.rahim.proto.protobuf.email.EmailTemplate;
-import java.time.OffsetDateTime;
-import java.util.Optional;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * @created 09/06/2025
- * @author Rahim Ahmed
- */
+import java.time.OffsetDateTime;
+import java.util.UUID;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(rollbackFor = Exception.class)
 public class VerificationService implements IVerificationService {
+
   private final VerificationCodeRepository verificationCodeRepository;
   private final BCryptPasswordEncoder passwordEncoder;
   private final IKafkaService kafkaService;
 
-  private static final int VERIFICATION_CODE_EXPIRATION_MINUTES = 30;
-  private static final int VERIFICATION_CODE_LENGTH = 6;
-  private static final int MAX_VERIFICATION_ATTEMPTS = 5;
+  @Value("${verification.email.expiration-minutes:30}")
+  private int emailCodeExpirationMinutes;
+
+  @Value("${verification.code.length:6}")
+  private int verificationCodeLength;
+
+  @Value("${verification.max-attempts:5}")
+  private int maxVerificationAttempts;
 
   @Override
   public void sendEmailVerification(User user) {
-    try {
-      log.debug("Starting email verification for user: {}", user.getId());
-      String verificationCode = generateVerificationCode();
-      String hashedVerificationCode = passwordEncoder.encode(verificationCode);
-      OffsetDateTime now = DateUtil.nowUtc();
-      OffsetDateTime expiresAt = DateUtil.addMinutesToNowUtc(VERIFICATION_CODE_EXPIRATION_MINUTES);
+    log.debug("Starting email verification for user: {}", user.getId());
 
-      VerificationCode verificationCodeEntity =
-          VerificationCode.builder()
-              .user(user)
-              .code(hashedVerificationCode)
-              .type(VerificationType.EMAIL)
-              .createdAt(now)
-              .expiresAt(expiresAt)
-              .attempts(0)
-              .build();
+    String rawCode = generateVerificationCode();
+    String hashedCode = passwordEncoder.encode(rawCode);
+    OffsetDateTime now = DateUtil.nowUtc();
+    OffsetDateTime expiresAt = DateUtil.addMinutesToNowUtc(emailCodeExpirationMinutes);
 
-      verificationCodeRepository.save(verificationCodeEntity);
-      log.debug("Successfully saved verification code");
+    VerificationCode verificationCode =
+        VerificationCode.builder()
+            .user(user)
+            .code(hashedCode)
+            .type(VerificationType.EMAIL)
+            .createdAt(now)
+            .expiresAt(expiresAt)
+            .attempts(0)
+            .build();
 
-      sendEmail(user, verificationCode, expiresAt);
-      log.info("Email verification code sent successfully for user: {}", user.getId());
-    } catch (Exception e) {
-      log.error("Failed to create verification code for user: {}", e.getMessage());
-      throw new ServiceException("Failed to create verification code for user");
-    }
+    verificationCodeRepository.save(verificationCode);
+    log.debug("Saved verification code for user: {}", user.getId());
+
+    sendEmail(user, rawCode, hashedCode, expiresAt);
+    log.info("Verification email sent to user: {}", user.getId());
   }
 
   @Override
@@ -76,13 +75,19 @@ public class VerificationService implements IVerificationService {
   @Override
   @Transactional(noRollbackFor = BadRequestException.class)
   public boolean verifyEmail(UUID userId, String token) {
-    return verifyCode(userId, token, VerificationType.EMAIL);
+    return verifyCodeWithUserId(userId, token, VerificationType.EMAIL);
   }
 
   @Override
   @Transactional(noRollbackFor = BadRequestException.class)
   public boolean verifyPhone(UUID userId, String token) {
-    return verifyCode(userId, token, VerificationType.PHONE);
+    return verifyCodeWithUserId(userId, token, VerificationType.PHONE);
+  }
+
+  @Override
+  @Transactional(noRollbackFor = BadRequestException.class)
+  public UUID verifyCode(String hashedToken, VerificationType type) {
+    return verifyCodeWithHashedToken(hashedToken, type);
   }
 
   @Override
@@ -107,101 +112,105 @@ public class VerificationService implements IVerificationService {
     return false;
   }
 
-  @Override
-  public void checkVerificationAttempts(UUID userId) {}
-
   private String generateVerificationCode() {
-    return RandomStringUtils.randomAlphanumeric(VERIFICATION_CODE_LENGTH).toUpperCase();
+    return RandomStringUtils.randomAlphanumeric(verificationCodeLength).toUpperCase();
   }
 
-  private void sendEmail(User user, String verificationCode, OffsetDateTime expiresAt) {
+  private void sendEmail(User user, String rawCode, String hashedCode, OffsetDateTime expiresAt) {
     try {
-      String email = user.getEmail();
-      String firstName = user.getFirstName();
-      String lastName = user.getLastName();
-      String username = user.getUsername();
-      String expirationTime = DateUtil.formatOffsetDateTime(expiresAt);
-
-      AccountVerificationData accountVerificationData =
+      AccountVerificationData verificationData =
           AccountVerificationData.newBuilder()
-              .setVerificationCode(verificationCode)
-              .setExpirationTime(expirationTime)
+              .setRawVerificationCode(rawCode)
+              .setHashedVerificationCode(hashedCode)
+              .setExpirationTime(DateUtil.formatOffsetDateTime(expiresAt))
               .build();
 
-      EmailRequest emailRequest =
+      EmailRequest request =
           EmailRequest.newBuilder()
-              .setRecipientEmail(email)
+              .setRecipientEmail(user.getEmail())
               .setTemplate(EmailTemplate.VERIFICATION_REQUEST)
-              .setFirstName(firstName)
-              .setLastName(lastName)
-              .setUsername(username)
-              .setVerificationData(accountVerificationData)
+              .setFirstName(user.getFirstName())
+              .setLastName(user.getLastName())
+              .setUsername(user.getUsername())
+              .setVerificationData(verificationData)
               .build();
 
-      kafkaService.sendMessage("email-request", emailRequest);
-      log.info("Verification code sent successfully to user: {}", username);
+      kafkaService.sendMessage("email-request", request);
+      log.info("Verification email sent for user: {}", user.getUsername());
     } catch (Exception e) {
-      log.error("Failed to send verification code: {}", e.getMessage(), e);
+      log.error("Error sending verification email: {}", e.getMessage(), e);
       throw new ServiceException("Failed to send verification code");
     }
   }
 
-  private boolean verifyCode(UUID userId, String token, VerificationType type) {
-    try {
-      log.debug("Verifying verification code for user: {}", userId);
+  private boolean verifyCodeWithUserId(UUID userId, String token, VerificationType type) {
+    if (StringUtils.isBlank(token)) {
+      throw new BadRequestException("Verification token is missing.");
+    }
 
-      if (StringUtils.isEmpty(token)) {
-        log.error("Verification token is empty for user: {}", userId);
-        throw new BadRequestException("Verification token is empty");
-      }
+    VerificationCode code =
+        verificationCodeRepository
+            .findByUserIdAndType(userId, type)
+            .orElseThrow(
+                () -> new BadRequestException("Verification code not found. Request a new one."));
 
-      Optional<VerificationCode> optionalVerificationCode =
-          verificationCodeRepository.findByUserIdAndType(userId, type);
+    validateAttempts(code);
+    validateToken(token, code.getCode());
+    validateExpiration(code.getExpiresAt());
 
-      if (optionalVerificationCode.isEmpty()) {
-        log.warn("No verification code found for user: {}", userId);
-        throw new BadRequestException("Verification code not found. Please request a new code.");
-      }
+    deleteVerificationCode(code);
+    log.info("User {} successfully verified for type {}", userId, type);
+    return true;
+  }
 
-      VerificationCode verificationCode = optionalVerificationCode.get();
+  private UUID verifyCodeWithHashedToken(String hashedToken, VerificationType type) {
+    if (StringUtils.isBlank(hashedToken)) {
+      throw new BadRequestException("Verification token is missing.");
+    }
 
-      int verificationCodeAttempts = verificationCode.getAttempts();
-      if (verificationCodeAttempts >= MAX_VERIFICATION_ATTEMPTS) {
-        log.warn("Maximum verification attempts exceeded for user: {}", userId);
-        deleteVerificationCode(verificationCode);
-        throw new BadRequestException(
-            "Maximum verification attempts exceeded. Request a new code.");
-      }
+    VerificationCode code =
+        verificationCodeRepository
+            .findByCodeAndType(hashedToken, type)
+            .orElseThrow(() -> new BadRequestException("Invalid or expired verification token."));
 
-      verificationCode.setAttempts(verificationCodeAttempts + 1);
-      verificationCodeRepository.save(verificationCode);
+    UUID userId = code.getUser() != null ? code.getUser().getId() : null;
+    if (userId == null) {
+      throw new BadRequestException("Verification code does not belong to any user.");
+    }
 
-      if (!passwordEncoder.matches(token.trim().toUpperCase(), verificationCode.getCode())) {
-        log.warn("Verification code does not match for user: {}", userId);
-        verificationCodeRepository.save(verificationCode);
-        throw new BadRequestException("Verification code does not match");
-      }
+    validateAttempts(code);
+    validateExpiration(code.getExpiresAt());
 
-      if (verificationCode.getExpiresAt().isBefore(DateUtil.nowUtc())) {
-        log.warn("Verification code expired for user: {}", userId);
-        deleteVerificationCode(verificationCode);
-        throw new BadRequestException("Verification code expired. Please request a new code.");
-      }
+    deleteVerificationCode(code);
+    log.info("User {} successfully verified via hashed token for type {}", userId, type);
+    return userId;
+  }
 
-      deleteVerificationCode(verificationCode);
-      return true;
+  private void validateAttempts(VerificationCode code) {
+    if (code.getAttempts() >= maxVerificationAttempts) {
+      deleteVerificationCode(code);
+      throw new BadRequestException("Max verification attempts exceeded. Request a new code.");
+    }
+    code.setAttempts(code.getAttempts() + 1);
+    verificationCodeRepository.save(code);
+  }
 
-    } catch (Exception e) {
-      log.error("Error verifying code for user {}: {}", userId, e.getMessage(), e);
-      throw new ServiceException("Error verifying code for user: " + userId);
+  private void validateToken(String token, String hashedCode) {
+    if (!passwordEncoder.matches(token.trim().toUpperCase(), hashedCode)) {
+      throw new BadRequestException("Verification token does not match.");
     }
   }
 
-  private void deleteVerificationCode(VerificationCode verificationCode) {
-    log.debug("Deleting verification code: {}", verificationCode.getId());
+  private void validateExpiration(OffsetDateTime expiresAt) {
+    if (expiresAt.isBefore(DateUtil.nowUtc())) {
+      throw new BadRequestException("Verification code has expired. Please request a new one.");
+    }
+  }
+
+  private void deleteVerificationCode(VerificationCode code) {
     try {
-      verificationCodeRepository.delete(verificationCode);
-      log.info("Successfully deleted verification code: {}", verificationCode.getId());
+      verificationCodeRepository.delete(code);
+      log.debug("Deleted verification code: {}", code.getId());
     } catch (Exception e) {
       log.error("Failed to delete verification code: {}", e.getMessage(), e);
       throw new ServiceException("Failed to delete verification code");

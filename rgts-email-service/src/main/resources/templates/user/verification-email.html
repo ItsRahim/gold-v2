@@ -222,8 +222,8 @@
 
         <div class="verification-section">
             <div class="code-label">Verification Code</div>
-            <div class="verification-code" th:text="${verificationCode}"></div>
-            <a th:href="@{'http://localhost:9000/api/v2/auth/verify-email?verificationCode=' + ${verificationCode} + '&email=' + ${recipientEmail}}"
+            <div class="verification-code" th:text="${rawVerificationCode}"></div>
+            <a th:href="@{'http://localhost:9000/api/v2/auth/verify-email?token=' + ${hashedVerificationCode}}"
                class="verify-button">
                 Verify
             </a>

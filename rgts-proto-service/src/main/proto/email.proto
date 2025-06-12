@@ -11,8 +11,9 @@ enum EmailTemplate {
 }
 
 message AccountVerificationData {
-  string verificationCode = 1;
-  string expirationTime = 2;
+  string rawVerificationCode = 1;
+  string hashedVerificationCode = 2;
+  string expirationTime = 3;
 }
 
 message EmailRequest {

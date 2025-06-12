@@ -11,3 +11,4 @@ Email verification add button to click and verify email - future work
 
 -- Authentication Service --
 Hash verification token/code using bcrypt and compare the hashes
+Figure out how to handle API endpoint for verifying email link

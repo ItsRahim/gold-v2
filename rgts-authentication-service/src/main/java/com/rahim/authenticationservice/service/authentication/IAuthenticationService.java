@@ -18,5 +18,7 @@ public interface IAuthenticationService {
   VerificationResponse verifyEmail(
       VerificationRequest verificationRequest, HttpServletRequest request);
 
+  VerificationResponse verifyEmail(String verificationCode, HttpServletRequest request);
+
   Optional<User> findByUsername(String username);
 }

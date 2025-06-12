@@ -22,6 +22,10 @@ public interface VerificationCodeRepository extends JpaRepository<VerificationCo
   Optional<VerificationCode> findByUserIdAndType(
       @Param("userId") UUID userId, @Param("type") VerificationType type);
 
+  @Query("SELECT vc FROM VerificationCode vc WHERE vc.code = :code AND vc.type = :type")
+  Optional<VerificationCode> findByCodeAndType(
+      @Param("code") String code, @Param("type") VerificationType type);
+
   @Query(
       "SELECT vc FROM VerificationCode vc WHERE vc.expiresAt < :now AND vc.createdAt < :oldestToKeep")
   List<VerificationCode> findCodesForCleanup(

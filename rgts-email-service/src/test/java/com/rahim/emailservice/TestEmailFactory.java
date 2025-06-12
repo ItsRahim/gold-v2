@@ -16,12 +16,17 @@ public class TestEmailFactory {
       String firstName,
       String lastName,
       String username,
-      String verificationCode,
+      String rawVerificationCode,
+      String hashedVerificationCode,
       OffsetDateTime expirationTime) {
     AccountVerificationData.Builder verificationDataBuilder = AccountVerificationData.newBuilder();
 
-    if (verificationCode != null) {
-      verificationDataBuilder.setVerificationCode(verificationCode);
+    if (rawVerificationCode != null) {
+      verificationDataBuilder.setRawVerificationCode(rawVerificationCode);
+    }
+
+    if (hashedVerificationCode != null) {
+        verificationDataBuilder.setHashedVerificationCode(hashedVerificationCode);
     }
 
     if (expirationTime != null) {

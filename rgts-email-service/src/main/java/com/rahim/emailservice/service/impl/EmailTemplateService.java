@@ -22,14 +22,14 @@ public class EmailTemplateService implements IEmailTemplateService {
 
   @Override
   public String generateVerificationEmail(
-      EmailVerificationData emailVerificationData, String recipientEmail) {
+      EmailVerificationData emailVerificationData) {
     Context context = new Context();
 
-    context.setVariable("recipientEmail", recipientEmail);
     context.setVariable("firstName", emailVerificationData.getFirstName());
     context.setVariable("lastName", emailVerificationData.getLastName());
     context.setVariable("username", emailVerificationData.getUsername());
-    context.setVariable("verificationCode", emailVerificationData.getVerificationCode());
+    context.setVariable("rawVerificationCode", emailVerificationData.getRawVerificationCode());
+    context.setVariable("hashedVerificationCode", emailVerificationData.getHashedVerificationCode());
     context.setVariable("expirationTime", emailVerificationData.getExpirationTime());
     context.setVariable(
         "recipientName",

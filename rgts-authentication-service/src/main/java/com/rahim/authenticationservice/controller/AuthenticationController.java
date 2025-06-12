@@ -2,7 +2,6 @@ package com.rahim.authenticationservice.controller;
 
 import static com.rahim.authenticationservice.constants.Endpoints.*;
 
-import com.rahim.authenticationservice.dto.enums.ResponseStatus;
 import com.rahim.authenticationservice.dto.request.RegisterRequest;
 import com.rahim.authenticationservice.dto.request.VerificationRequest;
 import com.rahim.authenticationservice.dto.response.RegisterResponse;
@@ -65,23 +64,19 @@ public class AuthenticationController {
   }
 
   @Operation(
-      summary = "Verify user email via link",
+      summary = "Verify user email via secure link",
       description =
-          "Verifies the user's email address using verification code and email as query parameters (for email verification links).")
+          "Verifies the user's email address using a secure hashed token provided via a verification link.")
   @ApiResponses({
     @ApiResponse(responseCode = "200", description = "Email verified successfully"),
-    @ApiResponse(responseCode = "400", description = "Invalid verification code or email"),
+    @ApiResponse(responseCode = "400", description = "Invalid or expired verification token"),
     @ApiResponse(responseCode = "500", description = "Internal server error")
   })
   @GetMapping(VERIFY_EMAIL)
   public ResponseEntity<VerificationResponse> verifyEmailWithLink(
-      @RequestParam("verificationCode") String verificationCode,
-      @RequestParam("email") String email,
-      HttpServletRequest request) {
-    VerificationRequest verificationRequest =
-        VerificationRequest.builder().email(email).verificationCode(verificationCode).build();
+      @RequestParam("token") String hashedToken, HttpServletRequest request) {
     VerificationResponse verificationResponse =
-        authenticationService.verifyEmail(verificationRequest, request);
+        authenticationService.verifyEmail(hashedToken, request);
     return ResponseEntity.ok(verificationResponse);
   }
 }

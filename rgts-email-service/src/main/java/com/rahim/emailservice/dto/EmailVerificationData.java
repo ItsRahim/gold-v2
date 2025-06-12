@@ -14,6 +14,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EmailVerificationData extends BaseEmail {
-  private String verificationCode;
+  private String rawVerificationCode;
+  private String hashedVerificationCode;
   private String expirationTime;
 }
