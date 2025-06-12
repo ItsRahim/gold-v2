@@ -112,28 +112,28 @@ public class EmailRequestHandlerTest {
   }
 
   @Test
-  void shouldThrowExceptionWhenRawVerificationCodeIsBlank() {
+  void shouldThrowExceptionWhenVerificationCodeIsBlank() {
     EmailRequest emailRequest =
         TestEmailFactory.createVerificationEmailRequest(
             "test@gmail.com", "John", "Doe", "johndoe", "", "abdefg", DateUtil.nowUtc());
 
     assertThatThrownBy(() -> emailRequestHandler.handleEmailRequest(emailRequest))
         .isInstanceOf(EmailProcessingException.class)
-        .hasMessage("Missing required fields in email request: rawVerificationCode");
+        .hasMessage("Missing required fields in email request: verificationCode");
 
     verifyNoInteractions(emailTemplateService);
     verifyNoInteractions(emailSenderService);
   }
 
   @Test
-  void shouldThrowExceptionWhenHashedVerificationCodeIsBlank() {
+  void shouldThrowExceptionWhenVerificationIdIsBlank() {
     EmailRequest emailRequest =
         TestEmailFactory.createVerificationEmailRequest(
             "test@gmail.com", "John", "Doe", "johndoe", "abc", "", DateUtil.nowUtc());
 
     assertThatThrownBy(() -> emailRequestHandler.handleEmailRequest(emailRequest))
         .isInstanceOf(EmailProcessingException.class)
-        .hasMessage("Missing required fields in email request: hashedVerificationCode");
+        .hasMessage("Missing required fields in email request: verificationId");
 
     verifyNoInteractions(emailTemplateService);
     verifyNoInteractions(emailSenderService);
