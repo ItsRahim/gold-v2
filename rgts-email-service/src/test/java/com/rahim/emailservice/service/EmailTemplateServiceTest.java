@@ -24,8 +24,8 @@ public class EmailTemplateServiceTest extends BaseTestConfiguration {
             .firstName("John")
             .lastName("Doe")
             .username("JDoe")
-            .rawVerificationCode("abc123")
-            .hashedVerificationCode("xyz987")
+            .verificationCode("abc123")
+            .verificationId("xyz987")
             .expirationTime(expiration)
             .build();
 

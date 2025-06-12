@@ -74,11 +74,11 @@ public class EmailRequestHandlerTest {
     assertEquals(emailRequest.getLastName(), capturedData.getLastName());
     assertEquals(emailRequest.getUsername(), capturedData.getUsername());
     assertEquals(
-        emailRequest.getVerificationData().getRawVerificationCode(),
-        capturedData.getRawVerificationCode());
+        emailRequest.getVerificationData().getVerificationCode(),
+        capturedData.getVerificationCode());
     assertEquals(
-        emailRequest.getVerificationData().getHashedVerificationCode(),
-        capturedData.getHashedVerificationCode());
+        emailRequest.getVerificationData().getVerificationId(),
+        capturedData.getVerificationId());
     assertEquals(
         emailRequest.getVerificationData().getExpirationTime(), capturedData.getExpirationTime());
   }

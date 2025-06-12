@@ -18,6 +18,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 /**
  * @created 08/06/2025
  * @author Rahim Ahmed
@@ -74,9 +76,9 @@ public class AuthenticationController {
   })
   @GetMapping(VERIFY_EMAIL)
   public ResponseEntity<VerificationResponse> verifyEmailWithLink(
-      @RequestParam("token") String hashedToken, HttpServletRequest request) {
+          @RequestParam("token") String verificationCode, @RequestParam("id") UUID verificationId, HttpServletRequest request) {
     VerificationResponse verificationResponse =
-        authenticationService.verifyEmail(hashedToken, request);
+        authenticationService.verifyEmail(verificationCode, verificationId, request);
     return ResponseEntity.ok(verificationResponse);
   }
 }

@@ -13,7 +13,7 @@ public interface IVerificationService {
 
   boolean verifyPhone(UUID userId, String token);
 
-  UUID verifyCode(String token, VerificationType verificationType);
+  UUID verifyCode(String token, UUID verificationId, VerificationType verificationType);
 
   void regenerateEmailToken(UUID userId);
 

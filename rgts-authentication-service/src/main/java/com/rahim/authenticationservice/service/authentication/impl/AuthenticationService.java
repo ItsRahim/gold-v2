@@ -119,9 +119,9 @@ public class AuthenticationService implements IAuthenticationService {
   }
 
   @Override
-  public VerificationResponse verifyEmail(String hashedToken, HttpServletRequest request) {
+  public VerificationResponse verifyEmail(String verificationCode, UUID verificationId, HttpServletRequest request) {
     try {
-      UUID userId = verificationService.verifyCode(hashedToken, VerificationType.EMAIL);
+      UUID userId = verificationService.verifyCode(verificationCode, verificationId, VerificationType.EMAIL);
 
       User user =
           userRepository
@@ -142,7 +142,7 @@ public class AuthenticationService implements IAuthenticationService {
     } catch (EntityNotFoundException e) {
       throw e;
     } catch (Exception e) {
-      log.error("Verification error with token: {} - {}", hashedToken, e.getMessage(), e);
+      log.error("Verification error with token: {} - {}", verificationCode, e.getMessage(), e);
       throw new ServiceException("Failed to verify email");
     }
   }

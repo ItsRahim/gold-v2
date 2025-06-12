@@ -54,23 +54,23 @@ public class EmailRequestHandler implements IEmailRequestHandler {
     try {
       List<String> missingFields = new ArrayList<>();
 
-      String rawVerificationCode = emailRequest.getVerificationData().getRawVerificationCode();
-      String hashedVerificationCode =
-          emailRequest.getVerificationData().getHashedVerificationCode();
+      String verificationCode = emailRequest.getVerificationData().getVerificationCode();
+      String verificationId =
+          emailRequest.getVerificationData().getVerificationId();
       String expirationTime = emailRequest.getVerificationData().getExpirationTime();
       String firstName = emailRequest.getFirstName();
       String lastName = emailRequest.getLastName();
       String username = emailRequest.getUsername();
       String recipientEmail = emailRequest.getRecipientEmail();
 
-      if (StringUtils.isBlank(rawVerificationCode)) {
-        log.error("Missing field: rawVerificationCode");
-        missingFields.add("rawVerificationCode");
+      if (StringUtils.isBlank(verificationCode)) {
+        log.error("Missing field: verificationCode");
+        missingFields.add("verificationCode");
       }
 
-      if (StringUtils.isBlank(hashedVerificationCode)) {
-        log.error("Missing field: hashedVerificationCode");
-        missingFields.add("hashedVerificationCode");
+      if (StringUtils.isBlank(verificationId)) {
+        log.error("Missing field: verificationId");
+        missingFields.add("verificationId");
       }
 
       if (StringUtils.isBlank(expirationTime)) {
@@ -109,8 +109,8 @@ public class EmailRequestHandler implements IEmailRequestHandler {
               .firstName(firstName)
               .lastName(lastName)
               .username(username)
-              .rawVerificationCode(rawVerificationCode)
-              .hashedVerificationCode(hashedVerificationCode)
+              .verificationCode(verificationCode)
+              .verificationId(verificationId)
               .expirationTime(expirationTime)
               .build();
 

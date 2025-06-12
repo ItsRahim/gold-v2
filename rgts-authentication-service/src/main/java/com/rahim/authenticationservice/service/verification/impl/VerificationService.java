@@ -62,10 +62,11 @@ public class VerificationService implements IVerificationService {
             .attempts(0)
             .build();
 
-    verificationCodeRepository.save(verificationCode);
+    VerificationCode savedVerificationCode = verificationCodeRepository.save(verificationCode);
     log.debug("Saved verification code for user: {}", user.getId());
 
-    sendEmail(user, rawCode, hashedCode, expiresAt);
+    String verificationId = savedVerificationCode.getId().toString();
+    sendEmail(user, rawCode, verificationId, expiresAt);
     log.info("Verification email sent to user: {}", user.getId());
   }
 
@@ -86,8 +87,8 @@ public class VerificationService implements IVerificationService {
 
   @Override
   @Transactional(noRollbackFor = BadRequestException.class)
-  public UUID verifyCode(String hashedToken, VerificationType type) {
-    return verifyCodeWithHashedToken(hashedToken, type);
+  public UUID verifyCode(String token, UUID verificationId, VerificationType type) {
+    return verifyWithCodeOnly(token, verificationId, type);
   }
 
   @Override
@@ -116,12 +117,13 @@ public class VerificationService implements IVerificationService {
     return RandomStringUtils.randomAlphanumeric(verificationCodeLength).toUpperCase();
   }
 
-  private void sendEmail(User user, String rawCode, String hashedCode, OffsetDateTime expiresAt) {
+  private void sendEmail(
+      User user, String verificationCode, String verificationId, OffsetDateTime expiresAt) {
     try {
       AccountVerificationData verificationData =
           AccountVerificationData.newBuilder()
-              .setRawVerificationCode(rawCode)
-              .setHashedVerificationCode(hashedCode)
+              .setVerificationCode(verificationCode)
+              .setVerificationId(verificationId)
               .setExpirationTime(DateUtil.formatOffsetDateTime(expiresAt))
               .build();
 
@@ -164,16 +166,19 @@ public class VerificationService implements IVerificationService {
     return true;
   }
 
-  private UUID verifyCodeWithHashedToken(String hashedToken, VerificationType type) {
-    if (StringUtils.isBlank(hashedToken)) {
+  private UUID verifyWithCodeOnly(String token, UUID verificationId, VerificationType type) {
+    if (StringUtils.isBlank(token)) {
       throw new BadRequestException("Verification token is missing.");
+    }
+
+    if (StringUtils.isBlank(verificationId.toString())) {
+      throw new BadRequestException("Verification ID is missing.");
     }
 
     VerificationCode code =
         verificationCodeRepository
-            .findByCodeAndType(hashedToken, type)
-            .orElseThrow(
-                () -> new EntityNotFoundException("Verification token not found."));
+            .findByIdAndType(verificationId, type)
+            .orElseThrow(() -> new EntityNotFoundException("Verification token not found."));
 
     UUID userId = code.getUser().getId();
     if (userId == null) {
@@ -181,6 +186,7 @@ public class VerificationService implements IVerificationService {
     }
 
     validateAttempts(code);
+    validateToken(token, code.getCode());
     validateExpiration(code.getExpiresAt());
 
     deleteVerificationCode(code);
