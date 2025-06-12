@@ -2,7 +2,6 @@ package com.rahim.authenticationservice.service.verification;
 
 import com.rahim.authenticationservice.entity.User;
 import com.rahim.authenticationservice.enums.VerificationType;
-
 import java.util.UUID;
 
 public interface IVerificationService {

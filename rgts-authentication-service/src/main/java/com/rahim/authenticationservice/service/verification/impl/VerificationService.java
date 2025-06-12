@@ -12,6 +12,8 @@ import com.rahim.kafkaservice.service.IKafkaService;
 import com.rahim.proto.protobuf.email.AccountVerificationData;
 import com.rahim.proto.protobuf.email.EmailRequest;
 import com.rahim.proto.protobuf.email.EmailTemplate;
+import java.time.OffsetDateTime;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.RandomStringUtils;
@@ -20,9 +22,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.OffsetDateTime;
-import java.util.UUID;
 
 @Slf4j
 @Service

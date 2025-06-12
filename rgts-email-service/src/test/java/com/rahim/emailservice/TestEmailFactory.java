@@ -26,7 +26,7 @@ public class TestEmailFactory {
     }
 
     if (hashedVerificationCode != null) {
-        verificationDataBuilder.setHashedVerificationCode(hashedVerificationCode);
+      verificationDataBuilder.setHashedVerificationCode(hashedVerificationCode);
     }
 
     if (expirationTime != null) {
