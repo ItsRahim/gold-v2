@@ -173,7 +173,7 @@ public class VerificationService implements IVerificationService {
         verificationCodeRepository
             .findByCodeAndType(hashedToken, type)
             .orElseThrow(
-                () -> new EntityNotFoundException("Invalid or expired verification token."));
+                () -> new EntityNotFoundException("Verification token not found."));
 
     UUID userId = code.getUser().getId();
     if (userId == null) {
