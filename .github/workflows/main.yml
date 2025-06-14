@@ -14,7 +14,7 @@ on:
       - 'rgts-kafka-service/**'
       - 'rgts-pricing-service/**'
       - 'rgts-proto-service/**'
-      - 'rgts-python-api'
+      - 'rgts-python-api/**'
 
 jobs:
   build:
