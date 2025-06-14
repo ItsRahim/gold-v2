@@ -12,7 +12,7 @@ import org.springframework.data.domain.Page;
 public interface IQueryGoldTypeService {
   Page<GoldTypeResponseDTO> getAllGoldTypes(int page, int size);
 
-  GoldType getGoldTypeById(long id);
+  GoldType getGoldTypeById(int id);
 
   GoldTypeResponseDTO getGoldTypeByName(String name);
 

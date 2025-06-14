@@ -32,7 +32,7 @@ public class QueryGoldTypeService implements IQueryGoldTypeService {
   }
 
   @Override
-  public GoldType getGoldTypeById(long id) {
+  public GoldType getGoldTypeById(int id) {
     return goldTypeRepository
         .findById(id)
         .orElseThrow(() -> new EntityNotFoundException("Gold Type with ID: " + id + " not found"));
