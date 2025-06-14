@@ -10,6 +10,6 @@ import org.springframework.stereotype.Repository;
  * @author Rahim Ahmed
  */
 @Repository
-public interface GoldPurityRepository extends JpaRepository<GoldPurity, Long> {
+public interface GoldPurityRepository extends JpaRepository<GoldPurity, Integer> {
   Optional<GoldPurity> getGoldPuritiesByLabel(String label);
 }

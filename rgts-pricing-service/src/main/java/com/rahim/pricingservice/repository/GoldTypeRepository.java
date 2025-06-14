@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
  * @created 23/03/2025
  */
 @Repository
-public interface GoldTypeRepository extends JpaRepository<GoldType, Long> {
+public interface GoldTypeRepository extends JpaRepository<GoldType, Integer> {
   boolean existsGoldTypeByNameIgnoreCase(String name);
 
   Optional<GoldType> findGoldTypeByNameIgnoreCase(String name);

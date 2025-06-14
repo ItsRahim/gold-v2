@@ -17,6 +17,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,7 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional(rollbackFor = Exception.class)
+@Transactional(rollbackFor = {BadRequestException.class, ServiceException.class})
 public class AddGoldTypeService implements IAddGoldTypeService {
   private final IGoldPurityQueryService goldPurityQueryService;
   private final IUpdateGoldPriceService updateGoldPriceService;
@@ -103,11 +104,13 @@ public class AddGoldTypeService implements IAddGoldTypeService {
       throw new BadRequestException("Gold weight must be positive");
     }
 
-    if (request.getUnit() == null || request.getUnit().isEmpty()) {
+    String unit = request.getUnit();
+    if (StringUtils.isBlank(unit)) {
       throw new BadRequestException("Weight unit is required");
     }
 
-    if (request.getDescription() == null || request.getDescription().isEmpty()) {
+    String description = request.getDescription();
+    if (StringUtils.isBlank(description)) {
       throw new BadRequestException("Description is required");
     }
   }
