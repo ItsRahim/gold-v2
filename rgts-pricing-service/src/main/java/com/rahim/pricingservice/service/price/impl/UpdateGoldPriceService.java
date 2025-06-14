@@ -76,7 +76,7 @@ public class UpdateGoldPriceService implements IUpdateGoldPriceService {
         if (existing == null) {
           createGoldPrice(purity, pricePerTroyOunce, pricePerGram);
         } else if (existing.getPurity().getLabel().equalsIgnoreCase("XAUGBP")) {
-          updateExistingGoldPrice(existing, pricePerGram);
+          updateExistingGoldPrice(existing, pricePerTroyOunce);
         } else {
           updateExistingGoldPrice(existing, pricePerGram);
         }
