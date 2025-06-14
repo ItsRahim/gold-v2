@@ -1,10 +1,34 @@
 import './index.css'
+import * as React from "react";
 import {Button} from "@/components/ui/button"
 import {Plus, Download, Settings, Heart} from "lucide-react"
 import {Switch} from "@/components/ui/switch.tsx";
 import {Label} from "@/components/ui/label.tsx";
+import {useEffect} from "react";
 
 function App() {
+    const [isDarkMode, setIsDarkMode] = React.useState(true);
+
+    useEffect(() => {
+        const storedDark = localStorage.getItem("darkMode");
+        const preference = storedDark ? JSON.parse(storedDark) : true;
+
+        setIsDarkMode(preference);
+        document.documentElement.classList.toggle('dark', preference)
+
+        if (!storedDark) {
+            localStorage.setItem('darkMode', JSON.stringify(true))
+        }
+    }, [])
+
+    const toggleDarkMode = () => {
+        const newDarkMode = !isDarkMode
+        setIsDarkMode(newDarkMode)
+
+        document.documentElement.classList.toggle('dark', newDarkMode)
+        localStorage.setItem('darkMode', JSON.stringify(newDarkMode))
+    }
+
     return (
         <div className="min-h-screen bg-background p-8">
             <div className="max-w-4xl mx-auto space-y-8">
@@ -99,7 +123,8 @@ function App() {
                         <div className="flex items-center space-x-2">
                             <Switch
                                 id="dark-mode"
-                                onClick={() => document.documentElement.classList.toggle('dark')}
+                                checked={isDarkMode}
+                                onCheckedChange={toggleDarkMode}
                             />
                             <Label htmlFor="dark-mode">Dark Mode</Label>
                         </div>

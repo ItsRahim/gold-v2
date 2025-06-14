@@ -1,5 +1,15 @@
 @import "tailwindcss";
 
+:root {
+  --font-family-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-family-sans--font-feature-settings: normal;
+  --font-family-sans--font-variation-settings: normal;
+
+  --font-family-mono: ui-monospace, SFMono-Regular, 'SF Mono', Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  --font-family-mono--font-feature-settings: normal;
+  --font-family-mono--font-variation-settings: normal;
+}
+
 @theme {
   --default-transition-duration: 150ms;
   --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
