@@ -124,11 +124,7 @@ public class UpdateGoldPriceService implements IUpdateGoldPriceService {
     BigDecimal price =
         goldPurity.getLabel().equalsIgnoreCase("XAUGBP") ? pricePerTroyOunce : pricePerGram;
     GoldPrice goldPrice =
-        GoldPrice.builder()
-            .purity(goldPurity)
-            .price(price)
-            .updatedAt(DateUtil.nowUtc())
-            .build();
+        GoldPrice.builder().purity(goldPurity).price(price).updatedAt(DateUtil.nowUtc()).build();
 
     goldPriceRepository.save(goldPrice);
     log.debug("New gold price created for purity: {}", goldPurity.getLabel());

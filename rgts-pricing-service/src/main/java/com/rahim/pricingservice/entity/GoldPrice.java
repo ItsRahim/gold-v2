@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
-
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 

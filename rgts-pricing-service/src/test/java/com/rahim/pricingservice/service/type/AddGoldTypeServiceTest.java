@@ -17,7 +17,6 @@ import com.rahim.pricingservice.service.price.IUpdateGoldPriceService;
 import com.rahim.pricingservice.service.purity.IGoldPurityQueryService;
 import com.rahim.pricingservice.service.type.impl.AddGoldTypeService;
 import java.math.BigDecimal;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
