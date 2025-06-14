@@ -35,9 +35,7 @@ import org.springframework.data.domain.Sort;
  * @created 21/05/2025
  */
 class QueryGoldTypeServiceTest extends BaseTestConfiguration {
-
   @Mock private GoldTypeRepository goldTypeRepository;
-
   @InjectMocks private QueryGoldTypeService queryGoldTypeService;
 
   private GoldType goldType1;

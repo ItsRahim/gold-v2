@@ -36,7 +36,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService implements IAuthenticationService {
-
   private final UserRepository userRepository;
   private final IRoleService roleService;
   private final IVerificationService verificationService;

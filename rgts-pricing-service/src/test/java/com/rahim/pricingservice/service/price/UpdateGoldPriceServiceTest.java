@@ -21,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.util.ReflectionTestUtils;
 
 class UpdateGoldPriceServiceTest extends BaseTestConfiguration {
-
   @Autowired private UpdateGoldPriceService updateGoldPriceService;
   @Autowired private RedisService redisService;
   @Autowired private GoldPriceRepository goldPriceRepository;

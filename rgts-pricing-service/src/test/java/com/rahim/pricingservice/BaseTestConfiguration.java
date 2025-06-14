@@ -33,7 +33,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class BaseTestConfiguration {
 
   @Autowired private RedisService redisService;
-
   @Autowired private DataSource dataSource;
 
   private final ObjectMapper objectMapper = new ObjectMapper();

@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(rollbackFor = Exception.class)
-class RoleService implements IRoleService {
+public class RoleService implements IRoleService {
   private final UserRoleRepository userRoleRepository;
 
   @Override

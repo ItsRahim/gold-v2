@@ -3,6 +3,7 @@ package com.rahim.authenticationservice;
 import static com.rahim.authenticationservice.BaseTestContainerConfig.postgres;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rahim.cachemanager.service.RedisService;
 import com.rahim.common.handler.ApiExceptionHandler;
 import javax.sql.DataSource;
 import org.flywaydb.core.Flyway;
@@ -26,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class BaseTestConfiguration {
 
+  @Autowired private RedisService redisService;
   @Autowired private DataSource dataSource;
 
   private final ObjectMapper objectMapper = new ObjectMapper();
