@@ -2,6 +2,7 @@ from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
+import sqlalchemy as sa
 
 from alembic import context
 
@@ -66,6 +67,9 @@ def run_migrations_online() -> None:
     )
 
     with connectable.connect() as connection:
+        connection.execute(sa.text('CREATE SCHEMA IF NOT EXISTS "python-api"'))
+        connection.commit()
+
         context.configure(
             connection=connection,
             target_metadata=target_metadata,
