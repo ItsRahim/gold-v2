@@ -53,7 +53,7 @@ public class BaseTestConfiguration {
       String key = i + "K";
       GoldPurity goldPurity = new GoldPurity(i, key, i, 24, false);
       GoldPrice goldPrice =
-          new GoldPrice(i, goldPurity, BigDecimal.valueOf(i * 50), DateUtil.generateInstant());
+          new GoldPrice(i, goldPurity, BigDecimal.valueOf(i * 50), DateUtil.nowUtc());
       redisService.setValue(key, goldPrice);
     }
   }

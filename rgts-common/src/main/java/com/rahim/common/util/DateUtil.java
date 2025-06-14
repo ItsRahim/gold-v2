@@ -39,6 +39,10 @@ public final class DateUtil {
     return OffsetDateTime.now(ZoneOffset.UTC);
   }
 
+  public static String nowUtcFormatted() {
+    return nowUtc().format(DateTimeFormatter.ofPattern(DATE_TIME_PATTERN));
+  }
+
   public static OffsetDateTime addMinutesToNowUtc(int minutes) {
     return nowUtc().plusMinutes(minutes);
   }

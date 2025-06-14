@@ -3,7 +3,8 @@ package com.rahim.pricingservice.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import java.time.Instant;
+import java.time.OffsetDateTime;
+
 import lombok.*;
 
 @Getter
@@ -29,5 +30,5 @@ public class PriceHistory {
 
   @NotNull
   @Column(name = "updated_at", nullable = false)
-  private Instant updatedAt;
+  private OffsetDateTime updatedAt;
 }

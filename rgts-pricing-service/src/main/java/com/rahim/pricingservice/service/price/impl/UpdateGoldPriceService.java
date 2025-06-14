@@ -127,7 +127,7 @@ public class UpdateGoldPriceService implements IUpdateGoldPriceService {
         GoldPrice.builder()
             .purity(goldPurity)
             .price(price)
-            .updatedAt(DateUtil.generateInstant())
+            .updatedAt(DateUtil.nowUtc())
             .build();
 
     goldPriceRepository.save(goldPrice);
@@ -137,7 +137,7 @@ public class UpdateGoldPriceService implements IUpdateGoldPriceService {
 
   private void updateExistingGoldPrice(GoldPrice goldPrice, BigDecimal updatedPrice) {
     goldPrice.setPrice(updatedPrice);
-    goldPrice.setUpdatedAt(DateUtil.generateInstant());
+    goldPrice.setUpdatedAt(DateUtil.nowUtc());
 
     goldPriceRepository.save(goldPrice);
     savePriceToRedis(goldPrice);

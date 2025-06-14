@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 import com.rahim.cachemanager.service.RedisService;
 import com.rahim.common.exception.BadRequestException;
 import com.rahim.common.exception.DuplicateEntityException;
+import com.rahim.common.util.DateUtil;
 import com.rahim.pricingservice.BaseTestConfiguration;
 import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
 import com.rahim.pricingservice.entity.GoldPrice;
@@ -16,7 +17,7 @@ import com.rahim.pricingservice.service.price.IUpdateGoldPriceService;
 import com.rahim.pricingservice.service.purity.IGoldPurityQueryService;
 import com.rahim.pricingservice.service.type.impl.AddGoldTypeService;
 import java.math.BigDecimal;
-import java.time.Instant;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -41,7 +42,7 @@ class AddGoldTypeServiceTest extends BaseTestConfiguration {
   void setUp() {
     GoldPurity goldPurity = new GoldPurity(1, "22K", 22, 24, false);
     when(redisService.getValue(anyString()))
-        .thenReturn(new GoldPrice(1, goldPurity, BigDecimal.valueOf(100), Instant.now()));
+        .thenReturn(new GoldPrice(1, goldPurity, BigDecimal.valueOf(100), DateUtil.nowUtc()));
   }
 
   @Test

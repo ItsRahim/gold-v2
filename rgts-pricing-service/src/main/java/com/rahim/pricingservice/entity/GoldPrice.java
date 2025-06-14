@@ -4,7 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.Instant;
+import java.time.OffsetDateTime;
+
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
@@ -33,5 +34,5 @@ public class GoldPrice implements Serializable {
   @NotNull
   @ColumnDefault("now()")
   @Column(name = "updated_at", nullable = false)
-  private Instant updatedAt;
+  private OffsetDateTime updatedAt;
 }
