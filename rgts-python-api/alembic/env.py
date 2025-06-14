@@ -1,9 +1,8 @@
 from logging.config import fileConfig
 
+from alembic import context
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
-
-from alembic import context
 
 from backend.util.config import Config
 
@@ -73,6 +72,7 @@ def run_migrations_online() -> None:
         )
 
         with context.begin_transaction():
+            context.execute('CREATE SCHEMA IF NOT EXISTS "python-api"')
             context.run_migrations()
 
 

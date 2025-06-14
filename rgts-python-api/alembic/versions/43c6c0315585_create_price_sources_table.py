@@ -18,7 +18,7 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade():
-    op.execute('CREATE SCHEMA IF NOT EXISTS python-api')
+    op.execute('CREATE SCHEMA IF NOT EXISTS "python-api"')
 
     op.create_table(
         'price_sources',
@@ -31,13 +31,15 @@ def upgrade():
         sa.PrimaryKeyConstraint('id'),
         schema='python-api'
     )
-    op.execute("COMMENT ON TABLE python-api.price_sources IS 'Table to store information about price sources'")
-    op.execute("COMMENT ON COLUMN python-api.price_sources.id IS 'Unique identifier for each source'")
-    op.execute("COMMENT ON COLUMN python-api.price_sources.name IS 'Name of the price source'")
-    op.execute("COMMENT ON COLUMN python-api.price_sources.endpoint IS 'Endpoint of the price source'")
-    op.execute("COMMENT ON COLUMN python-api.price_sources.url IS 'URL of the price source'")
-    op.execute("COMMENT ON COLUMN python-api.price_sources.element IS 'Data related to the HTML element for extracting prices'")
-    op.execute("COMMENT ON COLUMN python-api.price_sources.is_active IS 'Flag to determine if source is being used by API call'")
+    op.execute('COMMENT ON TABLE "python-api".price_sources IS \'Table to store information about price sources\'')
+    op.execute('COMMENT ON COLUMN "python-api".price_sources.id IS \'Unique identifier for each source\'')
+    op.execute('COMMENT ON COLUMN "python-api".price_sources.name IS \'Name of the price source\'')
+    op.execute('COMMENT ON COLUMN "python-api".price_sources.endpoint IS \'Endpoint of the price source\'')
+    op.execute('COMMENT ON COLUMN "python-api".price_sources.url IS \'URL of the price source\'')
+    op.execute(
+        'COMMENT ON COLUMN "python-api".price_sources.element IS \'Data related to the HTML element for extracting prices\'')
+    op.execute(
+        'COMMENT ON COLUMN "python-api".price_sources.is_active IS \'Flag to determine if source is being used by API call\'')
 
 
 def downgrade():
