@@ -10,6 +10,6 @@ import org.springframework.stereotype.Repository;
  * @author Rahim Ahmed
  */
 @Repository
-public interface GoldPriceRepository extends JpaRepository<GoldPrice, Long> {
+public interface GoldPriceRepository extends JpaRepository<GoldPrice, Integer> {
   GoldPrice getGoldPriceByPurity(GoldPurity goldPurity);
 }

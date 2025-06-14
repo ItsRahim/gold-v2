@@ -2,8 +2,7 @@ package com.rahim.pricingservice.service.type;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -105,26 +104,26 @@ class QueryGoldTypeServiceTest extends BaseTestConfiguration {
 
   @Test
   void shouldReturnGoldTypeById() {
-    when(goldTypeRepository.findById(1L)).thenReturn(Optional.of(goldType1));
+    when(goldTypeRepository.findById(1)).thenReturn(Optional.of(goldType1));
 
-    GoldType result = queryGoldTypeService.getGoldTypeById(1L);
+    GoldType result = queryGoldTypeService.getGoldTypeById(1);
 
     assertThat(result).isNotNull();
     assertThat(result.getId()).isEqualTo(1);
     assertThat(result.getName()).isEqualTo("Gold Ring");
 
-    verify(goldTypeRepository).findById(1L);
+    verify(goldTypeRepository).findById(1);
   }
 
   @Test
   void shouldThrowExceptionWhenGoldTypeNotFound() {
-    when(goldTypeRepository.findById(anyLong())).thenReturn(Optional.empty());
+    when(goldTypeRepository.findById(anyInt())).thenReturn(Optional.empty());
 
-    assertThatThrownBy(() -> queryGoldTypeService.getGoldTypeById(99L))
+    assertThatThrownBy(() -> queryGoldTypeService.getGoldTypeById(99))
         .isInstanceOf(EntityNotFoundException.class)
         .hasMessage("Gold Type with ID: 99 not found");
 
-    verify(goldTypeRepository).findById(99L);
+    verify(goldTypeRepository).findById(99);
   }
 
   @Test
@@ -173,7 +172,7 @@ class QueryGoldTypeServiceTest extends BaseTestConfiguration {
 
   @Test
   void shouldThrowExceptionWhenGoldTypeByNameNotFound() {
-    when(goldTypeRepository.findById(1L)).thenReturn(Optional.empty());
+    when(goldTypeRepository.findById(1)).thenReturn(Optional.empty());
     assertThatThrownBy(() -> queryGoldTypeService.getGoldTypeByName(goldType1.getName()))
         .isInstanceOf(EntityNotFoundException.class)
         .hasMessage("Gold Type with name: " + goldType1.getName() + " not found");

@@ -3,7 +3,7 @@ CREATE TABLE price_history
     id           SERIAL PRIMARY KEY,
     gold_type_id INT       NOT NULL REFERENCES gold_types (id),
     price        NUMERIC(10, 2),
-    updated_at   TIMESTAMP NOT NULL
+    updated_at   TIMESTAMPTZ NOT NULL
 );
 
 COMMENT ON TABLE price_history IS 'Stores hourly historical price records for each gold type.';

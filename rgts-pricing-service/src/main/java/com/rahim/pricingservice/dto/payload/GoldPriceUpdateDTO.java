@@ -5,6 +5,8 @@ import com.rahim.proto.protobuf.price.GoldPriceInfo;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import lombok.*;
 
 /**
@@ -17,27 +19,32 @@ import lombok.*;
 public class GoldPriceUpdateDTO {
   private String source;
   private BigDecimal price;
-  private Instant timestamp;
+  private OffsetDateTime timestamp;
   private String formattedDateTime;
 
   public static GoldPriceUpdateDTO fromProtobuf(GoldPriceInfo goldPriceInfo) {
-    Instant instant;
+    OffsetDateTime offsetDateTime;
     try {
-      instant = Instant.parse(goldPriceInfo.getDatetime());
+      offsetDateTime = OffsetDateTime.parse(goldPriceInfo.getDatetime());
     } catch (Exception e) {
-      throw new IllegalArgumentException(
-          "Failed to parse datetime string: " + goldPriceInfo.getDatetime(), e);
+      try {
+        Instant instant = Instant.parse(goldPriceInfo.getDatetime());
+        offsetDateTime = instant.atOffset(ZoneOffset.UTC);
+      } catch (Exception ex) {
+        throw new IllegalArgumentException(
+            "Failed to parse datetime string: " + goldPriceInfo.getDatetime(), ex);
+      }
     }
 
     BigDecimal price =
         BigDecimal.valueOf(goldPriceInfo.getPrice()).setScale(2, RoundingMode.HALF_UP);
 
-    String formattedDate = DateUtil.formatInstant(instant);
+    String formattedDate = DateUtil.formatOffsetDateTime(offsetDateTime);
 
     return GoldPriceUpdateDTO.builder()
         .source(goldPriceInfo.getSource())
         .price(price)
-        .timestamp(instant)
+        .timestamp(offsetDateTime)
         .formattedDateTime(formattedDate)
         .build();
   }

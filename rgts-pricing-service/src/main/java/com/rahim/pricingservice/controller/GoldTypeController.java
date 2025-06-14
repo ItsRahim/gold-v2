@@ -120,7 +120,7 @@ public class GoldTypeController {
   public ResponseEntity<GoldTypeResponseDTO> getGoldTypeById(
       @Parameter(description = "Unique identifier of the gold type", example = "1")
           @PathVariable("id")
-          long id) {
+          int id) {
     GoldType goldType = queryGoldTypeService.getGoldTypeById(id);
     GoldTypeResponseDTO response = GoldResponseMapper.mapToGoldType(goldType);
     return ResponseEntity.status(HttpStatus.OK).body(response);
