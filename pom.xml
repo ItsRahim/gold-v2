@@ -48,7 +48,6 @@
     </properties>
 
     <modules>
-        <module>rgts-authentication-service</module>
         <module>rgts-cache-manager</module>
         <module>rgts-config-server</module>
         <module>rgts-common</module>
