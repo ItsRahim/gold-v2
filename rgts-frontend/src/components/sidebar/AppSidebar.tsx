@@ -9,19 +9,11 @@ export function AppSidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   return (
-    <aside
-      className={cn(SIDEBAR_CLASSES.container, getSidebarWidth(isCollapsed))}
-    >
+    <aside className={cn(SIDEBAR_CLASSES.container, getSidebarWidth(isCollapsed))}>
       <div className={SIDEBAR_CLASSES.flexColumn}>
-        <SidebarHeader
-          name='Rahim A'
-          initials='RA'
-          username='ItsRahim'
-          isCollapsed={isCollapsed}
-          onToggle={() => setIsCollapsed(!isCollapsed)}
-        />
+        <SidebarHeader isCollapsed={isCollapsed} onToggle={() => setIsCollapsed(!isCollapsed)} />
         <SidebarContent isCollapsed={isCollapsed} />
-        <SidebarFooter isCollapsed={isCollapsed} />
+        <SidebarFooter name='Rahim A' initials='RA' username='ItsRahim' isCollapsed={isCollapsed} />
       </div>
     </aside>
   );

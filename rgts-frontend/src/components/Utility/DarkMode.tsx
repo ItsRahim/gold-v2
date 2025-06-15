@@ -25,9 +25,7 @@ export function DarkMode() {
         aria-label='Toggle dark mode'
         onClick={toggleDarkMode}
         className={`border-gold-accent/40 hover:border-primary/60 hover:bg-gold-light/20 transition-all duration-300 ${
-          isDarkMode
-            ? 'bg-gold-light/10 text-gold-medium hover:text-primary'
-            : 'hover:text-primary'
+          isDarkMode ? 'bg-gold-light/10 text-gold-medium hover:text-primary' : 'hover:text-primary'
         } hover:gold-glow`}
       >
         {isDarkMode ? (

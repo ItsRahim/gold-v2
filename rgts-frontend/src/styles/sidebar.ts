@@ -34,13 +34,7 @@ export const SIDEBAR_SIZES = {
 } as const;
 
 export const SIDEBAR_CLASSES = {
-  container: cn(
-    'fixed left-0 top-0 h-screen z-50',
-    SIDEBAR_COLORS.background,
-    'border-r',
-    SIDEBAR_COLORS.border,
-    SIDEBAR_ANIMATIONS.transition,
-  ),
+  container: cn('fixed left-0 top-0 h-screen z-50', SIDEBAR_COLORS.background, 'border-r', SIDEBAR_COLORS.border, SIDEBAR_ANIMATIONS.transition),
 
   flexColumn: 'flex flex-col h-full',
   flexCenter: 'flex items-center justify-center',
@@ -49,10 +43,7 @@ export const SIDEBAR_CLASSES = {
 
   separator: cn('mb-4', SIDEBAR_COLORS.borderLight),
 
-  sectionHeader: cn(
-    'flex items-center text-xs font-semibold uppercase tracking-wider w-full',
-    SIDEBAR_COLORS.muted,
-  ),
+  sectionHeader: cn('flex items-center text-xs font-semibold uppercase tracking-wider w-full', SIDEBAR_COLORS.muted),
 
   navItemBase: cn('w-full justify-start', SIDEBAR_ANIMATIONS.transition),
 
@@ -65,44 +56,20 @@ export const SIDEBAR_CLASSES = {
     'shadow-sm gold-glow',
   ),
 
-  navItemInactive: cn(
-    SIDEBAR_COLORS.muted,
-    SIDEBAR_COLORS.hoverText,
-    SIDEBAR_COLORS.hoverBg,
-    SIDEBAR_COLORS.hoverBorder,
-  ),
+  navItemInactive: cn(SIDEBAR_COLORS.muted, SIDEBAR_COLORS.hoverText, SIDEBAR_COLORS.hoverBg, SIDEBAR_COLORS.hoverBorder),
 
-  avatar: cn(
-    SIDEBAR_SIZES.avatar,
-    'bg-transparent font-semibold border-2 border-primary',
-    SIDEBAR_COLORS.primary,
-  ),
+  avatar: cn(SIDEBAR_SIZES.avatar, 'bg-transparent font-semibold border-2 border-primary', SIDEBAR_COLORS.primary),
 
-  userInfoExpanded: cn(
-    'overflow-hidden whitespace-nowrap',
-    SIDEBAR_ANIMATIONS.transitionEase,
-    'max-w-[180px] opacity-100 ml-3',
-  ),
+  userInfoExpanded: cn('overflow-hidden whitespace-nowrap', SIDEBAR_ANIMATIONS.transitionEase, 'max-w-[180px] opacity-100 ml-3'),
 
-  userInfoCollapsed: cn(
-    'overflow-hidden whitespace-nowrap',
-    SIDEBAR_ANIMATIONS.transitionEase,
-    'max-w-0 opacity-0 ml-0',
-  ),
+  userInfoCollapsed: cn('overflow-hidden whitespace-nowrap', SIDEBAR_ANIMATIONS.transitionEase, 'max-w-0 opacity-0 ml-0'),
 
-  toggleButton: cn(
-    'p-2',
-    SIDEBAR_COLORS.hoverBg,
-    SIDEBAR_COLORS.muted,
-    SIDEBAR_COLORS.hoverText,
-  ),
+  toggleButton: cn('p-2', SIDEBAR_COLORS.hoverBg, SIDEBAR_COLORS.muted, SIDEBAR_COLORS.hoverText),
 } as const;
 
-export const getSidebarWidth = (isCollapsed: boolean) =>
-  isCollapsed ? SIDEBAR_SIZES.collapsed : SIDEBAR_SIZES.expanded;
+export const getSidebarWidth = (isCollapsed: boolean) => (isCollapsed ? SIDEBAR_SIZES.collapsed : SIDEBAR_SIZES.expanded);
 
-export const getFlexLayout = (isCollapsed: boolean) =>
-  isCollapsed ? SIDEBAR_CLASSES.flexCenter : SIDEBAR_CLASSES.flexBetween;
+export const getFlexLayout = (isCollapsed: boolean) => (isCollapsed ? SIDEBAR_CLASSES.flexCenter : SIDEBAR_CLASSES.flexBetween);
 
 export const getNavItemClasses = (active: boolean, isCollapsed: boolean) =>
   cn(
@@ -111,16 +78,11 @@ export const getNavItemClasses = (active: boolean, isCollapsed: boolean) =>
     isCollapsed ? 'justify-center px-3' : 'gap-3 px-3',
   );
 
-export const getUserInfoClasses = (isCollapsed: boolean) =>
-  isCollapsed
-    ? SIDEBAR_CLASSES.userInfoCollapsed
-    : SIDEBAR_CLASSES.userInfoExpanded;
+export const getUserInfoClasses = (isCollapsed: boolean) => (isCollapsed ? SIDEBAR_CLASSES.userInfoCollapsed : SIDEBAR_CLASSES.userInfoExpanded);
 
-export const getThemeToggleLayout = (isCollapsed: boolean) =>
-  cn('flex items-center mb-3', isCollapsed ? 'justify-center' : 'gap-3');
+export const getThemeToggleLayout = (isCollapsed: boolean) => cn('flex items-center mb-3', isCollapsed ? 'justify-center' : 'gap-3');
 
-export const getUserProfileLayout = (isCollapsed: boolean) =>
-  cn('flex items-center', isCollapsed ? 'justify-center' : 'gap-3');
+export const getUserProfileLayout = (isCollapsed: boolean) => cn('flex items-center', isCollapsed ? 'justify-center' : 'gap-3');
 
 export const TOOLTIP_CONFIG = {
   side: 'right' as const,

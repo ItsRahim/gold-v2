@@ -1,13 +1,9 @@
-import * as React from 'react';
+import { Outlet } from 'react-router-dom';
 import '@/index.css';
 import { SidebarProvider, SidebarTrigger } from './components/ui/sidebar.tsx';
 import { AppSidebar } from '@/components/sidebar/AppSidebar.tsx';
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout() {
   return (
     <div className='flex h-screen'>
       <SidebarProvider>
@@ -16,7 +12,9 @@ export default function RootLayout({
           <div className='p-4 border-b border-border'>
             <SidebarTrigger />
           </div>
-          <div className='h-full overflow-auto'>{children}</div>
+          <div className='h-full overflow-auto'>
+            <Outlet />
+          </div>
         </main>
       </SidebarProvider>
     </div>

@@ -1,70 +1,28 @@
 import { Menu } from 'lucide-react';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
-import { SidebarTrigger } from '../ui/sidebar';
-import {
-  SIDEBAR_CLASSES,
-  getFlexLayout,
-  TOOLTIP_CONFIG,
-  getUserProfileLayout,
-  getUserInfoClasses,
-} from '@/styles/sidebar';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { SidebarGroupLabel, SidebarTrigger } from '../ui/sidebar';
+import { SIDEBAR_CLASSES, getFlexLayout, TOOLTIP_CONFIG } from '@/styles/sidebar';
 import { cn } from '@/lib/utils';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar.tsx';
-import type { ReactNode } from 'react';
 
 interface SidebarHeaderProps {
-  name: string;
-  initials: string;
-  username: string;
   isCollapsed: boolean;
   onToggle: () => void;
 }
 
-function renderUserProfile(
-  isCollapsed: boolean,
-  initials: string,
-  name: string,
-  username: string,
-) {
-  if (!isCollapsed) {
-    return (
-      <>
-        <Avatar className='w-8 h-8'>
-          <AvatarFallback className={SIDEBAR_CLASSES.avatar}>
-            {initials}
-          </AvatarFallback>
-        </Avatar>
-        <div className={getUserInfoClasses(isCollapsed)}>
-          <span className='block text-sm font-medium text-foreground'>
-            {name}
-          </span>
-          <span className='block text-xs text-muted-foreground'>
-            {username}
-          </span>
-        </div>
-      </>
-    );
-  }
+function ToggleButton(onToggle: () => void) {
+  return (
+    <SidebarTrigger variant='ghost' size='sm' onClick={onToggle} className={SIDEBAR_CLASSES.toggleButton}>
+      <Menu className='w-4 h-4' />
+    </SidebarTrigger>
+  );
 }
 
-function renderToggleButton(isCollapsed: boolean, toggleButton: ReactNode) {
-  if (!isCollapsed) {
-    return toggleButton;
-  }
-
+function CollapsedToggleButtonWithTooltip(onToggle: () => void) {
   return (
     <TooltipProvider>
       <Tooltip>
-        <TooltipTrigger asChild>{toggleButton}</TooltipTrigger>
-        <TooltipContent
-          side={TOOLTIP_CONFIG.side}
-          className={TOOLTIP_CONFIG.className}
-        >
+        <TooltipTrigger asChild>{ToggleButton(onToggle)}</TooltipTrigger>
+        <TooltipContent side={TOOLTIP_CONFIG.side} className={TOOLTIP_CONFIG.className}>
           <p>Expand sidebar</p>
         </TooltipContent>
       </Tooltip>
@@ -72,37 +30,21 @@ function renderToggleButton(isCollapsed: boolean, toggleButton: ReactNode) {
   );
 }
 
-export function SidebarHeader({
-  name,
-  initials,
-  username,
-  isCollapsed,
-  onToggle,
-}: SidebarHeaderProps) {
-  const toggleButton = (
-    <SidebarTrigger
-      variant='ghost'
-      size='sm'
-      onClick={onToggle}
-      className={SIDEBAR_CLASSES.toggleButton}
-    >
-      <Menu className='w-4 h-4' />
-    </SidebarTrigger>
-  );
-
+function ExpandedHeaderTitle() {
   return (
-    <div
-      className={cn(
-        'p-4 border-b border-gold-accent/10',
-        getFlexLayout(isCollapsed),
-      )}
-    >
-      <div className='flex items-center gap-2'>
-        <div className={getUserProfileLayout(isCollapsed)}>
-          {renderUserProfile(isCollapsed, initials, name, username)}
-        </div>
+    <div className='flex items-center gap-2'>
+      <div className='text-lg font-semibold'>
+        <SidebarGroupLabel className='text-primary gold-text-glow'>RGTS</SidebarGroupLabel>
       </div>
-      {renderToggleButton(isCollapsed, toggleButton)}
+    </div>
+  );
+}
+
+export function SidebarHeader({ isCollapsed, onToggle }: SidebarHeaderProps) {
+  return (
+    <div className={cn('p-4 border-b border-gold-accent/10', getFlexLayout(isCollapsed))}>
+      {!isCollapsed && <ExpandedHeaderTitle />}
+      {isCollapsed ? CollapsedToggleButtonWithTooltip(onToggle) : ToggleButton(onToggle)}
     </div>
   );
 }

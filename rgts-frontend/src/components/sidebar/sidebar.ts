@@ -1,12 +1,4 @@
-import {
-  BarChart3,
-  Package,
-  Briefcase,
-  Bell,
-  TrendingUp,
-  Settings,
-  LogOut,
-} from 'lucide-react';
+import { BarChart3, Package, Briefcase, Bell, TrendingUp, Settings, LogOut } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
 export interface NavigationItemData {
@@ -36,7 +28,7 @@ export const NAVIGATION_SECTIONS: NavigationSection[] = [
     title: 'Account',
     items: [
       { name: 'Settings', href: '/settings', active: false, icon: Settings },
-      { name: 'Logout', href: '/lgout', active: false, icon: LogOut },
+      { name: 'Logout', href: '/logout', active: false, icon: LogOut },
     ],
   },
 ];
