@@ -18,7 +18,7 @@ export function AppSidebar() {
                     onToggle={() => setIsCollapsed(!isCollapsed)}
                 />
                 <SidebarContent isCollapsed={isCollapsed}/>
-                <SidebarFooter isCollapsed={isCollapsed}/>
+                <SidebarFooter name={"Rahim A"} initials={"RA"} username="ItsRahim" isCollapsed={isCollapsed}/>
             </div>
         </aside>
     );

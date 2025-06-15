@@ -17,18 +17,18 @@ export const NAVIGATION_SECTIONS: NavigationSection[] = [
     {
         title: "Overview",
         items: [
-            {name: "Dashboard", href: "/", icon: BarChart3},
-            {name: "Catalog", href: "/", icon: Package},
-            {name: "Portfolio", href: "/", icon: Briefcase},
-            {name: "Market", href: "/", icon: TrendingUp},
-            {name: "Alerts", href: "/", icon: Bell},
+            {name: "Dashboard", href: "/", active: false, icon: BarChart3},
+            {name: "Catalog", href: "/", active: false, icon: Package},
+            {name: "Portfolio", href: "/", active: false, icon: Briefcase},
+            {name: "Market", href: "/", active: false, icon: TrendingUp},
+            {name: "Alerts", href: "/", active: false, icon: Bell},
         ]
     },
     {
         title: "Account",
         items: [
-            {name: "Settings", href: "/", icon: Settings},
-            {name: "Logout", href: "/", icon: LogOut},
+            {name: "Settings", href: "/", active: false, icon: Settings},
+            {name: "Logout", href: "/", active: false, icon: LogOut},
         ]
     }
 ];

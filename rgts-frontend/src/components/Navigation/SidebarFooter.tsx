@@ -1,16 +1,20 @@
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Separator } from "@/components/ui/separator";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { DarkMode } from "@/components/Utility/DarkMode.tsx";
+import {Avatar, AvatarFallback} from "@/components/ui/avatar";
+import {Separator} from "@/components/ui/separator";
+import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip";
+import {DarkMode} from "@/components/Utility/DarkMode.tsx";
+import {cn} from "@/lib/utils.ts";
 
 interface SidebarFooterProps {
+    name: string,
+    initials: string,
+    username: string;
     isCollapsed: boolean;
 }
 
-export function SidebarFooter({ isCollapsed }: SidebarFooterProps) {
+export function SidebarFooter({name, initials, username, isCollapsed}: SidebarFooterProps) {
     return (
         <div className="p-4">
-            <Separator className="mb-4 bg-gold-accent/10" />
+            <Separator className="mb-4 bg-gold-accent/10"/>
 
             {/* Theme Toggle */}
             <div className={`flex items-center mb-3 ${isCollapsed ? 'justify-center' : 'gap-3'}`}>
@@ -19,7 +23,7 @@ export function SidebarFooter({ isCollapsed }: SidebarFooterProps) {
                         <Tooltip>
                             <TooltipTrigger asChild>
                                 <div>
-                                    <DarkMode />
+                                    <DarkMode/>
                                 </div>
                             </TooltipTrigger>
                             <TooltipContent side="right" className="ml-2">
@@ -29,7 +33,7 @@ export function SidebarFooter({ isCollapsed }: SidebarFooterProps) {
                     </TooltipProvider>
                 ) : (
                     <>
-                        <DarkMode />
+                        <DarkMode/>
                         <span className="text-sm text-muted-foreground">Theme</span>
                     </>
                 )}
@@ -42,15 +46,16 @@ export function SidebarFooter({ isCollapsed }: SidebarFooterProps) {
                         <Tooltip>
                             <TooltipTrigger asChild>
                                 <Avatar className="w-8 h-8">
-                                    <AvatarFallback className="bg-transparent text-primary font-semibold border-2 border-primary">
-                                        FL
+                                    <AvatarFallback
+                                        className="bg-transparent text-primary font-semibold border-2 border-primary">
+                                        {initials}
                                     </AvatarFallback>
                                 </Avatar>
                             </TooltipTrigger>
                             <TooltipContent side="right" className="ml-2">
                                 <div className="text-center">
-                                    <p className="font-medium">First L.</p>
-                                    <p className="text-xs text-muted-foreground">Username</p>
+                                    <p className="font-medium">{name}</p>
+                                    <p className="text-xs text-muted-foreground">{username}</p>
                                 </div>
                             </TooltipContent>
                         </Tooltip>
@@ -58,13 +63,19 @@ export function SidebarFooter({ isCollapsed }: SidebarFooterProps) {
                 ) : (
                     <>
                         <Avatar className="w-8 h-8">
-                            <AvatarFallback className="bg-transparent text-primary font-semibold border-2 border-primary">
-                                FL
+                            <AvatarFallback
+                                className="bg-transparent text-primary font-semibold border-2 border-primary">
+                                {initials}
                             </AvatarFallback>
                         </Avatar>
-                        <div className="flex flex-col">
-                            <span className="text-sm font-medium text-foreground">First L.</span>
-                            <span className="text-xs text-muted-foreground">Username</span>
+                        <div
+                            className={cn(
+                                "overflow-hidden whitespace-nowrap transition-all duration-300 ease-in-out",
+                                isCollapsed ? "max-w-0 opacity-0 ml-0" : "max-w-[180px] opacity-100 ml-3"
+                            )}
+                        >
+                            <span className="block text-sm font-medium text-foreground">{name}</span>
+                            <span className="block text-xs text-muted-foreground">{username}</span>
                         </div>
                     </>
                 )}

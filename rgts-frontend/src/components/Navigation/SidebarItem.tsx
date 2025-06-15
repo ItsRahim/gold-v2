@@ -12,7 +12,7 @@ interface SidebarItemProps {
     isCollapsed: boolean;
 }
 
-export function SidebarItem({name, href, active = false, icon: IconComponent, isCollapsed}: SidebarItemProps) {
+export function SidebarItem({name, href, active, icon: IconComponent, isCollapsed}: SidebarItemProps) {
     const buttonContent = (
         <SidebarMenuButton
             asChild
