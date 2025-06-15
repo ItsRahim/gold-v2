@@ -21,7 +21,7 @@ export const NAVIGATION_SECTIONS: NavigationSection[] = [
       { name: 'Catalog', href: '/catalog', active: false, icon: Package },
       { name: 'Portfolio', href: '/portfolio', active: false, icon: Briefcase },
       { name: 'Market', href: '/market', active: false, icon: TrendingUp },
-      { name: 'Alerts', href: '/alert', active: false, icon: Bell },
+      { name: 'Alerts', href: '/alerts', active: false, icon: Bell },
     ],
   },
   {

@@ -1,3 +1,7 @@
 export default function Portfolio() {
-  return <h1>Hello</h1>;
+  return (
+    <div className='flex justify-center items-center h-full'>
+      <h1>Portfolio</h1>
+    </div>
+  );
 }

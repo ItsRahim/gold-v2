@@ -34,7 +34,7 @@ export const SIDEBAR_SIZES = {
 } as const;
 
 export const SIDEBAR_CLASSES = {
-  container: cn('fixed left-0 top-0 h-screen z-50', SIDEBAR_COLORS.background, 'border-r', SIDEBAR_COLORS.border, SIDEBAR_ANIMATIONS.transition),
+  container: cn('h-screen z-50', SIDEBAR_COLORS.background, 'border-r', SIDEBAR_COLORS.border, SIDEBAR_ANIMATIONS.transition),
 
   flexColumn: 'flex flex-col h-full',
   flexCenter: 'flex items-center justify-center',

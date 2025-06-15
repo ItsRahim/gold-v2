@@ -1,7 +1,7 @@
-export default function Dashboard() {
+export default function Alerts() {
   return (
     <div className='flex justify-center items-center h-full'>
-      <h1>Dashboard</h1>
+      <h1>Alerts</h1>
     </div>
   );
 }

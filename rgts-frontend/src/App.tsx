@@ -5,6 +5,7 @@ import Catalog from '@/pages/Catalog/Catalog.tsx';
 import Portfolio from '@/pages/Portfolio/Portfolio.tsx';
 import Market from '@/pages/Market/Market.tsx';
 import { Navigate } from 'react-router-dom';
+import Alerts from '@/pages/Alerts/Alerts.tsx';
 
 export default function App() {
   return (
@@ -15,6 +16,7 @@ export default function App() {
         <Route path='catalog' element={<Catalog />} />
         <Route path='portfolio' element={<Portfolio />} />
         <Route path='market' element={<Market />} />
+        <Route path='alerts' element={<Alerts />} />
       </Route>
     </Routes>
   );

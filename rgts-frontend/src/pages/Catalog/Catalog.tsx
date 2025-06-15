@@ -1,3 +1,7 @@
 export default function Catalog() {
-  return <h1>Hello</h1>;
+  return (
+    <div className='flex justify-center items-center h-full'>
+      <h1>Catalog</h1>
+    </div>
+  );
 }
