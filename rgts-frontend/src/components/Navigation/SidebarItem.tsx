@@ -1,10 +1,10 @@
-import { Link } from "react-router-dom";
-import type { LucideIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
+import {Link} from "react-router-dom";
+import type {LucideIcon} from "lucide-react";
+import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip";
+import {cn} from "@/lib/utils";
+import {SidebarMenuButton} from "../ui/sidebar";
 
-interface NavigationItemProps {
+interface SidebarItemProps {
     name: string;
     href: string;
     active?: boolean;
@@ -12,11 +12,10 @@ interface NavigationItemProps {
     isCollapsed: boolean;
 }
 
-export function NavigationItem({ name, href, active = false, icon: IconComponent, isCollapsed }: NavigationItemProps) {
+export function SidebarItem({name, href, active = false, icon: IconComponent, isCollapsed}: SidebarItemProps) {
     const buttonContent = (
-        <Button
+        <SidebarMenuButton
             asChild
-            variant={active ? "default" : "ghost"}
             className={cn(
                 "w-full justify-start transition-all duration-300",
                 active
@@ -26,10 +25,10 @@ export function NavigationItem({ name, href, active = false, icon: IconComponent
             )}
         >
             <Link to={href}>
-                <IconComponent className="w-4 h-4 flex-shrink-0" />
+                <IconComponent className="w-4 h-4 flex-shrink-0"/>
                 {!isCollapsed && <span className="text-sm">{name}</span>}
             </Link>
-        </Button>
+        </SidebarMenuButton>
     );
 
     if (isCollapsed) {

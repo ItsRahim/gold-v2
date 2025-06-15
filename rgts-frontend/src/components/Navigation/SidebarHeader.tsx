@@ -1,22 +1,22 @@
-import { Menu } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {Menu} from "lucide-react";
+import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip";
+import {SidebarGroupLabel, SidebarTrigger} from "../ui/sidebar";
 
 interface SidebarHeaderProps {
     isCollapsed: boolean;
     onToggle: () => void;
 }
 
-export function SidebarHeader({ isCollapsed, onToggle }: SidebarHeaderProps) {
+export function SidebarHeader({isCollapsed, onToggle}: SidebarHeaderProps) {
     const toggleButton = (
-        <Button
+        <SidebarTrigger
             variant="ghost"
             size="sm"
             onClick={onToggle}
             className="p-2 hover:bg-gold-light/10 text-muted-foreground hover:text-primary"
         >
-            <Menu className="w-4 h-4" />
-        </Button>
+            <Menu className="w-4 h-4"/>
+        </SidebarTrigger>
     );
 
     return (
@@ -26,8 +26,7 @@ export function SidebarHeader({ isCollapsed, onToggle }: SidebarHeaderProps) {
             {!isCollapsed && (
                 <div className="flex items-center gap-2">
                     <div className="text-lg font-semibold">
-                        <span className="text-primary gold-text-glow">Rahim's</span>
-                        <span className="font-normal text-muted-foreground ml-1 text-sm">Gold Tracker</span>
+                        <SidebarGroupLabel className="text-primary gold-text-glow">RGTS</SidebarGroupLabel>
                     </div>
                 </div>
             )}
