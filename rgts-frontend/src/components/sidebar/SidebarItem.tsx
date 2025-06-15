@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import {Link, useLocation} from "react-router-dom";
 import type { LucideIcon } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { SidebarMenuButton } from "../ui/sidebar";
@@ -12,11 +12,14 @@ interface SidebarItemProps {
     isCollapsed: boolean;
 }
 
-export function SidebarItem({ name, href, active, icon: IconComponent, isCollapsed }: SidebarItemProps) {
+export function SidebarItem({ name, href, icon: IconComponent, isCollapsed }: SidebarItemProps) {
+    const location = useLocation();
+    const isActive = location.pathname === href;
+
     const buttonContent = (
         <SidebarMenuButton
             asChild
-            className={getNavItemClasses(active || false, isCollapsed)}
+            className={getNavItemClasses(isActive, isCollapsed)}
         >
             <Link to={href}>
                 <IconComponent className="w-4 h-4 flex-shrink-0" />

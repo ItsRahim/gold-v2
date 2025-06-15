@@ -1,8 +1,8 @@
 import { SidebarGroup, SidebarGroupContent, SidebarGroupLabel } from "@/components/ui/sidebar.tsx";
-import { NAVIGATION_SECTIONS } from "@/components/Navigation/navigation.ts";
+import { NAVIGATION_SECTIONS } from "@/components/sidebar/sidebar.ts";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible.tsx";
 import { ChevronDown } from "lucide-react";
-import { SidebarItem } from "@/components/Navigation/SidebarItem.tsx";
+import { SidebarItem } from "@/components/sidebar/SidebarItem.tsx";
 import { SIDEBAR_CLASSES } from "@/styles/sidebar";
 
 interface SidebarContentProps {
