@@ -1,58 +1,63 @@
-import {Avatar, AvatarFallback} from "@/components/ui/avatar";
-import {Separator} from "@/components/ui/separator";
-import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip";
-import {DarkMode} from "@/components/Utility/DarkMode.tsx";
-import {cn} from "@/lib/utils.ts";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Separator } from "@/components/ui/separator";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { DarkMode } from "@/components/Utility/DarkMode.tsx";
+import {
+    SIDEBAR_CLASSES,
+    getUserInfoClasses,
+    getThemeToggleLayout,
+    getUserProfileLayout,
+    TOOLTIP_CONFIG
+} from "@/styles/sidebar";
 
 interface SidebarFooterProps {
-    name: string,
-    initials: string,
+    name: string;
+    initials: string;
     username: string;
     isCollapsed: boolean;
 }
 
-export function SidebarFooter({name, initials, username, isCollapsed}: SidebarFooterProps) {
+export function SidebarFooter({ name, initials, username, isCollapsed }: SidebarFooterProps) {
     return (
         <div className="p-4">
-            <Separator className="mb-4 bg-gold-accent/10"/>
+            <Separator className={SIDEBAR_CLASSES.separator} />
 
             {/* Theme Toggle */}
-            <div className={`flex items-center mb-3 ${isCollapsed ? 'justify-center' : 'gap-3'}`}>
+            <div className={getThemeToggleLayout(isCollapsed)}>
                 {isCollapsed ? (
                     <TooltipProvider>
                         <Tooltip>
                             <TooltipTrigger asChild>
                                 <div>
-                                    <DarkMode/>
+                                    <DarkMode />
                                 </div>
                             </TooltipTrigger>
-                            <TooltipContent side="right" className="ml-2">
+                            <TooltipContent side={TOOLTIP_CONFIG.side} className={TOOLTIP_CONFIG.className}>
                                 <p>Toggle Theme</p>
                             </TooltipContent>
                         </Tooltip>
                     </TooltipProvider>
                 ) : (
                     <>
-                        <DarkMode/>
+                        <DarkMode />
                         <span className="text-sm text-muted-foreground">Theme</span>
                     </>
                 )}
             </div>
 
             {/* User Profile */}
-            <div className={`flex items-center ${isCollapsed ? 'justify-center' : 'gap-3'}`}>
+            <div className={getUserProfileLayout(isCollapsed)}>
                 {isCollapsed ? (
                     <TooltipProvider>
                         <Tooltip>
                             <TooltipTrigger asChild>
                                 <Avatar className="w-8 h-8">
-                                    <AvatarFallback
-                                        className="bg-transparent text-primary font-semibold border-2 border-primary">
+                                    <AvatarFallback className={SIDEBAR_CLASSES.avatar}>
                                         {initials}
                                     </AvatarFallback>
                                 </Avatar>
                             </TooltipTrigger>
-                            <TooltipContent side="right" className="ml-2">
+                            <TooltipContent side={TOOLTIP_CONFIG.side} className={TOOLTIP_CONFIG.className}>
                                 <div className="text-center">
                                     <p className="font-medium">{name}</p>
                                     <p className="text-xs text-muted-foreground">{username}</p>
@@ -63,17 +68,11 @@ export function SidebarFooter({name, initials, username, isCollapsed}: SidebarFo
                 ) : (
                     <>
                         <Avatar className="w-8 h-8">
-                            <AvatarFallback
-                                className="bg-transparent text-primary font-semibold border-2 border-primary">
+                            <AvatarFallback className={SIDEBAR_CLASSES.avatar}>
                                 {initials}
                             </AvatarFallback>
                         </Avatar>
-                        <div
-                            className={cn(
-                                "overflow-hidden whitespace-nowrap transition-all duration-300 ease-in-out",
-                                isCollapsed ? "max-w-0 opacity-0 ml-0" : "max-w-[180px] opacity-100 ml-3"
-                            )}
-                        >
+                        <div className={getUserInfoClasses(isCollapsed)}>
                             <span className="block text-sm font-medium text-foreground">{name}</span>
                             <span className="block text-xs text-muted-foreground">{username}</span>
                         </div>

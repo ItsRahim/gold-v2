@@ -1,24 +1,27 @@
-import {useState} from "react";
-import {SidebarHeader} from "./SidebarHeader";
-import {SidebarFooter} from "./SidebarFooter";
-import {SidebarContent} from "@/components/Navigation/SidebarContent.tsx";
+import { useState } from "react";
+import { SidebarHeader } from "./SidebarHeader";
+import { SidebarFooter } from "./SidebarFooter";
+import { SidebarContent } from "@/components/Navigation/SidebarContent.tsx";
+import { SIDEBAR_CLASSES, getSidebarWidth } from "@/styles/sidebar";
+import { cn } from "@/lib/utils";
 
 export function AppSidebar() {
     const [isCollapsed, setIsCollapsed] = useState(false);
 
     return (
-        <aside
-            className={`fixed left-0 top-0 h-screen bg-background/95 backdrop-blur-md border-r border-gold-accent/20 transition-all duration-300 z-50 ${
-                isCollapsed ? "w-16" : "w-64"
-            }`}
-        >
-            <div className="flex flex-col h-full">
+        <aside className={cn(SIDEBAR_CLASSES.container, getSidebarWidth(isCollapsed))}>
+            <div className={SIDEBAR_CLASSES.flexColumn}>
                 <SidebarHeader
                     isCollapsed={isCollapsed}
                     onToggle={() => setIsCollapsed(!isCollapsed)}
                 />
-                <SidebarContent isCollapsed={isCollapsed}/>
-                <SidebarFooter name={"Rahim A"} initials={"RA"} username="ItsRahim" isCollapsed={isCollapsed}/>
+                <SidebarContent isCollapsed={isCollapsed} />
+                <SidebarFooter
+                    name="Rahim A"
+                    initials="RA"
+                    username="ItsRahim"
+                    isCollapsed={isCollapsed}
+                />
             </div>
         </aside>
     );
