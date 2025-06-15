@@ -1,5 +1,8 @@
-import {Link} from "react-router-dom";
-import type {LucideIcon} from "lucide-react";
+import { Link } from "react-router-dom";
+import type { LucideIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
 
 interface NavigationItemProps {
     name: string;
@@ -9,25 +12,40 @@ interface NavigationItemProps {
     isCollapsed: boolean;
 }
 
-export function NavigationItem({name, href, active = false, icon: IconComponent, isCollapsed}: NavigationItemProps) {
-    return (
-        <Link
-            to={href}
-            className={`flex items-center w-full rounded-lg transition-all duration-300 ${
+export function NavigationItem({ name, href, active = false, icon: IconComponent, isCollapsed }: NavigationItemProps) {
+    const buttonContent = (
+        <Button
+            asChild
+            variant={active ? "default" : "ghost"}
+            className={cn(
+                "w-full justify-start transition-all duration-300",
                 active
-                    ? "text-primary font-semibold bg-gold-light/20 border border-gold-accent/30"
-                    : "text-muted-foreground hover:text-primary hover:bg-gold-light/10 hover:border-gold-accent/20 border border-transparent"
-            } ${
-                active ? 'shadow-sm gold-glow' : ''
-            } ${
-                isCollapsed ? 'justify-center px-3 py-2.5' : 'gap-3 px-3 py-2.5'
-            }`}
-            title={isCollapsed ? name : ''}
-        >
-            <IconComponent className="w-4 h-4 flex-shrink-0"/>
-            {!isCollapsed && (
-                <span className="text-sm">{name}</span>
+                    ? "text-primary font-semibold bg-gold-light/20 border border-gold-accent/30 shadow-sm gold-glow"
+                    : "text-muted-foreground hover:text-primary hover:bg-gold-light/10 hover:border-gold-accent/20",
+                isCollapsed ? "justify-center px-3" : "gap-3 px-3"
             )}
-        </Link>
+        >
+            <Link to={href}>
+                <IconComponent className="w-4 h-4 flex-shrink-0" />
+                {!isCollapsed && <span className="text-sm">{name}</span>}
+            </Link>
+        </Button>
     );
+
+    if (isCollapsed) {
+        return (
+            <TooltipProvider>
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        {buttonContent}
+                    </TooltipTrigger>
+                    <TooltipContent side="right" className="ml-2">
+                        <p>{name}</p>
+                    </TooltipContent>
+                </Tooltip>
+            </TooltipProvider>
+        );
+    }
+
+    return buttonContent;
 }

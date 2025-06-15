@@ -1,31 +1,11 @@
 import {useState} from "react";
-import {BarChart3, Package, Briefcase, Bell, TrendingUp, Settings, LogOut} from "lucide-react";
 import {SidebarHeader} from "./SidebarHeader";
 import {NavigationSection} from "./NavigationSection";
 import {SidebarFooter} from "./SidebarFooter";
+import {NAVIGATION_SECTIONS} from "@/components/Navigation/navigation.ts";
 
-export function Sidebar() {
+export function AppSidebar() {
     const [isCollapsed, setIsCollapsed] = useState(false);
-
-    const navigationSections = [
-        {
-            title: "Overview",
-            items: [
-                {name: "Dashboard", href: "/", active: true, icon: BarChart3},
-                {name: "Catalog", href: "/", icon: Package},
-                {name: "Portfolio", href: "/", icon: Briefcase},
-                {name: "Market", href: "/", icon: TrendingUp},
-                {name: "Alerts", href: "/", icon: Bell},
-            ]
-        },
-        {
-            title: "Account",
-            items: [
-                {name: "Settings", href: "/", icon: Settings},
-                {name: "Logout", href: "/", icon: LogOut},
-            ]
-        }
-    ];
 
     return (
         <aside
@@ -39,13 +19,13 @@ export function Sidebar() {
                 />
 
                 <nav className="flex-1 p-4 overflow-y-auto">
-                    {navigationSections.map((section, sectionIndex) => (
+                    {NAVIGATION_SECTIONS.map((section, sectionIndex) => (
                         <div key={section.title} className={sectionIndex > 0 ? 'mt-8' : ''}>
                             <NavigationSection
                                 title={section.title}
                                 items={section.items}
                                 isCollapsed={isCollapsed}
-                                showSeparator={sectionIndex < navigationSections.length - 1}
+                                showSeparator={sectionIndex < NAVIGATION_SECTIONS.length - 1}
                             />
                         </div>
                     ))}

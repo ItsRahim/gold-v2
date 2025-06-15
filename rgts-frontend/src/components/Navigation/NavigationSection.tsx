@@ -1,5 +1,6 @@
 import { NavigationItem } from "./NavigationItem";
-import type {LucideIcon} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 
 interface NavigationItemData {
     name: string;
@@ -9,7 +10,7 @@ interface NavigationItemData {
 }
 
 interface NavigationSectionProps {
-    title?: string;
+    title: string;
     items: NavigationItemData[];
     isCollapsed: boolean;
     showSeparator?: boolean;
@@ -43,7 +44,9 @@ export function NavigationSection({ title, items, isCollapsed, showSeparator = f
 
             {/* Section Separator */}
             {!isCollapsed && showSeparator && (
-                <div className="mt-4 border-b border-gold-accent/10"></div>
+                <div className="mt-4">
+                    <Separator className="bg-gold-accent/10" />
+                </div>
             )}
         </div>
     );
