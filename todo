@@ -5,8 +5,13 @@ Resilience for kafka consumers and producers (retry, save to db, cron schedule t
 
 -- Pricing Service --
 Improve exception handling and logging in pricing-service
+Ability to delete gold types
 
 -- Email Service --
 Button to verify email to go to frontend and then make a call to the backend to verify the email
 
 -- Authentication Service --
+Tests for everything
+
+-- Frontend --
+Implement tests for the frontend

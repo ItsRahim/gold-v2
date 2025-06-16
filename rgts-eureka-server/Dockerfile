@@ -6,6 +6,7 @@ WORKDIR /app
 COPY pom.xml .
 
 # Copy all module POMs
+COPY rgts-authentication-service/pom.xml rgts-authentication-service/
 COPY rgts-common/pom.xml rgts-common/
 COPY rgts-cache-manager/pom.xml rgts-cache-manager/
 COPY rgts-config-server/pom.xml rgts-config-server/
@@ -18,7 +19,6 @@ COPY rgts-notification-service/pom.xml rgts-notification-service/
 COPY rgts-pricing-service/pom.xml rgts-pricing-service/
 COPY rgts-proto-service/pom.xml rgts-proto-service/
 COPY rgts-scheduler-service/pom.xml rgts-scheduler-service/
-COPY rgts-user-service/pom.xml rgts-user-service/
 
 # Download dependencies
 RUN mvn dependency:go-offline -pl rgts-eureka-server -am
