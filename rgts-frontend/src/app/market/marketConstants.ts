@@ -1,0 +1,32 @@
+export const Purities = [
+  '1K',
+  '2K',
+  '3K',
+  '4K',
+  '5K',
+  '6K',
+  '7K',
+  '8K',
+  '9K',
+  '10K',
+  '11K',
+  '12K',
+  '13K',
+  '14K',
+  '15K',
+  '16K',
+  '17K',
+  '18K',
+  '19K',
+  '20K',
+  '21K',
+  '22K',
+  '23K',
+  '24K',
+];
+
+export const WeightUnits = [
+  { label: 'Grams', value: 'g' },
+  { label: 'Kilograms', value: 'kg' },
+  { label: 'Troy Ounces', value: 'oz' },
+];

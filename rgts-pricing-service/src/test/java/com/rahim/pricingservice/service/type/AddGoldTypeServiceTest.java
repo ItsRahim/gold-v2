@@ -128,7 +128,7 @@ class AddGoldTypeServiceTest extends BaseTestConfiguration {
             "name", invalidCarat, BigDecimal.TEN, WeightUnit.GRAM.getValue(), "description");
     assertThatThrownBy(() -> addGoldTypeService.addGoldType(request))
         .isInstanceOf(BadRequestException.class)
-        .hasMessage("Invalid carat label: " + request.getCaratLabel());
+        .hasMessage("Invalid carat label: " + request.getPurity());
   }
 
   @ParameterizedTest

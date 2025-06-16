@@ -56,7 +56,7 @@ class GoldTypeControllerTest extends BaseTestConfiguration {
                 .content(requestToJson(request)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.name").value(request.getName()))
-        .andExpect(jsonPath("$.purity").value(request.getCaratLabel()))
+        .andExpect(jsonPath("$.purity").value(request.getPurity()))
         .andExpect(jsonPath("$.weight").value(request.getWeight() + " " + request.getUnit()))
         .andExpect(jsonPath("$.description").value(request.getDescription()))
         .andExpect(jsonPath("$.price").value(11000.00));
@@ -169,7 +169,7 @@ class GoldTypeControllerTest extends BaseTestConfiguration {
         .perform(get(Endpoints.GOLD_TYPE_ENDPOINT + "/{id}", id.longValue()))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.name").value(request.getName()))
-        .andExpect(jsonPath("$.purity").value(request.getCaratLabel()))
+        .andExpect(jsonPath("$.purity").value(request.getPurity()))
         .andExpect(jsonPath("$.description").value(request.getDescription()));
   }
 
@@ -198,7 +198,7 @@ class GoldTypeControllerTest extends BaseTestConfiguration {
         .perform(get(Endpoints.GOLD_TYPE_ENDPOINT).param("name", goldName))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.name").value(goldName))
-        .andExpect(jsonPath("$.purity").value(request.getCaratLabel()))
+        .andExpect(jsonPath("$.purity").value(request.getPurity()))
         .andExpect(jsonPath("$.description").value(request.getDescription()));
   }
 }
