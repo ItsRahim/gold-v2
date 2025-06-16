@@ -1,11 +1,11 @@
 import { Routes, Route } from 'react-router-dom';
-import RootLayout from './RouteLayout.tsx';
-import Dashboard from '@/app/Dashboard/Dashboard';
-import Catalog from '@/app/Catalog/Catalog.tsx';
-import Portfolio from '@/app/Portfolio/Portfolio.tsx';
-import Market from '@/app/Market/Market.tsx';
+import RootLayout from './app/RouteLayout.tsx';
+import Dashboard from '@/app/dashboard/Dashboard';
+import Catalog from '@/app/catalog/Catalog.tsx';
+import Portfolio from '@/app/portfolio/Portfolio.tsx';
+import Market from '@/app/market/Market.tsx';
 import { Navigate } from 'react-router-dom';
-import Alerts from '@/app/Alerts/Alerts.tsx';
+import Alerts from '@/app/alerts/Alerts.tsx';
 
 export default function App() {
   return (

@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router-dom';
-import '@/index.css';
-import { SidebarProvider } from './components/ui/sidebar.tsx';
+import '@/styles/index.css';
+import { SidebarProvider } from '../components/ui/sidebar.tsx';
 import { AppSidebar } from '@/components/sidebar/AppSidebar.tsx';
 
 export default function RootLayout() {

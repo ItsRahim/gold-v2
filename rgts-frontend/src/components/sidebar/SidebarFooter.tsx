@@ -1,7 +1,7 @@
 import { Separator } from '@/components/ui/separator';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { SIDEBAR_CLASSES, getThemeToggleLayout, TOOLTIP_CONFIG, getUserProfileLayout, getUserInfoClasses } from '@/styles/sidebar';
-import { DarkMode } from '@/components/utility/DarkMode.tsx';
+import { DarkMode } from '@/lib/theme/DarkMode.tsx';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar.tsx';
 
 interface SidebarFooterProps {
