@@ -1,7 +1,7 @@
-export default function Catalog() {
+export default function AlertsManagementView() {
   return (
     <div className='flex justify-center items-center h-full'>
-      <h1>Catalog</h1>
+      <h1>Alerts</h1>
     </div>
   );
 }

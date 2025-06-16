@@ -1,7 +1,7 @@
-export default function Alerts() {
+export default function PortfolioManagementView() {
   return (
     <div className='flex justify-center items-center h-full'>
-      <h1>Alerts</h1>
+      <h1>Portfolio</h1>
     </div>
   );
 }

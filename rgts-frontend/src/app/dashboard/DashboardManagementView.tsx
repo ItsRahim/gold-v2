@@ -1,7 +1,7 @@
-export default function Portfolio() {
+export default function DashboardManagementView() {
   return (
     <div className='flex justify-center items-center h-full'>
-      <h1>Portfolio</h1>
+      <h1>Dashboard</h1>
     </div>
   );
 }
