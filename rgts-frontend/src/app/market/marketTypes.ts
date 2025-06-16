@@ -15,3 +15,14 @@ export interface GoldType {
   description: string;
   price?: number;
 }
+
+export interface AddGoldDialogProps {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  onSubmit: (goldType: GoldType) => void;
+}
+
+export interface GoldTypeCardProps {
+  item: GoldItem;
+  onDelete: (id: number, name: string) => void;
+}

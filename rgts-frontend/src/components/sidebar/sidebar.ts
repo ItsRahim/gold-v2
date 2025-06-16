@@ -20,7 +20,7 @@ export const NAVIGATION_SECTIONS: NavigationSection[] = [
       { name: 'Dashboard', href: '/dashboard', active: false, icon: BarChart3 },
       { name: 'Catalog', href: '/catalog', active: false, icon: Package },
       { name: 'Portfolio', href: '/portfolio', active: false, icon: Briefcase },
-      { name: 'Market', href: '/market', active: false, icon: TrendingUp },
+      { name: 'MarketManagementView', href: '/market', active: false, icon: TrendingUp },
       { name: 'Alerts', href: '/alerts', active: false, icon: Bell },
     ],
   },

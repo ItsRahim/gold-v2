@@ -16,12 +16,7 @@ import { type FormEvent, useRef, useState } from 'react';
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select';
 import { Purities, WeightUnits } from '@/app/market/marketConstants.ts';
 import type { GoldType } from '@/app/market/marketTypes.ts';
-
-interface AddGoldDialogProps {
-  open: boolean;
-  setOpen: (open: boolean) => void;
-  onSubmit: (goldType: GoldType) => void;
-}
+import type { AddGoldDialogProps } from '@/app/market/marketTypes.ts';
 
 function allGoldPurities() {
   return (
