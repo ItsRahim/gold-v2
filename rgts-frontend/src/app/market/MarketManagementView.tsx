@@ -52,7 +52,7 @@ export default function MarketManagementView() {
   return (
     <div className='p-6 space-y-6'>
       <PageHeader
-        title='Gold MarketManagementView'
+        title='Gold Market'
         actions={
           <div className='flex space-x-2'>
             <AddGoldDialog open={open} setOpen={setOpen} onSubmit={handleAddGoldType} />
