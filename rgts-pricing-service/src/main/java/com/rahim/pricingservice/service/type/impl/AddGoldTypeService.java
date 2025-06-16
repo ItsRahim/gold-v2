@@ -47,7 +47,7 @@ public class AddGoldTypeService implements IAddGoldTypeService {
     validateAddGoldTypeRequest(request);
 
     try {
-      GoldPurity purity = goldPurityQueryService.getGoldPurityByCaratLabel(request.getCaratLabel());
+      GoldPurity purity = goldPurityQueryService.getGoldPurityByCaratLabel(request.getPurity());
       WeightUnit unit = WeightUnit.fromValue(request.getUnit());
 
       BigDecimal price =
@@ -96,8 +96,8 @@ public class AddGoldTypeService implements IAddGoldTypeService {
       throw new DuplicateEntityException("Gold type already exists: " + request.getName());
     }
 
-    if (!isValidGoldCarat(request.getCaratLabel())) {
-      throw new BadRequestException("Invalid carat label: " + request.getCaratLabel());
+    if (!isValidGoldCarat(request.getPurity())) {
+      throw new BadRequestException("Invalid carat label: " + request.getPurity());
     }
 
     if (request.getWeight() == null || request.getWeight().compareTo(BigDecimal.ZERO) <= 0) {
