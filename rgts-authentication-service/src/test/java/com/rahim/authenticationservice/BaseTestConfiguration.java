@@ -1,19 +1,14 @@
-package com.rahim.pricingservice;
+package com.rahim.authenticationservice;
 
-import static com.rahim.pricingservice.BaseTestContainerConfig.postgres;
+import static com.rahim.authenticationservice.BaseTestContainerConfig.postgres;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rahim.cachemanager.service.RedisService;
 import com.rahim.common.handler.ApiExceptionHandler;
-import com.rahim.common.util.DateUtil;
-import com.rahim.pricingservice.entity.GoldPrice;
-import com.rahim.pricingservice.entity.GoldPurity;
-import java.math.BigDecimal;
 import javax.sql.DataSource;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
@@ -46,17 +41,6 @@ public class BaseTestConfiguration {
     postgres.start();
   }
 
-  @BeforeEach
-  void setupRedisData() {
-    for (int i = 1; i <= 24; i++) {
-      String key = i + "K";
-      GoldPurity goldPurity = new GoldPurity(i, key, i, 24, false);
-      GoldPrice goldPrice =
-          new GoldPrice(i, goldPurity, BigDecimal.valueOf(i * 50), DateUtil.nowUtc());
-      redisService.setValue(key, goldPrice);
-    }
-  }
-
   @DynamicPropertySource
   static void overrideProperties(DynamicPropertyRegistry registry) {
     registry.add("spring.datasource.url", postgres::getJdbcUrl);
@@ -69,11 +53,6 @@ public class BaseTestConfiguration {
 
   @AfterEach
   void tearDown() {
-    for (int i = 1; i <= 24; i++) {
-      String key = i + "K";
-      redisService.deleteKey(key);
-    }
-
     Flyway.configure().dataSource(dataSource).cleanDisabled(false).load().clean();
   }
 }

@@ -24,6 +24,13 @@ app:
       - "Cache-Control"
     allow-credentials: true
 
+verification:
+  email:
+    expiration-minutes: 30
+  code:
+    length: 6
+  max-attempts: 5
+
 logging:
   level:
     com.rahim: DEBUG

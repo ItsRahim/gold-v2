@@ -41,11 +41,18 @@ public class EmailRequestHandlerTest {
     String firstName = fixture.create(String.class);
     String lastName = fixture.create(String.class);
     String username = fixture.create(String.class);
-    String verificationCode = fixture.create(String.class);
+    String rawVerificationCode = fixture.create(String.class);
+    String hashedVerificationCode = fixture.create(String.class);
     OffsetDateTime dateTime = fixture.create(OffsetDateTime.class);
 
     return TestEmailFactory.createVerificationEmailRequest(
-        email, firstName, lastName, username, verificationCode, dateTime);
+        email,
+        firstName,
+        lastName,
+        username,
+        rawVerificationCode,
+        hashedVerificationCode,
+        dateTime);
   }
 
   @Test
@@ -69,6 +76,8 @@ public class EmailRequestHandlerTest {
     assertEquals(
         emailRequest.getVerificationData().getVerificationCode(),
         capturedData.getVerificationCode());
+    assertEquals(
+        emailRequest.getVerificationData().getVerificationId(), capturedData.getVerificationId());
     assertEquals(
         emailRequest.getVerificationData().getExpirationTime(), capturedData.getExpirationTime());
   }
@@ -105,7 +114,7 @@ public class EmailRequestHandlerTest {
   void shouldThrowExceptionWhenVerificationCodeIsBlank() {
     EmailRequest emailRequest =
         TestEmailFactory.createVerificationEmailRequest(
-            "test@gmail.com", "John", "Doe", "johndoe", "", DateUtil.nowUtc());
+            "test@gmail.com", "John", "Doe", "johndoe", "", "abdefg", DateUtil.nowUtc());
 
     assertThatThrownBy(() -> emailRequestHandler.handleEmailRequest(emailRequest))
         .isInstanceOf(EmailProcessingException.class)
@@ -116,10 +125,24 @@ public class EmailRequestHandlerTest {
   }
 
   @Test
+  void shouldThrowExceptionWhenVerificationIdIsBlank() {
+    EmailRequest emailRequest =
+        TestEmailFactory.createVerificationEmailRequest(
+            "test@gmail.com", "John", "Doe", "johndoe", "abc", "", DateUtil.nowUtc());
+
+    assertThatThrownBy(() -> emailRequestHandler.handleEmailRequest(emailRequest))
+        .isInstanceOf(EmailProcessingException.class)
+        .hasMessage("Missing required fields in email request: verificationId");
+
+    verifyNoInteractions(emailTemplateService);
+    verifyNoInteractions(emailSenderService);
+  }
+
+  @Test
   void shouldThrowExceptionWhenExpirationTimeIsBlank() {
     EmailRequest emailRequest =
         TestEmailFactory.createVerificationEmailRequest(
-            "test@gmail.com", "John", "Doe", "johndoe", "123456", null);
+            "test@gmail.com", "John", "Doe", "johndoe", "123456", "78910", null);
 
     assertThatThrownBy(() -> emailRequestHandler.handleEmailRequest(emailRequest))
         .isInstanceOf(EmailProcessingException.class)
@@ -133,7 +156,7 @@ public class EmailRequestHandlerTest {
   void shouldThrowExceptionWhenFirstNameIsBlank() {
     EmailRequest emailRequest =
         TestEmailFactory.createVerificationEmailRequest(
-            "test@gmail.com", null, "Doe", "johndoe", "123456", DateUtil.nowUtc());
+            "test@gmail.com", null, "Doe", "johndoe", "123456", "78910", DateUtil.nowUtc());
 
     assertThatThrownBy(() -> emailRequestHandler.handleEmailRequest(emailRequest))
         .isInstanceOf(EmailProcessingException.class)
@@ -147,7 +170,7 @@ public class EmailRequestHandlerTest {
   void shouldThrowExceptionWhenLastNameIsBlank() {
     EmailRequest emailRequest =
         TestEmailFactory.createVerificationEmailRequest(
-            "test@gmail.com", "John", "", "johndoe", "123456", DateUtil.nowUtc());
+            "test@gmail.com", "John", "", "johndoe", "123456", "78910", DateUtil.nowUtc());
 
     assertThatThrownBy(() -> emailRequestHandler.handleEmailRequest(emailRequest))
         .isInstanceOf(EmailProcessingException.class)
@@ -161,7 +184,7 @@ public class EmailRequestHandlerTest {
   void shouldThrowExceptionWhenUsernameIsBlank() {
     EmailRequest emailRequest =
         TestEmailFactory.createVerificationEmailRequest(
-            "test@gmail.com", "John", "Doe", null, "123456", DateUtil.nowUtc());
+            "test@gmail.com", "John", "Doe", null, "123456", "78910", DateUtil.nowUtc());
 
     assertThatThrownBy(() -> emailRequestHandler.handleEmailRequest(emailRequest))
         .isInstanceOf(EmailProcessingException.class)
@@ -175,7 +198,7 @@ public class EmailRequestHandlerTest {
   void shouldThrowExceptionWhenRecipientEmailIsBlank() {
     EmailRequest emailRequest =
         TestEmailFactory.createVerificationEmailRequest(
-            null, "John", "Doe", "johndoe", "123456", DateUtil.nowUtc());
+            null, "John", "Doe", "johndoe", "123456", "78910", DateUtil.nowUtc());
 
     assertThatThrownBy(() -> emailRequestHandler.handleEmailRequest(emailRequest))
         .isInstanceOf(EmailProcessingException.class)

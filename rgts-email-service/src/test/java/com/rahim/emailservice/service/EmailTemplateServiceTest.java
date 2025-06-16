@@ -25,6 +25,7 @@ public class EmailTemplateServiceTest extends BaseTestConfiguration {
             .lastName("Doe")
             .username("JDoe")
             .verificationCode("abc123")
+            .verificationId("xyz987")
             .expirationTime(expiration)
             .build();
 
@@ -34,6 +35,7 @@ public class EmailTemplateServiceTest extends BaseTestConfiguration {
     assertThat(result).contains("Doe");
     assertThat(result).contains("JDoe");
     assertThat(result).contains("abc123");
+    assertThat(result).contains("xyz987");
     assertThat(result).contains(expiration);
   }
 }

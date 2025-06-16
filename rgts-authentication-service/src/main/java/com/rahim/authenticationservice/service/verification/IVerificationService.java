@@ -1,6 +1,7 @@
 package com.rahim.authenticationservice.service.verification;
 
 import com.rahim.authenticationservice.entity.User;
+import com.rahim.authenticationservice.enums.VerificationType;
 import java.util.UUID;
 
 public interface IVerificationService {
@@ -8,9 +9,11 @@ public interface IVerificationService {
 
   void sendPhoneVerification(User user);
 
-  boolean verifyEmail(String token);
+  boolean verifyEmail(UUID userId, String token);
 
-  boolean verifyPhone(UUID userId, String code);
+  boolean verifyPhone(UUID userId, String token);
+
+  UUID verifyCode(String token, UUID verificationId, VerificationType verificationType);
 
   void regenerateEmailToken(UUID userId);
 
@@ -23,6 +26,4 @@ public interface IVerificationService {
   boolean isEmailVerified(UUID userId);
 
   boolean isPhoneVerified(UUID userId);
-
-  void checkVerificationAttempts(UUID userId);
 }

@@ -23,12 +23,10 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 class GoldTypeControllerTest extends BaseTestConfiguration {
+  @Autowired private IAddGoldTypeService addGoldTypeService;
+  @Autowired private GoldTypeController goldTypeController;
 
   private MockMvc mockMvc;
-
-  @Autowired private IAddGoldTypeService addGoldTypeService;
-
-  @Autowired private GoldTypeController goldTypeController;
 
   @BeforeEach
   void setUp() {

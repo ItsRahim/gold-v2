@@ -17,11 +17,16 @@ public class TestEmailFactory {
       String lastName,
       String username,
       String verificationCode,
+      String verificationId,
       OffsetDateTime expirationTime) {
     AccountVerificationData.Builder verificationDataBuilder = AccountVerificationData.newBuilder();
 
     if (verificationCode != null) {
       verificationDataBuilder.setVerificationCode(verificationCode);
+    }
+
+    if (verificationId != null) {
+      verificationDataBuilder.setVerificationId(verificationId);
     }
 
     if (expirationTime != null) {

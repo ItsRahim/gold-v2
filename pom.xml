@@ -60,7 +60,6 @@
         <module>rgts-notification-service</module>
         <module>rgts-pricing-service</module>
         <module>rgts-proto-service</module>
-        <module>rgts-user-service</module>
         <module>rgts-scheduler-service</module>
     </modules>
 

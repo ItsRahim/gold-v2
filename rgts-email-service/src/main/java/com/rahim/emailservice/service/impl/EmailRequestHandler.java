@@ -55,6 +55,7 @@ public class EmailRequestHandler implements IEmailRequestHandler {
       List<String> missingFields = new ArrayList<>();
 
       String verificationCode = emailRequest.getVerificationData().getVerificationCode();
+      String verificationId = emailRequest.getVerificationData().getVerificationId();
       String expirationTime = emailRequest.getVerificationData().getExpirationTime();
       String firstName = emailRequest.getFirstName();
       String lastName = emailRequest.getLastName();
@@ -64,6 +65,11 @@ public class EmailRequestHandler implements IEmailRequestHandler {
       if (StringUtils.isBlank(verificationCode)) {
         log.error("Missing field: verificationCode");
         missingFields.add("verificationCode");
+      }
+
+      if (StringUtils.isBlank(verificationId)) {
+        log.error("Missing field: verificationId");
+        missingFields.add("verificationId");
       }
 
       if (StringUtils.isBlank(expirationTime)) {
@@ -103,6 +109,7 @@ public class EmailRequestHandler implements IEmailRequestHandler {
               .lastName(lastName)
               .username(username)
               .verificationCode(verificationCode)
+              .verificationId(verificationId)
               .expirationTime(expirationTime)
               .build();
 

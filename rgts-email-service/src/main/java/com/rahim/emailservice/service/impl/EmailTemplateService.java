@@ -28,6 +28,7 @@ public class EmailTemplateService implements IEmailTemplateService {
     context.setVariable("lastName", emailVerificationData.getLastName());
     context.setVariable("username", emailVerificationData.getUsername());
     context.setVariable("verificationCode", emailVerificationData.getVerificationCode());
+    context.setVariable("verificationId", emailVerificationData.getVerificationId());
     context.setVariable("expirationTime", emailVerificationData.getExpirationTime());
     context.setVariable(
         "recipientName",

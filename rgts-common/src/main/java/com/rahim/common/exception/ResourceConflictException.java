@@ -6,8 +6,8 @@ import org.springframework.http.HttpStatus;
  * @author Rahim Ahmed
  * @created 23/03/2025
  */
-public class DuplicateEntityException extends ApiException {
-  public DuplicateEntityException(String message) {
+public class ResourceConflictException extends ApiException {
+  public ResourceConflictException(String message) {
     super(message, HttpStatus.CONFLICT);
   }
 }

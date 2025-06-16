@@ -7,7 +7,6 @@ Resilience for kafka consumers and producers (retry, save to db, cron schedule t
 Improve exception handling and logging in pricing-service
 
 -- Email Service --
-Email verification add button to click and verify email - future work
+Button to verify email to go to frontend and then make a call to the backend to verify the email
 
 -- Authentication Service --
-Hash verification token/code using bcrypt and compare the hashes

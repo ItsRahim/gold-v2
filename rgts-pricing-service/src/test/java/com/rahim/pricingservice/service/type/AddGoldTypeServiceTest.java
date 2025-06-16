@@ -26,16 +26,11 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 
 class AddGoldTypeServiceTest extends BaseTestConfiguration {
-
   @Autowired @InjectMocks private AddGoldTypeService addGoldTypeService;
-
   @Autowired private GoldTypeRepository goldTypeRepository;
-
   @Mock private IGoldPurityQueryService goldPurityQueryService;
-
   @Mock private IUpdateGoldPriceService updateGoldPriceService;
-
-  @Mock RedisService redisService;
+  @Mock private RedisService redisService;
 
   @BeforeEach
   void setUp() {
