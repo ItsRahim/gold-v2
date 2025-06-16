@@ -1,4 +1,3 @@
-// ToastNotification.ts
 import { createElement } from 'react';
 import { toast } from 'sonner';
 import { AlertCircle, CheckCircle, Info } from 'lucide-react';
