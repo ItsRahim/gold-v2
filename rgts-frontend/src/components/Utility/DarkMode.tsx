@@ -1,19 +1,13 @@
 import { Button } from '@/components/ui/button.tsx';
 import { Moon, Sun } from 'lucide-react';
-import * as React from 'react';
-import { useEffect } from 'react';
+import { useTheme } from '@/components/theme-provider';
 
 export function DarkMode() {
-  const [isDarkMode, setIsDarkMode] = React.useState(true);
-
-  useEffect(() => {
-    document.documentElement.classList.toggle('dark', isDarkMode);
-  }, [isDarkMode]);
+  const { theme, setTheme } = useTheme();
+  const isDarkMode = theme === 'dark';
 
   const toggleDarkMode = () => {
-    const newDarkMode = !isDarkMode;
-    setIsDarkMode(newDarkMode);
-    document.documentElement.classList.toggle('dark', newDarkMode);
+    setTheme(isDarkMode ? 'light' : 'dark');
   };
 
   return (
