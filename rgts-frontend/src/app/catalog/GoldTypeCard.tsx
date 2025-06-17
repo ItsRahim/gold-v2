@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card.tsx';
 import { Trash2 } from 'lucide-react';
-import type { GoldTypeCardProps } from '@/app/market/marketTypes.ts';
+import type { GoldTypeCardProps } from '@/app/catalog/catalogTypes.ts';
 
 export function GoldTypeCard({ item, onDelete }: GoldTypeCardProps) {
   return (
