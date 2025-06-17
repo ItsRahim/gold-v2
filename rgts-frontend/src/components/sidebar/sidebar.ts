@@ -1,4 +1,4 @@
-import { BarChart3, Package, Briefcase, Bell, TrendingUp, Settings, LogOut } from 'lucide-react';
+import { BarChart3, Package, Bell, TrendingUp, Settings, LogOut } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
 export interface NavigationItemData {
@@ -18,9 +18,8 @@ export const NAVIGATION_SECTIONS: NavigationSection[] = [
     title: 'Overview',
     items: [
       { name: 'Dashboard', href: '/dashboard', active: false, icon: BarChart3 },
+      { name: 'Portfolio', href: '/portfolio', active: false, icon: TrendingUp },
       { name: 'Catalog', href: '/catalog', active: false, icon: Package },
-      { name: 'Portfolio', href: '/portfolio', active: false, icon: Briefcase },
-      { name: 'Market', href: '/market', active: false, icon: TrendingUp },
       { name: 'Alerts', href: '/alerts', active: false, icon: Bell },
     ],
   },
