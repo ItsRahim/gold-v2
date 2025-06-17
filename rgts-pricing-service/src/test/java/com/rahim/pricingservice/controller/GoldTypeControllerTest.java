@@ -23,7 +23,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 class GoldTypeControllerTest extends BaseTestConfiguration {
-  @Autowired private IGoldTypeService addGoldTypeService;
+  @Autowired private IGoldTypeService goldTypeService;
   @Autowired private GoldTypeController goldTypeController;
 
   private MockMvc mockMvc;
@@ -129,12 +129,12 @@ class GoldTypeControllerTest extends BaseTestConfiguration {
     AddGoldTypeRequest request1 =
         new AddGoldTypeRequest(
             "A Gold Necklace", "22K", BigDecimal.ONE, WeightUnit.GRAM.getValue(), "Desc");
-    addGoldTypeService.addGoldType(request1);
+    goldTypeService.addGoldType(request1);
 
     AddGoldTypeRequest request2 =
         new AddGoldTypeRequest(
             "B Gold Necklace", "22K", BigDecimal.ONE, WeightUnit.GRAM.getValue(), "Desc");
-    addGoldTypeService.addGoldType(request2);
+    goldTypeService.addGoldType(request2);
 
     mockMvc
         .perform(get(Endpoints.GOLD_TYPE_ENDPOINT))
@@ -190,7 +190,7 @@ class GoldTypeControllerTest extends BaseTestConfiguration {
             WeightUnit.GRAM.getValue(),
             "Historic British gold coin");
 
-    addGoldTypeService.addGoldType(request);
+    goldTypeService.addGoldType(request);
 
     mockMvc
         .perform(get(Endpoints.GOLD_TYPE_ENDPOINT).param("name", goldName))

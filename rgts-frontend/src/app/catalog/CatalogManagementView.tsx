@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { GoldItem, GoldType } from '@/app/catalog/catalogTypes.ts';
-import { addGoldType, getAllGoldTypes } from '@/services/gold.ts';
+import { addGoldType, deleteGoldType, getAllGoldTypes } from '@/services/gold.ts';
 import { showToast, TOAST_TYPES } from '@/components/shared/ToastNotification.ts';
 import { PageHeader } from '@/components/shared/PageHeader.tsx';
 import { AddGoldDialog } from '@/app/catalog/AddGoldTypeDialog.tsx';
@@ -39,12 +39,13 @@ export default function CatalogManagementView() {
   }
 
   async function handleDeleteGoldType(id: number, name: string) {
-    try {
-      setGoldItems((prev) => prev.filter((item) => item.id !== id));
-      showToast(TOAST_TYPES.SUCCESS, `Gold type "${name}" deleted successfully!`);
-    } catch (error) {
-      console.error('Failed to delete gold type:', error);
-      showToast(TOAST_TYPES.ERROR, 'Failed to delete gold type. Please try again.');
+    const result = await deleteGoldType(id.toString());
+
+    if (result) {
+      showToast(TOAST_TYPES.ERROR, `Failed to delete gold type: "${name}"`);
+    } else {
+      fetchGoldItems();
+      showToast(TOAST_TYPES.SUCCESS, `Successfully deleted gold type "${name}"`);
     }
   }
 

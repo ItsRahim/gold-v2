@@ -177,13 +177,13 @@ public class GoldTypeController {
             description = "Internal server error",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
       })
-  @PostMapping(
-      consumes = MediaType.APPLICATION_JSON_VALUE,
-      produces = MediaType.APPLICATION_JSON_VALUE)
+  @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<String> deleteGoldType(
-      @Valid @Parameter(description = "Gold type details", required = true) @RequestParam int id) {
+      @Parameter(description = "Gold type unique identifier", required = true)
+          @PathVariable(name = "id")
+          int id) {
     goldTypeService.deleteGoldTypeById(id);
     return ResponseEntity.status(HttpStatus.OK)
-        .body("Successfully deleted gold type with ID: " + id);
+        .body("Gold type with ID " + id + " deleted successfully.");
   }
 }
