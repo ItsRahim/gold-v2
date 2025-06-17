@@ -15,7 +15,7 @@ import com.rahim.pricingservice.enums.WeightUnit;
 import com.rahim.pricingservice.repository.GoldTypeRepository;
 import com.rahim.pricingservice.service.price.IUpdateGoldPriceService;
 import com.rahim.pricingservice.service.purity.IGoldPurityQueryService;
-import com.rahim.pricingservice.service.type.impl.AddGoldTypeService;
+import com.rahim.pricingservice.service.type.impl.GoldTypeService;
 import java.math.BigDecimal;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,7 +26,7 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 
 class AddGoldTypeServiceTest extends BaseTestConfiguration {
-  @Autowired @InjectMocks private AddGoldTypeService addGoldTypeService;
+  @Autowired @InjectMocks private GoldTypeService addGoldTypeService;
   @Autowired private GoldTypeRepository goldTypeRepository;
   @Mock private IGoldPurityQueryService goldPurityQueryService;
   @Mock private IUpdateGoldPriceService updateGoldPriceService;

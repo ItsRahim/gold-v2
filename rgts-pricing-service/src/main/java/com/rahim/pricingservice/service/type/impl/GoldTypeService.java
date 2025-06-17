@@ -2,6 +2,7 @@ package com.rahim.pricingservice.service.type.impl;
 
 import com.rahim.common.exception.BadRequestException;
 import com.rahim.common.exception.DuplicateEntityException;
+import com.rahim.common.exception.EntityNotFoundException;
 import com.rahim.common.exception.ServiceException;
 import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
 import com.rahim.pricingservice.entity.GoldPurity;
@@ -11,10 +12,12 @@ import com.rahim.pricingservice.exception.GoldPriceCalculationException;
 import com.rahim.pricingservice.repository.GoldTypeRepository;
 import com.rahim.pricingservice.service.price.IUpdateGoldPriceService;
 import com.rahim.pricingservice.service.purity.IGoldPurityQueryService;
-import com.rahim.pricingservice.service.type.IAddGoldTypeService;
+import com.rahim.pricingservice.service.type.IGoldTypeService;
 import java.math.BigDecimal;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.rahim.pricingservice.service.type.IQueryGoldTypeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -29,7 +32,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(rollbackFor = {BadRequestException.class, ServiceException.class})
-public class AddGoldTypeService implements IAddGoldTypeService {
+public class GoldTypeService implements IGoldTypeService {
+  private final IQueryGoldTypeService queryGoldTypeService;
   private final IGoldPurityQueryService goldPurityQueryService;
   private final IUpdateGoldPriceService updateGoldPriceService;
   private final GoldTypeRepository goldTypeRepository;
@@ -85,6 +89,12 @@ public class AddGoldTypeService implements IAddGoldTypeService {
           "Unexpected error while adding gold type '{}': {}", request.getName(), e.getMessage());
       throw new ServiceException("Unexpected error occurred while adding gold type");
     }
+  }
+
+  @Override
+  public void deleteGoldTypeById(int id) {
+    GoldType goldType = queryGoldTypeService.getGoldTypeById(id);
+    goldTypeRepository.delete(goldType);
   }
 
   private void validateAddGoldTypeRequest(AddGoldTypeRequest request) {

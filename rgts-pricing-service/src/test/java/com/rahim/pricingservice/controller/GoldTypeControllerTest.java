@@ -10,7 +10,7 @@ import com.rahim.pricingservice.BaseTestConfiguration;
 import com.rahim.pricingservice.constant.Endpoints;
 import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
 import com.rahim.pricingservice.enums.WeightUnit;
-import com.rahim.pricingservice.service.type.IAddGoldTypeService;
+import com.rahim.pricingservice.service.type.IGoldTypeService;
 import java.math.BigDecimal;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,7 +23,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 class GoldTypeControllerTest extends BaseTestConfiguration {
-  @Autowired private IAddGoldTypeService addGoldTypeService;
+  @Autowired private IGoldTypeService addGoldTypeService;
   @Autowired private GoldTypeController goldTypeController;
 
   private MockMvc mockMvc;
