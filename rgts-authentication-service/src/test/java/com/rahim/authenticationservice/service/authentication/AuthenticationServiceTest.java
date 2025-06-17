@@ -1,5 +1,9 @@
 package com.rahim.authenticationservice.service.authentication;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.github.nylle.javafixture.Fixture;
 import com.rahim.authenticationservice.BaseTestConfiguration;
 import com.rahim.authenticationservice.dto.enums.ResponseStatus;
@@ -12,21 +16,13 @@ import com.rahim.authenticationservice.service.authentication.impl.Authenticatio
 import com.rahim.authenticationservice.service.role.impl.RoleService;
 import com.rahim.authenticationservice.service.verification.impl.VerificationService;
 import jakarta.servlet.http.HttpServletRequest;
-import org.junit.jupiter.api.BeforeEach;
+import java.util.Locale;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-
-import java.util.Locale;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /**
  * @created 12/06/2025
@@ -47,7 +43,6 @@ class AuthenticationServiceTest extends BaseTestConfiguration {
   private final String firstName = fixture.create(String.class).substring(0, 10);
   private final String lastName = fixture.create(String.class).substring(0, 10);
   private final String phoneNumber = fixture.create(String.class).substring(0, 11);
-
 
   @Test
   void shouldRegisterUserSuccessfully() {
