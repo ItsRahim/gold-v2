@@ -5,7 +5,9 @@ Resilience for kafka consumers and producers (retry, save to db, cron schedule t
 
 -- Pricing Service --
 Improve exception handling and logging in pricing-service
-Ability to delete gold types
+Gold Types to have images and store using minio
+Gold types price history daily, weekly, monthly, and yearly stored in mongodb
+Gold price updates to send percentage change to frontend (daily)
 
 -- Email Service --
 Button to verify email to go to frontend and then make a call to the backend to verify the email
