@@ -32,7 +32,7 @@ public class RoleService implements IRoleService {
 
   @Override
   public void removeRoleFromUser(UUID userId, String roleName) {
-    //TODO: Implement logic to remove role from user
+    // TODO: Implement logic to remove role from user
   }
 
   @Override

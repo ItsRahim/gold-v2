@@ -72,7 +72,7 @@ public class VerificationService implements IVerificationService {
 
   @Override
   public void sendPhoneVerification(User user) {
-    //TODO: Implement phone verification logic
+    // TODO: Implement phone verification logic
   }
 
   @Override
@@ -95,22 +95,22 @@ public class VerificationService implements IVerificationService {
 
   @Override
   public void regenerateEmailToken(UUID userId) {
-    //TODO: Implement email token regeneration logic
+    // TODO: Implement email token regeneration logic
   }
 
   @Override
   public void generateEmailToken(UUID userId) {
-    //TODO: Implement email token generation logic
+    // TODO: Implement email token generation logic
   }
 
   @Override
   public void regeneratePhoneCode(UUID userId) {
-    //TODO: Implement phone code regeneration logic
+    // TODO: Implement phone code regeneration logic
   }
 
   @Override
   public void generatePhoneCode(UUID userId) {
-    //TODO: Implement phone code generation logic
+    // TODO: Implement phone code generation logic
   }
 
   @Override
