@@ -26,7 +26,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
  * @author Rahim Ahmed
  */
 @ExtendWith(MockitoExtension.class)
-public class EmailRequestHandlerTest {
+class EmailRequestHandlerTest {
 
   @InjectMocks private EmailRequestHandler emailRequestHandler;
 

@@ -1,14 +1,13 @@
 package com.rahim.authenticationservice.util;
 
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
 
 /**
- * @created 09/06/2025
+ * @created 16/06/2025
  * @author Rahim Ahmed
  */
-@Slf4j
 public class RequestUtils {
+  private RequestUtils() {}
 
   private static final String DEFAULT_TIMEZONE = "UTC";
 

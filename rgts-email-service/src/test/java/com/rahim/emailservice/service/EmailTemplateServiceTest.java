@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @created 11/06/2025
  * @author Rahim Ahmed
  */
-public class EmailTemplateServiceTest extends BaseTestConfiguration {
+class EmailTemplateServiceTest extends BaseTestConfiguration {
   @Autowired private IEmailTemplateService emailTemplateService;
 
   @Test
@@ -31,11 +31,12 @@ public class EmailTemplateServiceTest extends BaseTestConfiguration {
 
     String result = emailTemplateService.generateVerificationEmail(data);
 
-    assertThat(result).contains("John");
-    assertThat(result).contains("Doe");
-    assertThat(result).contains("JDoe");
-    assertThat(result).contains("abc123");
-    assertThat(result).contains("xyz987");
-    assertThat(result).contains(expiration);
+    assertThat(result)
+        .contains("John")
+        .contains("Doe")
+        .contains("JDoe")
+        .contains("abc123")
+        .contains("xyz987")
+        .contains(expiration);
   }
 }

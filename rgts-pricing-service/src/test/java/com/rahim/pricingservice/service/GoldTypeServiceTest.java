@@ -239,6 +239,6 @@ class GoldTypeServiceTest extends BaseTestConfiguration {
 
     assertThatThrownBy(() -> goldTypeService.deleteGoldTypeById(nonExistentId))
         .isInstanceOf(EntityNotFoundException.class)
-        .hasMessage("Gold type not found for id: " + nonExistentId);
+        .hasMessage("Gold Type with ID: " + nonExistentId + " not found");
   }
 }
