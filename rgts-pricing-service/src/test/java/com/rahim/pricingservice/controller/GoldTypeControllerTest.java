@@ -201,4 +201,35 @@ class GoldTypeControllerTest extends BaseTestConfiguration {
         .andExpect(jsonPath("$.purity").value(request.getPurity()))
         .andExpect(jsonPath("$.description").value(request.getDescription()));
   }
+
+  @Test
+  void shouldReturn200AndDeleteGoldTypeOfValidId() throws Exception {
+    AddGoldTypeRequest request =
+        new AddGoldTypeRequest(
+            "A Gold Necklace", "22K", BigDecimal.ONE, WeightUnit.GRAM.getValue(), "Desc");
+
+    MvcResult postResult =
+        mockMvc
+            .perform(
+                post(Endpoints.GOLD_TYPE_ENDPOINT)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(requestToJson(request)))
+            .andExpect(status().isOk())
+            .andReturn();
+
+    String responseContent = postResult.getResponse().getContentAsString();
+    String id = JsonPath.read(responseContent, "$.id");
+
+    UUID uuid = UUID.fromString(id);
+    mockMvc
+        .perform(delete(Endpoints.GOLD_TYPE_ENDPOINT + "/{id}", uuid))
+        .andExpect(status().isOk());
+  }
+
+  @Test
+  void shouldReturn404WhenDeletingGoldTypeOfValidId() throws Exception {
+    mockMvc
+        .perform(delete(Endpoints.GOLD_TYPE_ENDPOINT + "/{id}", UUID.randomUUID()))
+        .andExpect(status().isNotFound());
+  }
 }
