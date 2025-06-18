@@ -8,6 +8,8 @@ import org.apache.commons.lang3.StringUtils;
  * @author Rahim Ahmed
  */
 public class EmailFormatUtil {
+  private EmailFormatUtil() {}
+
   private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@(.+)$");
 
   public static boolean isInvalidEmail(String email) {

@@ -31,7 +31,9 @@ public class RoleService implements IRoleService {
   }
 
   @Override
-  public void removeRoleFromUser(UUID userId, String roleName) {}
+  public void removeRoleFromUser(UUID userId, String roleName) {
+    //TODO: Implement logic to remove role from user
+  }
 
   @Override
   public Set<UserRole> getUserRoles(UUID userId) {

@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.RestTemplate;
 
-public class EmailSenderServiceTest extends BaseTestConfiguration {
+class EmailSenderServiceTest extends BaseTestConfiguration {
 
   @Autowired private EmailSenderService emailSenderService;
   private final RestTemplate restTemplate = new RestTemplate();

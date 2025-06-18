@@ -12,19 +12,29 @@ import org.springframework.stereotype.Service;
 class SecurityService implements ISecurityService {
 
   @Override
-  public void checkAccountStatus(UUID userId) {}
+  public void checkAccountStatus(UUID userId) {
+    //TODO: Implement logic to check account status
+  }
 
   @Override
-  public void lockAccount(UUID userId) {}
+  public void lockAccount(UUID userId) {
+    //TODO: Implement logic to lock account
+  }
 
   @Override
-  public void unlockAccount(UUID userId) {}
+  public void unlockAccount(UUID userId) {
+    //TODO: Implement logic to unlock account
+  }
 
   @Override
-  public void resetFailedAttempts(UUID userId) {}
+  public void resetFailedAttempts(UUID userId) {
+    //TODO: Implement logic to reset failed attempts
+  }
 
   @Override
-  public void incrementFailedAttempts(UUID userId) {}
+  public void incrementFailedAttempts(UUID userId) {
+    //TODO: Implement logic to increment failed attempts
+  }
 
   @Override
   public boolean isAccountLocked(UUID userId) {
@@ -32,8 +42,12 @@ class SecurityService implements ISecurityService {
   }
 
   @Override
-  public void updateLastLogin(UUID userId) {}
+  public void updateLastLogin(UUID userId) {
+    //TODO: Implement logic to update last login time
+  }
 
   @Override
-  public void requirePasswordChange(UUID userId) {}
+  public void requirePasswordChange(UUID userId) {
+    //TODO: Implement logic to require password change
+  }
 }

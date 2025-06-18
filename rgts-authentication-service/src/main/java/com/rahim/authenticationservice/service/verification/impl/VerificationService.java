@@ -71,7 +71,9 @@ public class VerificationService implements IVerificationService {
   }
 
   @Override
-  public void sendPhoneVerification(User user) {}
+  public void sendPhoneVerification(User user) {
+    //TODO: Implement phone verification logic
+  }
 
   @Override
   @Transactional(noRollbackFor = BadRequestException.class)
@@ -92,16 +94,24 @@ public class VerificationService implements IVerificationService {
   }
 
   @Override
-  public void regenerateEmailToken(UUID userId) {}
+  public void regenerateEmailToken(UUID userId) {
+    //TODO: Implement email token regeneration logic
+  }
 
   @Override
-  public void generateEmailToken(UUID userId) {}
+  public void generateEmailToken(UUID userId) {
+    //TODO: Implement email token generation logic
+  }
 
   @Override
-  public void regeneratePhoneCode(UUID userId) {}
+  public void regeneratePhoneCode(UUID userId) {
+    //TODO: Implement phone code regeneration logic
+  }
 
   @Override
-  public void generatePhoneCode(UUID userId) {}
+  public void generatePhoneCode(UUID userId) {
+    //TODO: Implement phone code generation logic
+  }
 
   @Override
   public boolean isEmailVerified(UUID userId) {

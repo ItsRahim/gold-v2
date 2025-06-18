@@ -61,5 +61,5 @@ public class AuditLog {
 
   @NotNull
   @Column(name = "created_at", nullable = false)
-  private OffsetDateTime created_at;
+  private OffsetDateTime createdAt;
 }
