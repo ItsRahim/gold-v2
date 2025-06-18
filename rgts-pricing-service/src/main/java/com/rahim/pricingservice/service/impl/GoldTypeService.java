@@ -1,8 +1,7 @@
-package com.rahim.pricingservice.service.type.impl;
+package com.rahim.pricingservice.service.impl;
 
 import com.rahim.common.exception.BadRequestException;
 import com.rahim.common.exception.DuplicateEntityException;
-import com.rahim.common.exception.EntityNotFoundException;
 import com.rahim.common.exception.ServiceException;
 import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
 import com.rahim.pricingservice.entity.GoldPurity;
@@ -10,14 +9,14 @@ import com.rahim.pricingservice.entity.GoldType;
 import com.rahim.pricingservice.enums.WeightUnit;
 import com.rahim.pricingservice.exception.GoldPriceCalculationException;
 import com.rahim.pricingservice.repository.GoldTypeRepository;
-import com.rahim.pricingservice.service.price.IUpdateGoldPriceService;
-import com.rahim.pricingservice.service.purity.IGoldPurityQueryService;
-import com.rahim.pricingservice.service.type.IGoldTypeService;
+import com.rahim.pricingservice.service.IUpdateGoldPriceService;
+import com.rahim.pricingservice.service.IGoldPurityQueryService;
+import com.rahim.pricingservice.service.IGoldTypeService;
 import java.math.BigDecimal;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.rahim.pricingservice.service.type.IQueryGoldTypeService;
+import com.rahim.pricingservice.service.IQueryGoldTypeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;

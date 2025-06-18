@@ -1,7 +1,6 @@
 package com.rahim.pricingservice.service;
 
 import com.rahim.pricingservice.dto.payload.GoldPriceUpdateDTO;
-import com.rahim.pricingservice.service.price.IUpdateGoldPriceService;
 import com.rahim.proto.protobuf.price.GoldPriceInfo;
 import com.rahim.proto.util.ProtobufDerSerUtil;
 import lombok.RequiredArgsConstructor;

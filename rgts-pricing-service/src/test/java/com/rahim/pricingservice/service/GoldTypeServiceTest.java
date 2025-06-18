@@ -1,4 +1,4 @@
-package com.rahim.pricingservice.service.type;
+package com.rahim.pricingservice.service;
 
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 import static org.mockito.Mockito.*;
@@ -13,9 +13,7 @@ import com.rahim.pricingservice.entity.GoldPrice;
 import com.rahim.pricingservice.entity.GoldPurity;
 import com.rahim.pricingservice.enums.WeightUnit;
 import com.rahim.pricingservice.repository.GoldTypeRepository;
-import com.rahim.pricingservice.service.price.IUpdateGoldPriceService;
-import com.rahim.pricingservice.service.purity.IGoldPurityQueryService;
-import com.rahim.pricingservice.service.type.impl.GoldTypeService;
+import com.rahim.pricingservice.service.impl.GoldTypeService;
 import java.math.BigDecimal;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,4 +1,4 @@
-package com.rahim.pricingservice.service.price;
+package com.rahim.pricingservice.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -11,7 +11,7 @@ import com.rahim.pricingservice.enums.WeightUnit;
 import com.rahim.pricingservice.exception.GoldPriceCalculationException;
 import com.rahim.pricingservice.repository.GoldPriceRepository;
 import com.rahim.pricingservice.repository.GoldPurityRepository;
-import com.rahim.pricingservice.service.price.impl.UpdateGoldPriceService;
+import com.rahim.pricingservice.service.impl.UpdateGoldPriceService;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;

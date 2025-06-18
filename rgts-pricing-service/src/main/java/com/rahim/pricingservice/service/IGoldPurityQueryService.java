@@ -1,4 +1,4 @@
-package com.rahim.pricingservice.service.purity;
+package com.rahim.pricingservice.service;
 
 import com.rahim.pricingservice.entity.GoldPurity;
 import java.util.List;
