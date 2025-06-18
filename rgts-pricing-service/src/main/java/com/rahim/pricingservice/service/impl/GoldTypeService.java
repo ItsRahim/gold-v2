@@ -1,4 +1,4 @@
-package com.rahim.pricingservice.service.type.impl;
+package com.rahim.pricingservice.service.impl;
 
 import com.rahim.common.exception.BadRequestException;
 import com.rahim.common.exception.DuplicateEntityException;
@@ -9,12 +9,14 @@ import com.rahim.pricingservice.entity.GoldType;
 import com.rahim.pricingservice.enums.WeightUnit;
 import com.rahim.pricingservice.exception.GoldPriceCalculationException;
 import com.rahim.pricingservice.repository.GoldTypeRepository;
-import com.rahim.pricingservice.service.price.IUpdateGoldPriceService;
-import com.rahim.pricingservice.service.purity.IGoldPurityQueryService;
-import com.rahim.pricingservice.service.type.IAddGoldTypeService;
+import com.rahim.pricingservice.service.IUpdateGoldPriceService;
+import com.rahim.pricingservice.service.IQueryGoldPurityService;
+import com.rahim.pricingservice.service.IGoldTypeService;
 import java.math.BigDecimal;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.rahim.pricingservice.service.IQueryGoldTypeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -29,8 +31,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(rollbackFor = {BadRequestException.class, ServiceException.class})
-public class AddGoldTypeService implements IAddGoldTypeService {
-  private final IGoldPurityQueryService goldPurityQueryService;
+public class GoldTypeService implements IGoldTypeService {
+  private final IQueryGoldTypeService queryGoldTypeService;
+  private final IQueryGoldPurityService goldPurityQueryService;
   private final IUpdateGoldPriceService updateGoldPriceService;
   private final GoldTypeRepository goldTypeRepository;
 
@@ -85,6 +88,12 @@ public class AddGoldTypeService implements IAddGoldTypeService {
           "Unexpected error while adding gold type '{}': {}", request.getName(), e.getMessage());
       throw new ServiceException("Unexpected error occurred while adding gold type");
     }
+  }
+
+  @Override
+  public void deleteGoldTypeById(int id) {
+    GoldType goldType = queryGoldTypeService.getGoldTypeById(id);
+    goldTypeRepository.delete(goldType);
   }
 
   private void validateAddGoldTypeRequest(AddGoldTypeRequest request) {

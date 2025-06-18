@@ -1,4 +1,4 @@
-package com.rahim.pricingservice.service.history.impl;
+package com.rahim.pricingservice.service.impl;
 
 import com.rahim.pricingservice.entity.GoldPrice;
 import com.rahim.pricingservice.entity.GoldType;

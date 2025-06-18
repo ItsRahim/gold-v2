@@ -1,4 +1,4 @@
-package com.rahim.pricingservice.service.price.impl;
+package com.rahim.pricingservice.service.impl;
 
 import com.rahim.cachemanager.service.RedisService;
 import com.rahim.common.exception.InitialisationException;
@@ -10,10 +10,10 @@ import com.rahim.pricingservice.entity.GoldType;
 import com.rahim.pricingservice.enums.WeightUnit;
 import com.rahim.pricingservice.exception.GoldPriceCalculationException;
 import com.rahim.pricingservice.repository.GoldPriceRepository;
-import com.rahim.pricingservice.service.price.GoldPriceCalculationService;
-import com.rahim.pricingservice.service.price.IUpdateGoldPriceService;
-import com.rahim.pricingservice.service.purity.IGoldPurityQueryService;
-import com.rahim.pricingservice.service.type.IQueryGoldTypeService;
+import com.rahim.pricingservice.service.GoldPriceCalculationService;
+import com.rahim.pricingservice.service.IUpdateGoldPriceService;
+import com.rahim.pricingservice.service.IQueryGoldPurityService;
+import com.rahim.pricingservice.service.IQueryGoldTypeService;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(rollbackFor = Exception.class)
 public class UpdateGoldPriceService implements IUpdateGoldPriceService {
   private final GoldPriceCalculationService goldPriceCalculationService;
-  private final IGoldPurityQueryService goldPurityQueryService;
+  private final IQueryGoldPurityService goldPurityQueryService;
   private final IQueryGoldTypeService goldTypeQueryService;
   private final GoldPriceRepository goldPriceRepository;
   private final RedisService redisService;

@@ -32,3 +32,20 @@ export async function addGoldType(goldType: GoldType): Promise<GoldType | ApiErr
     return null;
   }
 }
+
+export async function deleteGoldType(id: string): Promise<void | ApiError> {
+  try {
+    const response = await fetch(`${API_ENDPOINTS.GOLD_TYPE}/${id}`, {
+      method: HTTP_METHODS.DELETE,
+    });
+
+    if (response.ok) {
+      return;
+    }
+
+    const data = await response.json().catch(() => null);
+    return { message: data?.message || 'Unknown error occurred' };
+  } catch (error) {
+    return { message: error instanceof Error ? error.message : 'Network error' };
+  }
+}

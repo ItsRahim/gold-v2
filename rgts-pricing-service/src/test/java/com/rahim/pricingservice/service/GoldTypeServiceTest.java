@@ -1,4 +1,4 @@
-package com.rahim.pricingservice.service.type;
+package com.rahim.pricingservice.service;
 
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 import static org.mockito.Mockito.*;
@@ -13,9 +13,7 @@ import com.rahim.pricingservice.entity.GoldPrice;
 import com.rahim.pricingservice.entity.GoldPurity;
 import com.rahim.pricingservice.enums.WeightUnit;
 import com.rahim.pricingservice.repository.GoldTypeRepository;
-import com.rahim.pricingservice.service.price.IUpdateGoldPriceService;
-import com.rahim.pricingservice.service.purity.IGoldPurityQueryService;
-import com.rahim.pricingservice.service.type.impl.AddGoldTypeService;
+import com.rahim.pricingservice.service.impl.GoldTypeService;
 import java.math.BigDecimal;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,10 +23,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 
-class AddGoldTypeServiceTest extends BaseTestConfiguration {
-  @Autowired @InjectMocks private AddGoldTypeService addGoldTypeService;
+class GoldTypeServiceTest extends BaseTestConfiguration {
+  @Autowired @InjectMocks private GoldTypeService goldTypeService;
   @Autowired private GoldTypeRepository goldTypeRepository;
-  @Mock private IGoldPurityQueryService goldPurityQueryService;
+  @Mock private IQueryGoldPurityService goldPurityQueryService;
   @Mock private IUpdateGoldPriceService updateGoldPriceService;
   @Mock private RedisService redisService;
 
@@ -54,14 +52,14 @@ class AddGoldTypeServiceTest extends BaseTestConfiguration {
     when(updateGoldPriceService.calculateGoldPrice(mockPurity, BigDecimal.TEN, WeightUnit.GRAM))
         .thenReturn(new BigDecimal("500.00"));
 
-    addGoldTypeService.addGoldType(request);
+    goldTypeService.addGoldType(request);
 
     assertThat(goldTypeRepository.existsGoldTypeByNameIgnoreCase("name")).isTrue();
   }
 
   @Test
   void shouldThrowExceptionWhenAddGoldTypeRequestIsNull() {
-    assertThatThrownBy(() -> addGoldTypeService.addGoldType(null))
+    assertThatThrownBy(() -> goldTypeService.addGoldType(null))
         .isInstanceOf(BadRequestException.class)
         .hasMessage("Request body cannot be null");
   }
@@ -71,7 +69,7 @@ class AddGoldTypeServiceTest extends BaseTestConfiguration {
     AddGoldTypeRequest request =
         new AddGoldTypeRequest(
             "", "22K", BigDecimal.TEN, WeightUnit.GRAM.getValue(), "description");
-    assertThatThrownBy(() -> addGoldTypeService.addGoldType(request))
+    assertThatThrownBy(() -> goldTypeService.addGoldType(request))
         .isInstanceOf(BadRequestException.class)
         .hasMessage("Gold type name is required");
   }
@@ -81,7 +79,7 @@ class AddGoldTypeServiceTest extends BaseTestConfiguration {
     AddGoldTypeRequest request =
         new AddGoldTypeRequest(
             null, "22K", BigDecimal.TEN, WeightUnit.GRAM.getValue(), "description");
-    assertThatThrownBy(() -> addGoldTypeService.addGoldType(request))
+    assertThatThrownBy(() -> goldTypeService.addGoldType(request))
         .isInstanceOf(BadRequestException.class)
         .hasMessage("Gold type name is required");
   }
@@ -98,12 +96,12 @@ class AddGoldTypeServiceTest extends BaseTestConfiguration {
     when(updateGoldPriceService.calculateGoldPrice(any(), any(), any()))
         .thenReturn(new BigDecimal("500.00"));
 
-    addGoldTypeService.addGoldType(request);
+    goldTypeService.addGoldType(request);
 
     AddGoldTypeRequest request2 =
         new AddGoldTypeRequest(
             "name", "19K", BigDecimal.ONE, WeightUnit.GRAM.getValue(), "description");
-    assertThatThrownBy(() -> addGoldTypeService.addGoldType(request2))
+    assertThatThrownBy(() -> goldTypeService.addGoldType(request2))
         .isInstanceOf(DuplicateEntityException.class)
         .hasMessage("Gold type already exists: " + request2.getName());
 
@@ -111,7 +109,7 @@ class AddGoldTypeServiceTest extends BaseTestConfiguration {
         new AddGoldTypeRequest(
             "non-duplicate", "22K", BigDecimal.TEN, WeightUnit.GRAM.getValue(), "description");
 
-    assertThatCode(() -> addGoldTypeService.addGoldType(request3)).doesNotThrowAnyException();
+    assertThatCode(() -> goldTypeService.addGoldType(request3)).doesNotThrowAnyException();
     assertThat(goldTypeRepository.existsGoldTypeByNameIgnoreCase(request3.getName())).isTrue();
   }
 
@@ -121,7 +119,7 @@ class AddGoldTypeServiceTest extends BaseTestConfiguration {
     AddGoldTypeRequest request =
         new AddGoldTypeRequest(
             "name", invalidCarat, BigDecimal.TEN, WeightUnit.GRAM.getValue(), "description");
-    assertThatThrownBy(() -> addGoldTypeService.addGoldType(request))
+    assertThatThrownBy(() -> goldTypeService.addGoldType(request))
         .isInstanceOf(BadRequestException.class)
         .hasMessage("Invalid carat label: " + request.getPurity());
   }
@@ -144,28 +142,28 @@ class AddGoldTypeServiceTest extends BaseTestConfiguration {
     when(updateGoldPriceService.calculateGoldPrice(any(), any(), any()))
         .thenReturn(new BigDecimal("500.00"));
 
-    assertThatCode(() -> addGoldTypeService.addGoldType(request)).doesNotThrowAnyException();
+    assertThatCode(() -> goldTypeService.addGoldType(request)).doesNotThrowAnyException();
   }
 
   @Test
   void shouldThrowExceptionWhenAddGoldTypeRequestWeightIsInvalid() {
     AddGoldTypeRequest request1 =
         new AddGoldTypeRequest("name1", "22K", null, WeightUnit.GRAM.getValue(), "description");
-    assertThatThrownBy(() -> addGoldTypeService.addGoldType(request1))
+    assertThatThrownBy(() -> goldTypeService.addGoldType(request1))
         .isInstanceOf(BadRequestException.class)
         .hasMessage("Gold weight must be positive");
 
     AddGoldTypeRequest request2 =
         new AddGoldTypeRequest(
             "name2", "22K", new BigDecimal("-1"), WeightUnit.GRAM.getValue(), "description");
-    assertThatThrownBy(() -> addGoldTypeService.addGoldType(request2))
+    assertThatThrownBy(() -> goldTypeService.addGoldType(request2))
         .isInstanceOf(BadRequestException.class)
         .hasMessage("Gold weight must be positive");
 
     AddGoldTypeRequest request3 =
         new AddGoldTypeRequest(
             "name3", "22K", BigDecimal.ZERO, WeightUnit.GRAM.getValue(), "description");
-    assertThatThrownBy(() -> addGoldTypeService.addGoldType(request3))
+    assertThatThrownBy(() -> goldTypeService.addGoldType(request3))
         .isInstanceOf(BadRequestException.class)
         .hasMessage("Gold weight must be positive");
   }
@@ -174,13 +172,13 @@ class AddGoldTypeServiceTest extends BaseTestConfiguration {
   void shouldThrowExceptionWhenAddGoldTypeRequestDescriptionIsInvalid() {
     AddGoldTypeRequest request1 =
         new AddGoldTypeRequest("name1", "22K", BigDecimal.TEN, WeightUnit.GRAM.getValue(), null);
-    assertThatThrownBy(() -> addGoldTypeService.addGoldType(request1))
+    assertThatThrownBy(() -> goldTypeService.addGoldType(request1))
         .isInstanceOf(BadRequestException.class)
         .hasMessage("Description is required");
 
     AddGoldTypeRequest request2 =
         new AddGoldTypeRequest("name2", "22K", BigDecimal.TEN, WeightUnit.GRAM.getValue(), "");
-    assertThatThrownBy(() -> addGoldTypeService.addGoldType(request2))
+    assertThatThrownBy(() -> goldTypeService.addGoldType(request2))
         .isInstanceOf(BadRequestException.class)
         .hasMessage("Description is required");
   }
@@ -189,19 +187,19 @@ class AddGoldTypeServiceTest extends BaseTestConfiguration {
   void shouldThrowExceptionWhenAddGoldTypeRequestWeightUnitIsInvalid() {
     AddGoldTypeRequest request =
         new AddGoldTypeRequest("name1", "22K", BigDecimal.TEN, "ml", "description");
-    assertThatThrownBy(() -> addGoldTypeService.addGoldType(request))
+    assertThatThrownBy(() -> goldTypeService.addGoldType(request))
         .isInstanceOf(BadRequestException.class)
         .hasMessage("Invalid weight unit: " + request.getUnit());
 
     AddGoldTypeRequest request2 =
         new AddGoldTypeRequest("name2", "22K", BigDecimal.TEN, null, "description");
-    assertThatThrownBy(() -> addGoldTypeService.addGoldType(request2))
+    assertThatThrownBy(() -> goldTypeService.addGoldType(request2))
         .isInstanceOf(BadRequestException.class)
         .hasMessage("Weight unit is required");
 
     AddGoldTypeRequest request3 =
         new AddGoldTypeRequest("name3", "22K", BigDecimal.TEN, "", "description");
-    assertThatThrownBy(() -> addGoldTypeService.addGoldType(request3))
+    assertThatThrownBy(() -> goldTypeService.addGoldType(request3))
         .isInstanceOf(BadRequestException.class)
         .hasMessage("Weight unit is required");
   }
@@ -220,7 +218,7 @@ class AddGoldTypeServiceTest extends BaseTestConfiguration {
       when(updateGoldPriceService.calculateGoldPrice(any(), any(), eq(unit)))
           .thenReturn(new BigDecimal("500.00"));
 
-      assertThatCode(() -> addGoldTypeService.addGoldType(request)).doesNotThrowAnyException();
+      assertThatCode(() -> goldTypeService.addGoldType(request)).doesNotThrowAnyException();
     }
   }
 }

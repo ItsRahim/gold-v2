@@ -1,10 +1,10 @@
-package com.rahim.pricingservice.service.type.impl;
+package com.rahim.pricingservice.service.impl;
 
 import com.rahim.common.exception.EntityNotFoundException;
 import com.rahim.pricingservice.dto.response.GoldTypeResponseDTO;
 import com.rahim.pricingservice.entity.GoldType;
 import com.rahim.pricingservice.repository.GoldTypeRepository;
-import com.rahim.pricingservice.service.type.IQueryGoldTypeService;
+import com.rahim.pricingservice.service.IQueryGoldTypeService;
 import com.rahim.pricingservice.util.GoldResponseMapper;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package com.rahim.pricingservice.service.price;
+package com.rahim.pricingservice.service;
 
 import com.rahim.pricingservice.dto.payload.GoldPriceUpdateDTO;
 import com.rahim.pricingservice.entity.GoldPurity;
