@@ -12,7 +12,7 @@ import com.rahim.pricingservice.exception.GoldPriceCalculationException;
 import com.rahim.pricingservice.repository.GoldPriceRepository;
 import com.rahim.pricingservice.service.GoldPriceCalculationService;
 import com.rahim.pricingservice.service.IUpdateGoldPriceService;
-import com.rahim.pricingservice.service.IGoldPurityQueryService;
+import com.rahim.pricingservice.service.IQueryGoldPurityService;
 import com.rahim.pricingservice.service.IQueryGoldTypeService;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(rollbackFor = Exception.class)
 public class UpdateGoldPriceService implements IUpdateGoldPriceService {
   private final GoldPriceCalculationService goldPriceCalculationService;
-  private final IGoldPurityQueryService goldPurityQueryService;
+  private final IQueryGoldPurityService goldPurityQueryService;
   private final IQueryGoldTypeService goldTypeQueryService;
   private final GoldPriceRepository goldPriceRepository;
   private final RedisService redisService;

@@ -10,7 +10,7 @@ import com.rahim.pricingservice.enums.WeightUnit;
 import com.rahim.pricingservice.exception.GoldPriceCalculationException;
 import com.rahim.pricingservice.repository.GoldTypeRepository;
 import com.rahim.pricingservice.service.IUpdateGoldPriceService;
-import com.rahim.pricingservice.service.IGoldPurityQueryService;
+import com.rahim.pricingservice.service.IQueryGoldPurityService;
 import com.rahim.pricingservice.service.IGoldTypeService;
 import java.math.BigDecimal;
 import java.util.regex.Matcher;
@@ -33,7 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(rollbackFor = {BadRequestException.class, ServiceException.class})
 public class GoldTypeService implements IGoldTypeService {
   private final IQueryGoldTypeService queryGoldTypeService;
-  private final IGoldPurityQueryService goldPurityQueryService;
+  private final IQueryGoldPurityService goldPurityQueryService;
   private final IUpdateGoldPriceService updateGoldPriceService;
   private final GoldTypeRepository goldTypeRepository;
 

@@ -26,7 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 class GoldTypeServiceTest extends BaseTestConfiguration {
   @Autowired @InjectMocks private GoldTypeService goldTypeService;
   @Autowired private GoldTypeRepository goldTypeRepository;
-  @Mock private IGoldPurityQueryService goldPurityQueryService;
+  @Mock private IQueryGoldPurityService goldPurityQueryService;
   @Mock private IUpdateGoldPriceService updateGoldPriceService;
   @Mock private RedisService redisService;
 
