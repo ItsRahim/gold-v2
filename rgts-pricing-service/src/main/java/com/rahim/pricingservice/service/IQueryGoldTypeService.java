@@ -4,7 +4,6 @@ import com.rahim.pricingservice.dto.response.GoldTypeResponseDTO;
 import com.rahim.pricingservice.entity.GoldType;
 import java.util.List;
 import java.util.UUID;
-
 import org.springframework.data.domain.Page;
 
 /**

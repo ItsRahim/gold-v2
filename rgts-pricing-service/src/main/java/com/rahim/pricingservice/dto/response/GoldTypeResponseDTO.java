@@ -2,7 +2,6 @@ package com.rahim.pricingservice.dto.response;
 
 import java.math.BigDecimal;
 import java.util.UUID;
-
 import lombok.*;
 
 @Getter
