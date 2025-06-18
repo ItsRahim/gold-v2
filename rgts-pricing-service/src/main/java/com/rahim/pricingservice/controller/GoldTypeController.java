@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -120,7 +121,7 @@ public class GoldTypeController {
   public ResponseEntity<GoldTypeResponseDTO> getGoldTypeById(
       @Parameter(description = "Unique identifier of the gold type", example = "1")
           @PathVariable("id")
-          int id) {
+          UUID id) {
     GoldType goldType = queryGoldTypeService.getGoldTypeById(id);
     GoldTypeResponseDTO response = GoldResponseMapper.mapToGoldType(goldType);
     return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -181,7 +182,7 @@ public class GoldTypeController {
   public ResponseEntity<String> deleteGoldType(
       @Parameter(description = "Gold type unique identifier", required = true)
           @PathVariable(name = "id")
-          int id) {
+          UUID id) {
     goldTypeService.deleteGoldTypeById(id);
     return ResponseEntity.status(HttpStatus.OK)
         .body("Gold type with ID " + id + " deleted successfully.");

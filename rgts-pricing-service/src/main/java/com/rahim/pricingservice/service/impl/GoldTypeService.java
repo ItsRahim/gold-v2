@@ -9,14 +9,14 @@ import com.rahim.pricingservice.entity.GoldType;
 import com.rahim.pricingservice.enums.WeightUnit;
 import com.rahim.pricingservice.exception.GoldPriceCalculationException;
 import com.rahim.pricingservice.repository.GoldTypeRepository;
-import com.rahim.pricingservice.service.IUpdateGoldPriceService;
-import com.rahim.pricingservice.service.IQueryGoldPurityService;
 import com.rahim.pricingservice.service.IGoldTypeService;
+import com.rahim.pricingservice.service.IQueryGoldPurityService;
+import com.rahim.pricingservice.service.IQueryGoldTypeService;
+import com.rahim.pricingservice.service.IUpdateGoldPriceService;
 import java.math.BigDecimal;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.rahim.pricingservice.service.IQueryGoldTypeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -91,7 +91,7 @@ public class GoldTypeService implements IGoldTypeService {
   }
 
   @Override
-  public void deleteGoldTypeById(int id) {
+  public void deleteGoldTypeById(UUID id) {
     GoldType goldType = queryGoldTypeService.getGoldTypeById(id);
     goldTypeRepository.delete(goldType);
   }

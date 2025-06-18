@@ -7,6 +7,7 @@ import com.rahim.pricingservice.repository.GoldTypeRepository;
 import com.rahim.pricingservice.service.IQueryGoldTypeService;
 import com.rahim.pricingservice.util.GoldResponseMapper;
 import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -32,7 +33,7 @@ public class QueryGoldTypeService implements IQueryGoldTypeService {
   }
 
   @Override
-  public GoldType getGoldTypeById(int id) {
+  public GoldType getGoldTypeById(UUID id) {
     return goldTypeRepository
         .findById(id)
         .orElseThrow(() -> new EntityNotFoundException("Gold Type with ID: " + id + " not found"));

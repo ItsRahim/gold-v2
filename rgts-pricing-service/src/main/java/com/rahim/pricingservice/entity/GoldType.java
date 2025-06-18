@@ -6,7 +6,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
+import java.util.UUID;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 @Getter
 @Setter
@@ -17,9 +19,10 @@ import lombok.*;
 @Table(name = "gold_types", schema = "pricing-service")
 public class GoldType {
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.UUID)
+  @ColumnDefault("gen_random_uuid()")
   @Column(name = "id", nullable = false)
-  private Integer id;
+  private UUID id;
 
   @Size(max = 255)
   @NotNull

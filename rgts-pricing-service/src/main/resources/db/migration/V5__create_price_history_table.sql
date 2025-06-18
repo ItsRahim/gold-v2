@@ -1,7 +1,7 @@
 CREATE TABLE price_history
 (
     id           SERIAL PRIMARY KEY,
-    gold_type_id INT       NOT NULL REFERENCES gold_types (id),
+    gold_type_id UUID        NOT NULL REFERENCES gold_types (id),
     price        NUMERIC(10, 2),
     updated_at   TIMESTAMPTZ NOT NULL
 );

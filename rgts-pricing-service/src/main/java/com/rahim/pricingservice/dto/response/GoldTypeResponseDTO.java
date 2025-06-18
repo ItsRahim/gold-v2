@@ -1,6 +1,7 @@
 package com.rahim.pricingservice.dto.response;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 import lombok.*;
 
 @Getter
@@ -9,7 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class GoldTypeResponseDTO {
-  private Integer id;
+  private UUID id;
   private String name;
   private String purity;
   private String weight;
