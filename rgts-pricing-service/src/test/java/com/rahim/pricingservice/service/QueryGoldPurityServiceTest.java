@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @created 04/05/2025
  * @author Rahim Ahmed
  */
-class GoldPurityQueryServiceTest extends BaseTestConfiguration {
+class QueryGoldPurityServiceTest extends BaseTestConfiguration {
   @Autowired private QueryGoldPurityService goldPurityQueryService;
 
   @Test
