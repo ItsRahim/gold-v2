@@ -9,7 +9,6 @@ import com.rahim.pricingservice.exception.GoldPriceCalculationException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.stream.Stream;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
