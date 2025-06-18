@@ -4,8 +4,8 @@ import com.rahim.pricingservice.constant.Endpoints;
 import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
 import com.rahim.pricingservice.dto.response.GoldTypeResponseDTO;
 import com.rahim.pricingservice.entity.GoldType;
-import com.rahim.pricingservice.service.type.IAddGoldTypeService;
-import com.rahim.pricingservice.service.type.IQueryGoldTypeService;
+import com.rahim.pricingservice.service.IGoldTypeService;
+import com.rahim.pricingservice.service.IQueryGoldTypeService;
 import com.rahim.pricingservice.util.GoldResponseMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(Endpoints.GOLD_TYPE_ENDPOINT)
 @Tag(name = "Gold Type Management", description = "Endpoints for managing gold types")
 public class GoldTypeController {
-  private final IAddGoldTypeService addGoldTypeService;
+  private final IGoldTypeService goldTypeService;
   private final IQueryGoldTypeService queryGoldTypeService;
 
   @Operation(
@@ -60,7 +60,7 @@ public class GoldTypeController {
   public ResponseEntity<GoldTypeResponseDTO> addGoldType(
       @Valid @Parameter(description = "Gold type details", required = true) @RequestBody
           AddGoldTypeRequest request) {
-    addGoldTypeService.addGoldType(request);
+    goldTypeService.addGoldType(request);
     GoldTypeResponseDTO response = queryGoldTypeService.getGoldTypeByName(request.getName());
     return ResponseEntity.status(HttpStatus.OK).body(response);
   }
@@ -153,5 +153,37 @@ public class GoldTypeController {
           @RequestParam("name")
           String name) {
     return ResponseEntity.status(HttpStatus.OK).body(queryGoldTypeService.getGoldTypeByName(name));
+  }
+
+  @Operation(
+      summary = "Delete a gold type",
+      description = "Deletes a gold type by its unique identifier")
+  @ApiResponses(
+      value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Gold type deleted successfully",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Invalid gold type details",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)),
+        @ApiResponse(
+            responseCode = "404",
+            description = "Gold type not found",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Internal server error",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
+      })
+  @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<String> deleteGoldType(
+      @Parameter(description = "Gold type unique identifier", required = true)
+          @PathVariable(name = "id")
+          int id) {
+    goldTypeService.deleteGoldTypeById(id);
+    return ResponseEntity.status(HttpStatus.OK)
+        .body("Gold type with ID " + id + " deleted successfully.");
   }
 }

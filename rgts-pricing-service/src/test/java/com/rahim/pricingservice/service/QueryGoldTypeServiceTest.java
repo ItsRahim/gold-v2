@@ -1,4 +1,4 @@
-package com.rahim.pricingservice.service.type;
+package com.rahim.pricingservice.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -13,7 +13,7 @@ import com.rahim.pricingservice.entity.GoldPurity;
 import com.rahim.pricingservice.entity.GoldType;
 import com.rahim.pricingservice.enums.WeightUnit;
 import com.rahim.pricingservice.repository.GoldTypeRepository;
-import com.rahim.pricingservice.service.type.impl.QueryGoldTypeService;
+import com.rahim.pricingservice.service.impl.QueryGoldTypeService;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;

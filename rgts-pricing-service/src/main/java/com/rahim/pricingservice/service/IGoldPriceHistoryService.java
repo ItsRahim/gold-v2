@@ -1,4 +1,4 @@
-package com.rahim.pricingservice.service.history;
+package com.rahim.pricingservice.service;
 
 /**
  * @created 14/06/2025
