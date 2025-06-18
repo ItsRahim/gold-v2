@@ -6,15 +6,18 @@ import static org.mockito.Mockito.*;
 import com.rahim.cachemanager.service.RedisService;
 import com.rahim.common.exception.BadRequestException;
 import com.rahim.common.exception.DuplicateEntityException;
+import com.rahim.common.exception.EntityNotFoundException;
 import com.rahim.common.util.DateUtil;
 import com.rahim.pricingservice.BaseTestConfiguration;
 import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
 import com.rahim.pricingservice.entity.GoldPrice;
 import com.rahim.pricingservice.entity.GoldPurity;
+import com.rahim.pricingservice.entity.GoldType;
 import com.rahim.pricingservice.enums.WeightUnit;
 import com.rahim.pricingservice.repository.GoldTypeRepository;
 import com.rahim.pricingservice.service.impl.GoldTypeService;
 import java.math.BigDecimal;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -26,7 +29,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 class GoldTypeServiceTest extends BaseTestConfiguration {
   @Autowired @InjectMocks private GoldTypeService goldTypeService;
   @Autowired private GoldTypeRepository goldTypeRepository;
-  @Mock private IQueryGoldPurityService goldPurityQueryService;
   @Mock private IUpdateGoldPriceService updateGoldPriceService;
   @Mock private RedisService redisService;
 
@@ -43,12 +45,8 @@ class GoldTypeServiceTest extends BaseTestConfiguration {
         new AddGoldTypeRequest(
             "name", "22K", BigDecimal.TEN, WeightUnit.GRAM.getValue(), "description");
 
-    GoldPurity mockPurity = new GoldPurity();
-    mockPurity.setLabel("22K");
-    mockPurity.setNumerator(22);
-    mockPurity.setDenominator(24);
+    GoldPurity mockPurity = GoldPurity.builder().label("22K").numerator(22).denominator(24).build();
 
-    when(goldPurityQueryService.getGoldPurityByCaratLabel("22K")).thenReturn(mockPurity);
     when(updateGoldPriceService.calculateGoldPrice(mockPurity, BigDecimal.TEN, WeightUnit.GRAM))
         .thenReturn(new BigDecimal("500.00"));
 
@@ -90,9 +88,6 @@ class GoldTypeServiceTest extends BaseTestConfiguration {
         new AddGoldTypeRequest(
             "name", "22K", BigDecimal.TEN, WeightUnit.GRAM.getValue(), "description");
 
-    GoldPurity mockPurity = new GoldPurity();
-    mockPurity.setLabel("22K");
-    when(goldPurityQueryService.getGoldPurityByCaratLabel("22K")).thenReturn(mockPurity);
     when(updateGoldPriceService.calculateGoldPrice(any(), any(), any()))
         .thenReturn(new BigDecimal("500.00"));
 
@@ -135,10 +130,6 @@ class GoldTypeServiceTest extends BaseTestConfiguration {
             WeightUnit.GRAM.getValue(),
             "description");
 
-    GoldPurity mockPurity = new GoldPurity();
-    mockPurity.setLabel(validCarat);
-
-    when(goldPurityQueryService.getGoldPurityByCaratLabel(validCarat)).thenReturn(mockPurity);
     when(updateGoldPriceService.calculateGoldPrice(any(), any(), any()))
         .thenReturn(new BigDecimal("500.00"));
 
@@ -211,14 +202,43 @@ class GoldTypeServiceTest extends BaseTestConfiguration {
           new AddGoldTypeRequest(
               "name-" + unit.getValue(), "22K", BigDecimal.TEN, unit.getValue(), "description");
 
-      GoldPurity mockPurity = new GoldPurity();
-      mockPurity.setLabel("22K");
-
-      when(goldPurityQueryService.getGoldPurityByCaratLabel("22K")).thenReturn(mockPurity);
       when(updateGoldPriceService.calculateGoldPrice(any(), any(), eq(unit)))
           .thenReturn(new BigDecimal("500.00"));
 
       assertThatCode(() -> goldTypeService.addGoldType(request)).doesNotThrowAnyException();
     }
+  }
+
+  @Test
+  void shouldDeleteGoldTypeById() {
+    GoldPurity purity =
+        GoldPurity.builder().id(1).label("22K").numerator(22).denominator(24).build();
+
+    GoldType goldType =
+        GoldType.builder()
+            .name("Gold Ring")
+            .purity(purity)
+            .weight(new BigDecimal("10.5"))
+            .unit(WeightUnit.GRAM)
+            .price(new BigDecimal("550.75"))
+            .description("22K Gold Ring")
+            .build();
+
+    UUID savedId = goldTypeRepository.save(goldType).getId();
+
+    assertThat(goldTypeRepository.existsById(savedId)).isTrue();
+
+    goldTypeService.deleteGoldTypeById(savedId);
+
+    assertThat(goldTypeRepository.existsById(savedId)).isFalse();
+  }
+
+  @Test
+  void shouldThrowExceptionWhenDeleteGoldTypeByIdNotFound() {
+    UUID nonExistentId = UUID.randomUUID();
+
+    assertThatThrownBy(() -> goldTypeService.deleteGoldTypeById(nonExistentId))
+        .isInstanceOf(EntityNotFoundException.class)
+        .hasMessage("Gold type not found for id: " + nonExistentId);
   }
 }
