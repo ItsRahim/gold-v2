@@ -13,6 +13,7 @@ import com.rahim.pricingservice.service.IUpdateGoldPriceService;
 import com.rahim.pricingservice.service.IQueryGoldPurityService;
 import com.rahim.pricingservice.service.IGoldTypeService;
 import java.math.BigDecimal;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -91,7 +92,7 @@ public class GoldTypeService implements IGoldTypeService {
   }
 
   @Override
-  public void deleteGoldTypeById(int id) {
+  public void deleteGoldTypeById(UUID id) {
     GoldType goldType = queryGoldTypeService.getGoldTypeById(id);
     goldTypeRepository.delete(goldType);
   }

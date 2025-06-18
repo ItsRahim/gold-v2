@@ -12,6 +12,8 @@ import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
 import com.rahim.pricingservice.enums.WeightUnit;
 import com.rahim.pricingservice.service.IGoldTypeService;
 import java.math.BigDecimal;
+import java.util.UUID;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
@@ -161,10 +163,11 @@ class GoldTypeControllerTest extends BaseTestConfiguration {
             .andReturn();
 
     String responseContent = postResult.getResponse().getContentAsString();
-    Integer id = JsonPath.read(responseContent, "$.id");
+    String id = JsonPath.read(responseContent, "$.id");
 
+    UUID uuid = UUID.fromString(id);
     mockMvc
-        .perform(get(Endpoints.GOLD_TYPE_ENDPOINT + "/{id}", id.longValue()))
+        .perform(get(Endpoints.GOLD_TYPE_ENDPOINT + "/{id}", uuid))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.name").value(request.getName()))
         .andExpect(jsonPath("$.purity").value(request.getPurity()))
@@ -174,7 +177,7 @@ class GoldTypeControllerTest extends BaseTestConfiguration {
   @Test
   void shouldReturn404AndGoldTypeOfValidID() throws Exception {
     mockMvc
-        .perform(get(Endpoints.GOLD_TYPE_ENDPOINT + "/{id}", 100))
+        .perform(get(Endpoints.GOLD_TYPE_ENDPOINT + "/{id}", UUID.randomUUID()))
         .andExpect(status().isNotFound());
   }
 

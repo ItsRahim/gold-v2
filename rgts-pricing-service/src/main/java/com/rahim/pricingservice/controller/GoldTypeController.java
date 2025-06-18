@@ -23,6 +23,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 /**
  * @author Rahim Ahmed
  * @created 23/03/2025
@@ -120,7 +122,7 @@ public class GoldTypeController {
   public ResponseEntity<GoldTypeResponseDTO> getGoldTypeById(
       @Parameter(description = "Unique identifier of the gold type", example = "1")
           @PathVariable("id")
-          int id) {
+          UUID id) {
     GoldType goldType = queryGoldTypeService.getGoldTypeById(id);
     GoldTypeResponseDTO response = GoldResponseMapper.mapToGoldType(goldType);
     return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -181,7 +183,7 @@ public class GoldTypeController {
   public ResponseEntity<String> deleteGoldType(
       @Parameter(description = "Gold type unique identifier", required = true)
           @PathVariable(name = "id")
-          int id) {
+          UUID id) {
     goldTypeService.deleteGoldTypeById(id);
     return ResponseEntity.status(HttpStatus.OK)
         .body("Gold type with ID " + id + " deleted successfully.");

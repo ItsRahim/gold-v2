@@ -3,6 +3,8 @@ package com.rahim.pricingservice.service;
 import com.rahim.pricingservice.dto.response.GoldTypeResponseDTO;
 import com.rahim.pricingservice.entity.GoldType;
 import java.util.List;
+import java.util.UUID;
+
 import org.springframework.data.domain.Page;
 
 /**
@@ -12,7 +14,7 @@ import org.springframework.data.domain.Page;
 public interface IQueryGoldTypeService {
   Page<GoldTypeResponseDTO> getAllGoldTypes(int page, int size);
 
-  GoldType getGoldTypeById(int id);
+  GoldType getGoldTypeById(UUID id);
 
   GoldTypeResponseDTO getGoldTypeByName(String name);
 

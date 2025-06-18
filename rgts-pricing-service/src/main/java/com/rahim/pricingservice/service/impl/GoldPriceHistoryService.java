@@ -8,6 +8,7 @@ import com.rahim.pricingservice.repository.GoldPriceRepository;
 import com.rahim.pricingservice.repository.GoldTypeRepository;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +43,7 @@ public class GoldPriceHistoryService {
       }
 
       List<GoldType> allGoldTypes = goldTypeRepository.findAll();
-      Map<Integer, GoldType> goldTypeMap =
+      Map<UUID, GoldType> goldTypeMap =
           allGoldTypes.stream().collect(Collectors.toMap(GoldType::getId, goldType -> goldType));
 
       List<PriceHistory> priceHistories =
@@ -60,7 +61,7 @@ public class GoldPriceHistoryService {
     }
   }
 
-  private PriceHistory createPriceHistory(GoldPrice goldPrice, Map<Integer, GoldType> goldTypeMap) {
+  private PriceHistory createPriceHistory(GoldPrice goldPrice, Map<UUID, GoldType> goldTypeMap) {
     GoldType goldType = goldTypeMap.get(goldPrice.getId());
 
     if (goldType == null) {

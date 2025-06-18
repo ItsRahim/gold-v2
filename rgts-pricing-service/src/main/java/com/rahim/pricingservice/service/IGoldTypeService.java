@@ -2,6 +2,8 @@ package com.rahim.pricingservice.service;
 
 import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
 
+import java.util.UUID;
+
 /**
  * @author Rahim Ahmed
  * @created 23/03/2025
@@ -9,5 +11,5 @@ import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
 public interface IGoldTypeService {
   void addGoldType(AddGoldTypeRequest request);
 
-  void deleteGoldTypeById(int id);
+  void deleteGoldTypeById(UUID id);
 }

@@ -6,6 +6,8 @@ Resilience for kafka consumers and producers (retry, save to db, cron schedule t
 -- Pricing Service --
 Improve exception handling and logging in pricing-service
 Delete gold type service and controller test
+Gold type by UUID not integer ID
+Don't store gold purity in the database - hard code it
 Gold Types to have images and store using minio
 Gold types price history daily, weekly, monthly, and yearly stored in mongodb
 Gold price updates to send percentage change to frontend (daily)
