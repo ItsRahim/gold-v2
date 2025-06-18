@@ -117,7 +117,7 @@ public class User implements UserDetails {
   private OffsetDateTime passwordChangeAt;
 
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-  private Set<UserRole> userRoles = new HashSet<>();
+  private transient Set<UserRole> userRoles = new HashSet<>();
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {

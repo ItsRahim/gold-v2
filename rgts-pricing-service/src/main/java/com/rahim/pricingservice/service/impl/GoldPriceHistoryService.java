@@ -49,7 +49,7 @@ public class GoldPriceHistoryService {
       List<PriceHistory> priceHistories =
           currentGoldPrices.stream()
               .map(goldPrice -> createPriceHistory(goldPrice, goldTypeMap))
-              .collect(Collectors.toList());
+              .toList();
 
       goldPriceHistoryRepository.saveAll(priceHistories);
 

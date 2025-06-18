@@ -3,6 +3,8 @@ package com.rahim.authenticationservice.entity;
 import com.rahim.authenticationservice.enums.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+
+import java.io.Serializable;
 import java.util.UUID;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -21,7 +23,7 @@ import org.hibernate.annotations.OnDeleteAction;
     indexes = {
       @Index(name = "idx_user_roles_user_id", columnList = "user_id"),
     })
-public class UserRole {
+public class UserRole implements Serializable {
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
   @ColumnDefault("gen_random_uuid()")
