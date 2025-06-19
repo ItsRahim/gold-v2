@@ -3,7 +3,6 @@ package com.rahim.authenticationservice.entity;
 import com.rahim.authenticationservice.enums.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-
 import java.io.Serializable;
 import java.util.UUID;
 import lombok.*;
