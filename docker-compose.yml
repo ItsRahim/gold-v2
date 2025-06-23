@@ -80,9 +80,9 @@ services:
     networks:
       - my-network
 
-  mailhog:
-    image: mailhog/mailhog:latest
-    container_name: mailhog
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: mailpit
     ports:
       - "1025:1025"
       - "8025:8025"
