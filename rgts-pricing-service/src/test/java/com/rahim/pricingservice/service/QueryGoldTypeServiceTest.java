@@ -21,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 
 class QueryGoldTypeServiceTest extends BaseTestConfiguration {
-
   @Autowired private QueryGoldTypeService queryGoldTypeService;
   @Autowired private GoldTypeRepository goldTypeRepository;
 
@@ -42,6 +41,7 @@ class QueryGoldTypeServiceTest extends BaseTestConfiguration {
             .unit(WeightUnit.GRAM)
             .price(new BigDecimal("550.75"))
             .description("22K Gold Ring")
+            .imageUrl("https://minio-server/bucket/gold-ring.jpg")
             .build();
     GoldType goldType2 =
         GoldType.builder()
@@ -51,6 +51,7 @@ class QueryGoldTypeServiceTest extends BaseTestConfiguration {
             .unit(WeightUnit.GRAM)
             .price(new BigDecimal("1350.50"))
             .description("22K Gold Necklace")
+            .imageUrl("https://minio-server/bucket/gold-necklace.jpg")
             .build();
 
     goldTypeRepository.saveAll(List.of(goldType1, goldType2));
@@ -120,6 +121,7 @@ class QueryGoldTypeServiceTest extends BaseTestConfiguration {
             .unit(WeightUnit.GRAM)
             .price(new BigDecimal("700.00"))
             .description("22K Gold Bracelet")
+            .imageUrl("https://minio-server/bucket/gold-bracelet.jpg")
             .build();
 
     queryGoldTypeService.saveGoldType(newType);
