@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card.tsx';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar.tsx';
 import type { GoldTypeCardProps } from '@/app/catalog/catalogTypes.ts';
 import DeleteIcon from '@/components/shared/DeleteIcon';
 import { useState } from 'react';
@@ -25,9 +26,15 @@ export function GoldTypeCard({ item, onDelete }: GoldTypeCardProps) {
     <>
       <Card key={item.id} className='shadow-md hover:shadow-lg transition-shadow'>
         <CardHeader className='space-y-1 flex flex-row items-start justify-between'>
-          <div>
-            <CardTitle className='text-lg font-semibold text-gold-dark'>{item.name}</CardTitle>
-            <p className='text-sm text-muted-foreground'>{item.description}</p>
+          <div className='flex items-center gap-3'>
+            <Avatar className='w-12 h-12'>
+              <AvatarImage src={item.imageUrl} alt={item.name} className='object-cover' />
+              <AvatarFallback className='bg-muted text-muted-foreground'>{item.name.charAt(0).toUpperCase()}</AvatarFallback>
+            </Avatar>
+            <div>
+              <CardTitle className='text-lg font-semibold text-gold-dark'>{item.name}</CardTitle>
+              <p className='text-sm text-muted-foreground'>{item.description}</p>
+            </div>
           </div>
           <span className='group'>
             <DeleteIcon onClick={handleDeleteClick} />

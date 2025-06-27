@@ -1,51 +1,53 @@
+import axios from 'axios';
 import { API_ENDPOINTS } from '@/lib/api/endpoints.ts';
-import type { GoldType } from '@/app/catalog/catalogTypes.ts';
-import { HTTP_METHODS } from '@/services/payloadConstants.tsx';
+import type { AddGoldTypeRequest } from '@/app/catalog/catalogTypes.ts';
 
 export interface ApiError {
   message: string;
 }
 
 export async function getAllGoldTypes() {
-  const result = await fetch(API_ENDPOINTS.GOLD_TYPE);
-  return result.json();
+  const response = await axios.get(API_ENDPOINTS.GOLD_TYPE);
+  return response.data;
 }
 
-export async function addGoldType(goldType: GoldType): Promise<GoldType | ApiError | null> {
+export async function addGoldType(goldType: AddGoldTypeRequest, file: File): Promise<AddGoldTypeRequest | ApiError | null> {
   try {
-    const response = await fetch(API_ENDPOINTS.GOLD_TYPE, {
-      method: HTTP_METHODS.POST,
+    const formData = new FormData();
+
+    formData.append(
+      'request',
+      new Blob([JSON.stringify(goldType)], {
+        type: 'application/json',
+      }),
+    );
+
+    formData.append('file', file);
+
+    const response = await axios.post(API_ENDPOINTS.GOLD_TYPE, formData, {
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'multipart/form-data',
       },
-      body: JSON.stringify(goldType),
     });
 
-    const data = await response.json();
-
-    if (response.ok) {
-      return data as GoldType;
-    } else {
-      return { message: data.message || 'Unknown error' };
+    return response.data as AddGoldTypeRequest;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      const message = error.response?.data?.message || 'Unknown error';
+      return { message };
     }
-  } catch {
     return null;
   }
 }
 
 export async function deleteGoldType(id: string): Promise<void | ApiError> {
   try {
-    const response = await fetch(`${API_ENDPOINTS.GOLD_TYPE}/${id}`, {
-      method: HTTP_METHODS.DELETE,
-    });
-
-    if (response.ok) {
-      return;
-    }
-
-    const data = await response.json().catch(() => null);
-    return { message: data?.message || 'Unknown error occurred' };
+    await axios.delete(`${API_ENDPOINTS.GOLD_TYPE}/${id}`);
   } catch (error) {
-    return { message: error instanceof Error ? error.message : 'Network error' };
+    if (axios.isAxiosError(error)) {
+      const message = error.response?.data?.message || 'Failed to delete gold type';
+      return { message };
+    }
+    return { message: 'Network error occurred' };
   }
 }

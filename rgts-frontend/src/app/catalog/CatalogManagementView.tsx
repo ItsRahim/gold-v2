@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import type { GoldItem, GoldType } from '@/app/catalog/catalogTypes.ts';
+import type { GoldItem, AddGoldTypeRequest } from '@/app/catalog/catalogTypes.ts';
 import { addGoldType, deleteGoldType, getAllGoldTypes } from '@/services/gold.ts';
 import { showToast, TOAST_TYPES } from '@/components/shared/ToastNotification.ts';
 import { PageHeader } from '@/components/shared/PageHeader.tsx';
@@ -25,8 +25,8 @@ export default function CatalogManagementView() {
       });
   }
 
-  async function handleAddGoldType(goldType: GoldType) {
-    const result = await addGoldType(goldType);
+  async function handleAddGoldType(goldType: AddGoldTypeRequest, file: File) {
+    const result = await addGoldType(goldType, file);
 
     if (result && 'name' in result) {
       fetchGoldItems();
