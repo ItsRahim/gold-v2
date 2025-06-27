@@ -16,10 +16,9 @@ import com.rahim.pricingservice.entity.GoldType;
 import com.rahim.pricingservice.enums.WeightUnit;
 import com.rahim.pricingservice.repository.GoldTypeRepository;
 import com.rahim.pricingservice.service.impl.GoldTypeService;
+import com.rahim.storageservice.service.MinioStorageService;
 import java.math.BigDecimal;
 import java.util.UUID;
-
-import com.rahim.storageservice.service.MinioStorageService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
