@@ -1,5 +1,5 @@
 # Multi-stage build for rgts-pricing-service
-FROM maven:3.9.9-amazoncorretto-21 AS build
+FROM maven:3.9.10-amazoncorretto-21 AS build
 
 WORKDIR /app
 
