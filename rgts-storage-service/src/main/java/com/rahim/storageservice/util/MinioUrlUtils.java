@@ -1,11 +1,10 @@
 package com.rahim.storageservice.util;
 
 import com.rahim.storageservice.model.BucketAndKey;
-
 import java.net.URI;
 
 public class MinioUrlUtils {
-    public static BucketAndKey extractBucketAndKey(String url) {
+  public static BucketAndKey extractBucketAndKey(String url) {
     try {
       URI uri = new URI(url);
       String path = uri.getPath();

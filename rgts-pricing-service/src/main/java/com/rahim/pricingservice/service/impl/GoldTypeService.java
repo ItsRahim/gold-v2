@@ -13,12 +13,11 @@ import com.rahim.pricingservice.service.IGoldTypeService;
 import com.rahim.pricingservice.service.IQueryGoldPurityService;
 import com.rahim.pricingservice.service.IQueryGoldTypeService;
 import com.rahim.pricingservice.service.IUpdateGoldPriceService;
+import com.rahim.storageservice.service.MinioStorageService;
 import java.math.BigDecimal;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.rahim.storageservice.service.MinioStorageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;

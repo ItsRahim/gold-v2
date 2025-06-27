@@ -3,10 +3,8 @@ package com.rahim.storageservice.service;
 import com.rahim.storageservice.model.BucketAndKey;
 import com.rahim.storageservice.util.MinioUrlUtils;
 import io.minio.*;
-import java.io.InputStream;
-import java.net.URI;
-
 import io.minio.http.Method;
+import java.io.InputStream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

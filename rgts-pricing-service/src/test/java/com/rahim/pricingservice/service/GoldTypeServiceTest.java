@@ -1,32 +1,32 @@
-//package com.rahim.pricingservice.service;
+// package com.rahim.pricingservice.service;
 //
-//import static org.assertj.core.api.AssertionsForClassTypes.*;
-//import static org.mockito.Mockito.*;
+// import static org.assertj.core.api.AssertionsForClassTypes.*;
+// import static org.mockito.Mockito.*;
 //
-//import com.rahim.cachemanager.service.RedisService;
-//import com.rahim.common.exception.BadRequestException;
-//import com.rahim.common.exception.DuplicateEntityException;
-//import com.rahim.common.exception.EntityNotFoundException;
-//import com.rahim.common.util.DateUtil;
-//import com.rahim.pricingservice.BaseTestConfiguration;
-//import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
-//import com.rahim.pricingservice.entity.GoldPrice;
-//import com.rahim.pricingservice.entity.GoldPurity;
-//import com.rahim.pricingservice.entity.GoldType;
-//import com.rahim.pricingservice.enums.WeightUnit;
-//import com.rahim.pricingservice.repository.GoldTypeRepository;
-//import com.rahim.pricingservice.service.impl.GoldTypeService;
-//import java.math.BigDecimal;
-//import java.util.UUID;
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.Test;
-//import org.junit.jupiter.params.ParameterizedTest;
-//import org.junit.jupiter.params.provider.ValueSource;
-//import org.mockito.InjectMocks;
-//import org.mockito.Mock;
-//import org.springframework.beans.factory.annotation.Autowired;
+// import com.rahim.cachemanager.service.RedisService;
+// import com.rahim.common.exception.BadRequestException;
+// import com.rahim.common.exception.DuplicateEntityException;
+// import com.rahim.common.exception.EntityNotFoundException;
+// import com.rahim.common.util.DateUtil;
+// import com.rahim.pricingservice.BaseTestConfiguration;
+// import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
+// import com.rahim.pricingservice.entity.GoldPrice;
+// import com.rahim.pricingservice.entity.GoldPurity;
+// import com.rahim.pricingservice.entity.GoldType;
+// import com.rahim.pricingservice.enums.WeightUnit;
+// import com.rahim.pricingservice.repository.GoldTypeRepository;
+// import com.rahim.pricingservice.service.impl.GoldTypeService;
+// import java.math.BigDecimal;
+// import java.util.UUID;
+// import org.junit.jupiter.api.BeforeEach;
+// import org.junit.jupiter.api.Test;
+// import org.junit.jupiter.params.ParameterizedTest;
+// import org.junit.jupiter.params.provider.ValueSource;
+// import org.mockito.InjectMocks;
+// import org.mockito.Mock;
+// import org.springframework.beans.factory.annotation.Autowired;
 //
-//class GoldTypeServiceTest extends BaseTestConfiguration {
+// class GoldTypeServiceTest extends BaseTestConfiguration {
 //  @Autowired @InjectMocks private GoldTypeService goldTypeService;
 //  @Autowired private GoldTypeRepository goldTypeRepository;
 //  @Mock private IUpdateGoldPriceService updateGoldPriceService;
@@ -45,7 +45,8 @@
 //        new AddGoldTypeRequest(
 //            "name", "22K", BigDecimal.TEN, WeightUnit.GRAM.getValue(), "description");
 //
-//    GoldPurity mockPurity = GoldPurity.builder().label("22K").numerator(22).denominator(24).build();
+//    GoldPurity mockPurity =
+// GoldPurity.builder().label("22K").numerator(22).denominator(24).build();
 //
 //    when(updateGoldPriceService.calculateGoldPrice(mockPurity, BigDecimal.TEN, WeightUnit.GRAM))
 //        .thenReturn(new BigDecimal("500.00"));
@@ -241,4 +242,4 @@
 //        .isInstanceOf(EntityNotFoundException.class)
 //        .hasMessage("Gold Type with ID: " + nonExistentId + " not found");
 //  }
-//}
+// }

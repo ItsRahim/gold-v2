@@ -12,6 +12,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class BucketAndKey {
-    private final String bucketName;
-    private final String objectKey;
+  private final String bucketName;
+  private final String objectKey;
 }
