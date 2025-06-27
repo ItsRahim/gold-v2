@@ -22,6 +22,10 @@
         </dependency>
         <dependency>
             <groupId>com.rahim</groupId>
+            <artifactId>rgts-storage-service</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.rahim</groupId>
             <artifactId>rgts-cache-manager</artifactId>
         </dependency>
         <dependency>

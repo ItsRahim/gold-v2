@@ -20,7 +20,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
       "com.rahim.pricingservice",
       "com.rahim.kafkaservice",
       "com.rahim.common",
-      "com.rahim.cachemanager"
+      "com.rahim.cachemanager",
+      "com.rahim.storageservice"
     })
 class PricingServiceApplication {
   public static void main(String[] args) {
