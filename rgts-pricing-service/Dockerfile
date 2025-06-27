@@ -18,6 +18,7 @@ COPY rgts-kafka-service/pom.xml rgts-kafka-service/
 COPY rgts-notification-service/pom.xml rgts-notification-service/
 COPY rgts-pricing-service/pom.xml rgts-pricing-service/
 COPY rgts-proto-service/pom.xml rgts-proto-service/
+COPY rgts-storage-service/pom.xml rgts-storage-service/
 
 # Download dependencies
 RUN mvn dependency:go-offline -pl rgts-pricing-service -am
