@@ -14,9 +14,11 @@ public interface StorageService {
 
   boolean bucketExists(String bucketName);
 
-  void upload(String bucketName, String objectKey, MultipartFile file);
+  String uploadImage(String bucketName, String objectKey, MultipartFile file);
 
   InputStream download(String bucketName, String objectKey);
+
+  String getPresignedUrl(String imageUrl);
 
   boolean objectExists(String bucketName, String objectKey);
 

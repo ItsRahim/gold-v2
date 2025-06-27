@@ -1,7 +1,12 @@
 package com.rahim.storageservice.service;
 
+import com.rahim.storageservice.model.BucketAndKey;
+import com.rahim.storageservice.util.MinioUrlUtils;
 import io.minio.*;
 import java.io.InputStream;
+import java.net.URI;
+
+import io.minio.http.Method;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class MinioStorageService implements StorageService {
   private final MinioClient minioClient;
+  private final String minioUrl;
 
   @Override
   public void createBucket(String bucketName) {
@@ -46,7 +52,12 @@ public class MinioStorageService implements StorageService {
   }
 
   @Override
-  public void upload(String bucketName, String objectKey, MultipartFile file) {
+  public String uploadImage(String bucketName, String objectKey, MultipartFile file) {
+    if (!bucketExists(bucketName)) {
+      log.info("Bucket '{}' does not exist. Creating it now.", bucketName);
+      createBucket(bucketName);
+    }
+
     try (InputStream inputStream = file.getInputStream()) {
       minioClient.putObject(
           PutObjectArgs.builder().bucket(bucketName).object(objectKey).stream(
@@ -54,6 +65,8 @@ public class MinioStorageService implements StorageService {
               .contentType(file.getContentType())
               .build());
       log.info("Successfully uploaded object '{}' to bucket '{}'", objectKey, bucketName);
+
+      return String.format("%s/%s/%s", minioUrl, bucketName, objectKey);
     } catch (Exception e) {
       log.error(
           "Failed to upload object '{}' to bucket '{}': {}",
@@ -61,6 +74,7 @@ public class MinioStorageService implements StorageService {
           bucketName,
           e.getMessage(),
           e);
+      return null;
     }
   }
 
@@ -76,6 +90,24 @@ public class MinioStorageService implements StorageService {
           bucketName,
           e.getMessage(),
           e);
+      return null;
+    }
+  }
+
+  @Override
+  public String getPresignedUrl(String imageUrl) {
+    try {
+      BucketAndKey bucketAndKey = MinioUrlUtils.extractBucketAndKey(imageUrl);
+
+      return minioClient.getPresignedObjectUrl(
+          GetPresignedObjectUrlArgs.builder()
+              .method(Method.GET)
+              .bucket(bucketAndKey.getBucketName())
+              .object(bucketAndKey.getObjectKey())
+              .expiry(60 * 60)
+              .build());
+    } catch (Exception e) {
+      log.error("Failed to convert normal URL to presigned URL: {}", e.getMessage(), e);
       return null;
     }
   }

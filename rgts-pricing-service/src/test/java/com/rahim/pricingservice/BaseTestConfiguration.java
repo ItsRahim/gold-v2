@@ -1,5 +1,6 @@
 package com.rahim.pricingservice;
 
+import static com.rahim.pricingservice.BaseTestContainerConfig.minioContainer;
 import static com.rahim.pricingservice.BaseTestContainerConfig.postgres;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -44,6 +45,7 @@ public class BaseTestConfiguration {
   @BeforeAll
   static void startContainers() {
     postgres.start();
+    minioContainer.start();
   }
 
   @BeforeEach
@@ -65,6 +67,13 @@ public class BaseTestConfiguration {
     registry.add("spring.flyway.url", postgres::getJdbcUrl);
     registry.add("spring.flyway.user", postgres::getUsername);
     registry.add("spring.flyway.password", postgres::getPassword);
+
+    registry.add(
+        "storage.minio.endpoint",
+        () -> "http://" + minioContainer.getHost() + ":" + minioContainer.getFirstMappedPort());
+    registry.add("storage.minio.access-key", minioContainer::getUserName);
+    registry.add("storage.minio.secret-key", minioContainer::getPassword);
+    registry.add("storage.minio.secure", () -> false);
   }
 
   @AfterEach

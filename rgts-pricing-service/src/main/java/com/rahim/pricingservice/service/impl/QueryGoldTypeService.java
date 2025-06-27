@@ -24,12 +24,13 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class QueryGoldTypeService implements IQueryGoldTypeService {
   private final GoldTypeRepository goldTypeRepository;
+  private final GoldResponseMapper goldResponseMapper;
 
   @Override
   public Page<GoldTypeResponseDTO> getAllGoldTypes(int page, int size) {
     Page<GoldType> goldTypes =
         goldTypeRepository.findAll(PageRequest.of(page, size, Sort.by("name")));
-    return goldTypes.map(GoldResponseMapper::mapToGoldType);
+    return goldTypes.map(goldResponseMapper::mapToGoldType);
   }
 
   @Override
@@ -47,7 +48,7 @@ public class QueryGoldTypeService implements IQueryGoldTypeService {
             .orElseThrow(
                 () -> new EntityNotFoundException("Gold Type with name: " + name + " not found"));
 
-    return GoldResponseMapper.mapToGoldType(goldType);
+    return goldResponseMapper.mapToGoldType(goldType);
   }
 
   @Override

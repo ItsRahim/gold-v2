@@ -10,7 +10,7 @@ import com.rahim.pricingservice.BaseTestConfiguration;
 import com.rahim.pricingservice.constant.Endpoints;
 import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
 import com.rahim.pricingservice.enums.WeightUnit;
-import com.rahim.pricingservice.service.IGoldTypeService;
+
 import java.math.BigDecimal;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,16 +18,18 @@ import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+import org.springframework.web.multipart.MultipartFile;
 
 class GoldTypeControllerTest extends BaseTestConfiguration {
-  @Autowired private IGoldTypeService goldTypeService;
   @Autowired private GoldTypeController goldTypeController;
 
   private MockMvc mockMvc;
+  private MockMultipartFile mockImageFile;
 
   @BeforeEach
   void setUp() {
@@ -41,35 +43,40 @@ class GoldTypeControllerTest extends BaseTestConfiguration {
             .setValidator(validator)
             .setControllerAdvice(new ApiExceptionHandler())
             .build();
+
+    mockImageFile =
+        new MockMultipartFile(
+            "file", "test-image.jpg", MediaType.IMAGE_JPEG_VALUE, "test image content".getBytes());
   }
 
   @Test
-  void shouldReturn200WithSuccessResponseWhenGoldTypeAddedSuccessfully() throws Exception {
+  void shouldReturn201WithSuccessResponseWhenGoldTypeAddedSuccessfully() throws Exception {
     AddGoldTypeRequest request =
         new AddGoldTypeRequest("Necklace", "22K", BigDecimal.TEN, "g", "Test gold");
 
+    MockMultipartFile jsonFile =
+        new MockMultipartFile(
+            "request", "", MediaType.APPLICATION_JSON_VALUE, requestToJson(request).getBytes());
+
     mockMvc
-        .perform(
-            post(Endpoints.GOLD_TYPE_ENDPOINT)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestToJson(request)))
-        .andExpect(status().isOk())
+        .perform(multipart(Endpoints.GOLD_TYPE_ENDPOINT).file(jsonFile).file(mockImageFile))
+        .andExpect(status().isCreated())
         .andExpect(jsonPath("$.name").value(request.getName()))
         .andExpect(jsonPath("$.purity").value(request.getPurity()))
         .andExpect(jsonPath("$.weight").value(request.getWeight() + " " + request.getUnit()))
-        .andExpect(jsonPath("$.description").value(request.getDescription()))
-        .andExpect(jsonPath("$.price").value(11000.00));
+        .andExpect(jsonPath("$.description").value(request.getDescription()));
   }
 
   @Test
   void shouldReturn400WhenGoldTypeRequestNameIsInvalid() throws Exception {
     AddGoldTypeRequest request = new AddGoldTypeRequest(null, "22K", BigDecimal.TEN, "g", "Valid");
 
+    MockMultipartFile jsonFile =
+        new MockMultipartFile(
+            "request", "", MediaType.APPLICATION_JSON_VALUE, requestToJson(request).getBytes());
+
     mockMvc
-        .perform(
-            post(Endpoints.GOLD_TYPE_ENDPOINT)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestToJson(request)))
+        .perform(multipart(Endpoints.GOLD_TYPE_ENDPOINT).file(jsonFile).file(mockImageFile))
         .andExpect(status().isBadRequest());
   }
 
@@ -78,11 +85,12 @@ class GoldTypeControllerTest extends BaseTestConfiguration {
     AddGoldTypeRequest request =
         new AddGoldTypeRequest("Invalid Carat", "30K", BigDecimal.TEN, "g", "Valid");
 
+    MockMultipartFile jsonFile =
+        new MockMultipartFile(
+            "request", "", MediaType.APPLICATION_JSON_VALUE, requestToJson(request).getBytes());
+
     mockMvc
-        .perform(
-            post(Endpoints.GOLD_TYPE_ENDPOINT)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestToJson(request)))
+        .perform(multipart(Endpoints.GOLD_TYPE_ENDPOINT).file(jsonFile).file(mockImageFile))
         .andExpect(status().isBadRequest());
   }
 
@@ -91,11 +99,12 @@ class GoldTypeControllerTest extends BaseTestConfiguration {
     AddGoldTypeRequest request =
         new AddGoldTypeRequest("Invalid Weight", "30K", BigDecimal.valueOf(-10), "g", "Valid");
 
+    MockMultipartFile jsonFile =
+        new MockMultipartFile(
+            "request", "", MediaType.APPLICATION_JSON_VALUE, requestToJson(request).getBytes());
+
     mockMvc
-        .perform(
-            post(Endpoints.GOLD_TYPE_ENDPOINT)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestToJson(request)))
+        .perform(multipart(Endpoints.GOLD_TYPE_ENDPOINT).file(jsonFile).file(mockImageFile))
         .andExpect(status().isBadRequest());
   }
 
@@ -104,11 +113,12 @@ class GoldTypeControllerTest extends BaseTestConfiguration {
     AddGoldTypeRequest request =
         new AddGoldTypeRequest("Invalid Unit", "30K", BigDecimal.TEN, "L", "Valid");
 
+    MockMultipartFile jsonFile =
+        new MockMultipartFile(
+            "request", "", MediaType.APPLICATION_JSON_VALUE, requestToJson(request).getBytes());
+
     mockMvc
-        .perform(
-            post(Endpoints.GOLD_TYPE_ENDPOINT)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestToJson(request)))
+        .perform(multipart(Endpoints.GOLD_TYPE_ENDPOINT).file(jsonFile).file(mockImageFile))
         .andExpect(status().isBadRequest());
   }
 
@@ -117,11 +127,12 @@ class GoldTypeControllerTest extends BaseTestConfiguration {
     AddGoldTypeRequest request =
         new AddGoldTypeRequest("Invalid Description", "30K", BigDecimal.TEN, "L", null);
 
+    MockMultipartFile jsonFile =
+        new MockMultipartFile(
+            "request", "", MediaType.APPLICATION_JSON_VALUE, requestToJson(request).getBytes());
+
     mockMvc
-        .perform(
-            post(Endpoints.GOLD_TYPE_ENDPOINT)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestToJson(request)))
+        .perform(multipart(Endpoints.GOLD_TYPE_ENDPOINT).file(jsonFile).file(mockImageFile))
         .andExpect(status().isBadRequest());
   }
 
@@ -130,12 +141,20 @@ class GoldTypeControllerTest extends BaseTestConfiguration {
     AddGoldTypeRequest request1 =
         new AddGoldTypeRequest(
             "A Gold Necklace", "22K", BigDecimal.ONE, WeightUnit.GRAM.getValue(), "Desc");
-    goldTypeService.addGoldType(request1);
+
+    MockMultipartFile jsonFile1 =
+        new MockMultipartFile(
+            "request", "", MediaType.APPLICATION_JSON_VALUE, requestToJson(request1).getBytes());
+    mockMvc.perform(multipart(Endpoints.GOLD_TYPE_ENDPOINT).file(jsonFile1).file(mockImageFile));
 
     AddGoldTypeRequest request2 =
         new AddGoldTypeRequest(
             "B Gold Necklace", "22K", BigDecimal.ONE, WeightUnit.GRAM.getValue(), "Desc");
-    goldTypeService.addGoldType(request2);
+
+    MockMultipartFile jsonFile2 =
+        new MockMultipartFile(
+            "request", "", MediaType.APPLICATION_JSON_VALUE, requestToJson(request2).getBytes());
+    mockMvc.perform(multipart(Endpoints.GOLD_TYPE_ENDPOINT).file(jsonFile2).file(mockImageFile));
 
     mockMvc
         .perform(get(Endpoints.GOLD_TYPE_ENDPOINT))
@@ -152,13 +171,14 @@ class GoldTypeControllerTest extends BaseTestConfiguration {
         new AddGoldTypeRequest(
             "A Gold Necklace", "22K", BigDecimal.ONE, WeightUnit.GRAM.getValue(), "Desc");
 
+    MockMultipartFile jsonFile =
+        new MockMultipartFile(
+            "request", "", MediaType.APPLICATION_JSON_VALUE, requestToJson(request).getBytes());
+
     MvcResult postResult =
         mockMvc
-            .perform(
-                post(Endpoints.GOLD_TYPE_ENDPOINT)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(requestToJson(request)))
-            .andExpect(status().isOk())
+            .perform(multipart(Endpoints.GOLD_TYPE_ENDPOINT).file(jsonFile).file(mockImageFile))
+            .andExpect(status().isCreated())
             .andReturn();
 
     String responseContent = postResult.getResponse().getContentAsString();
@@ -192,7 +212,11 @@ class GoldTypeControllerTest extends BaseTestConfiguration {
             WeightUnit.GRAM.getValue(),
             "Historic British gold coin");
 
-    goldTypeService.addGoldType(request);
+    MockMultipartFile jsonFile =
+        new MockMultipartFile(
+            "request", "", MediaType.APPLICATION_JSON_VALUE, requestToJson(request).getBytes());
+
+    mockMvc.perform(multipart(Endpoints.GOLD_TYPE_ENDPOINT).file(jsonFile).file(mockImageFile));
 
     mockMvc
         .perform(get(Endpoints.GOLD_TYPE_ENDPOINT).param("name", goldName))
@@ -208,13 +232,14 @@ class GoldTypeControllerTest extends BaseTestConfiguration {
         new AddGoldTypeRequest(
             "A Gold Necklace", "22K", BigDecimal.ONE, WeightUnit.GRAM.getValue(), "Desc");
 
+    MockMultipartFile jsonFile =
+        new MockMultipartFile(
+            "request", "", MediaType.APPLICATION_JSON_VALUE, requestToJson(request).getBytes());
+
     MvcResult postResult =
         mockMvc
-            .perform(
-                post(Endpoints.GOLD_TYPE_ENDPOINT)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(requestToJson(request)))
-            .andExpect(status().isOk())
+            .perform(multipart(Endpoints.GOLD_TYPE_ENDPOINT).file(jsonFile).file(mockImageFile))
+            .andExpect(status().isCreated())
             .andReturn();
 
     String responseContent = postResult.getResponse().getContentAsString();
@@ -231,5 +256,22 @@ class GoldTypeControllerTest extends BaseTestConfiguration {
     mockMvc
         .perform(delete(Endpoints.GOLD_TYPE_ENDPOINT + "/{id}", UUID.randomUUID()))
         .andExpect(status().isNotFound());
+  }
+
+  @Test
+  void shouldReturn400WhenImageFileIsEmpty() throws Exception {
+    AddGoldTypeRequest request =
+        new AddGoldTypeRequest("Necklace", "22K", BigDecimal.TEN, "g", "Test gold");
+
+    MockMultipartFile jsonFile =
+        new MockMultipartFile(
+            "request", "", MediaType.APPLICATION_JSON_VALUE, requestToJson(request).getBytes());
+
+    MockMultipartFile emptyFile =
+        new MockMultipartFile("file", "", MediaType.IMAGE_JPEG_VALUE, new byte[0]);
+
+    mockMvc
+        .perform(multipart(Endpoints.GOLD_TYPE_ENDPOINT).file(jsonFile).file(emptyFile))
+        .andExpect(status().isBadRequest());
   }
 }

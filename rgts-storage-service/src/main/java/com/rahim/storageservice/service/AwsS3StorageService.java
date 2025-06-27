@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import software.amazon.awssdk.services.s3.S3Client;
 
 /**
  * @created 27/06/2025
@@ -15,7 +14,7 @@ import software.amazon.awssdk.services.s3.S3Client;
 @Service
 @RequiredArgsConstructor
 public class AwsS3StorageService implements StorageService {
-  private final S3Client s3Client;
+  //  private final S3Client s3Client;
 
   @Override
   public void createBucket(String bucketName) {}
@@ -29,10 +28,17 @@ public class AwsS3StorageService implements StorageService {
   }
 
   @Override
-  public void upload(String bucketName, String objectKey, MultipartFile file) {}
+  public String uploadImage(String bucketName, String objectKey, MultipartFile file) {
+    return null;
+  }
 
   @Override
   public InputStream download(String bucketName, String objectKey) {
+    return null;
+  }
+
+  @Override
+  public String getPresignedUrl(String imageUrl) {
     return null;
   }
 

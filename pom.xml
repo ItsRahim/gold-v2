@@ -389,6 +389,12 @@
             </dependency>
             <dependency>
                 <groupId>org.testcontainers</groupId>
+                <artifactId>minio</artifactId>
+                <version>${test-container.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.testcontainers</groupId>
                 <artifactId>mockserver</artifactId>
                 <version>${test-container.version}</version>
                 <scope>test</scope>

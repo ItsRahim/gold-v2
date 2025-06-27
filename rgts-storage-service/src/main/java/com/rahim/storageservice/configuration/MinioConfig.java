@@ -26,4 +26,9 @@ public class MinioConfig {
         .credentials(minio.getAccessKey(), minio.getSecretKey())
         .build();
   }
+
+  @Bean
+  public String minioUrl() {
+    return storageProperties.getMinio().getEndpoint();
+  }
 }
