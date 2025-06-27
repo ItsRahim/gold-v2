@@ -52,6 +52,21 @@ services:
     networks:
       - my-network
 
+  minio:
+    image: minio/minio:latest
+    container_name: minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+    networks:
+      - my-network
+
   zipkin:
     image: openzipkin/zipkin
     container_name: zipkin
@@ -86,38 +101,6 @@ services:
     ports:
       - "1025:1025"
       - "8025:8025"
-    networks:
-      - my-network
-
-  sonarqube:
-    image: sonarqube:latest
-    container_name: sonarqube
-    depends_on:
-      - postgres
-    ports:
-      - "9000:9000"
-    environment:
-      - SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true
-      - SONAR_JDBC_URL=jdbc:postgresql://postgres:5432/gold
-      - SONAR_JDBC_USERNAME=postgres
-      - SONAR_JDBC_PASSWORD=password
-    volumes:
-      - sonarqube_data:/opt/sonarqube/data
-      - sonarqube_logs:/opt/sonarqube/logs
-      - sonarqube_extensions:/opt/sonarqube/extensions
-    networks:
-      - my-network
-
-  sonar-scanner:
-    image: sonarsource/sonar-scanner-cli
-    depends_on:
-      - sonarqube
-    environment:
-      SONAR_HOST_URL: "http://sonarqube:9000"
-    volumes:
-      - ./:/usr/src
-    working_dir: /usr/src
-    entrypoint: [ "sonar-scanner" ]
     networks:
       - my-network
 
@@ -198,4 +181,6 @@ volumes:
   zookeeper_data:
     driver: local
   kafka_data:
+    driver: local
+  minio_data:
     driver: local
