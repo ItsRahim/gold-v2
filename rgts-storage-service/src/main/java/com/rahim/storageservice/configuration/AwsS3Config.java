@@ -1,6 +1,7 @@
 package com.rahim.storageservice.configuration;
 
 import com.rahim.storageservice.configuration.properties.AwsProperties;
+import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -11,8 +12,6 @@ import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.S3ClientBuilder;
 import software.amazon.awssdk.services.s3.S3Configuration;
-
-import java.net.URI;
 
 /**
  * @created 27/06/2025
