@@ -3,18 +3,24 @@ package com.rahim.pricingservice.util;
 import com.rahim.common.exception.MappingException;
 import com.rahim.pricingservice.dto.response.GoldTypeResponseDTO;
 import com.rahim.pricingservice.entity.GoldType;
+import com.rahim.storageservice.service.MinioStorageService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 /**
  * @created 04/05/2025
  * @author Rahim Ahmed
  */
 @Slf4j
+@Component
+@RequiredArgsConstructor
 public final class GoldResponseMapper {
-  private GoldResponseMapper() {}
+  private final MinioStorageService storageService;
 
-  public static GoldTypeResponseDTO mapToGoldType(GoldType goldType) {
+  public GoldTypeResponseDTO mapToGoldType(GoldType goldType) {
     try {
+      String imageUrl = storageService.getPresignedUrl(goldType.getImageUrl());
       return GoldTypeResponseDTO.builder()
           .id(goldType.getId())
           .name(goldType.getName())
@@ -22,6 +28,7 @@ public final class GoldResponseMapper {
           .weight(formatWeight(goldType))
           .description(goldType.getDescription())
           .price(goldType.getPrice())
+          .imageUrl(imageUrl)
           .build();
     } catch (Exception e) {
       log.error("Error mapping GoldType entity to DTO: {}", e.getMessage(), e);

@@ -4,6 +4,7 @@ import com.redis.testcontainers.RedisContainer;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.context.annotation.Bean;
+import org.testcontainers.containers.MinIOContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
@@ -24,4 +25,9 @@ public abstract class BaseTestContainerConfig {
   RedisContainer redisContainer() {
     return new RedisContainer(DockerImageName.parse("redis:latest"));
   }
+
+  static final MinIOContainer minioContainer =
+      new MinIOContainer(DockerImageName.parse("minio/minio:latest"))
+          .withUserName("minioadmin")
+          .withPassword("minioadmin");
 }

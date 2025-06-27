@@ -16,4 +16,5 @@ public class GoldTypeResponseDTO {
   private String weight;
   private String description;
   private BigDecimal price;
+  private String imageUrl;
 }

@@ -9,6 +9,7 @@ Don't store gold purity in the database - hard code it
 Gold Types to have images and store using minio
 Gold types price history daily, weekly, monthly, and yearly stored in mongodb
 Gold price updates to send percentage change to frontend (daily)
+Delete gold types from the database and Minio
 
 -- Email Service --
 Button to verify email to go to frontend and then make a call to the backend to verify the email
@@ -18,3 +19,6 @@ Tests for everything
 
 -- Frontend --
 Implement tests for the frontend
+
+-- Storage Service --
+Implement tests for the storage service (MinIO)

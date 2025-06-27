@@ -1,0 +1,16 @@
+storage:
+  provider: MINIO
+  default-bucket: default-bucket
+
+  aws:
+    access-key: '{cipher}AWS_ACCESS_KEY'
+    secret-key: '{cipher}AWS_SECRET_KEY'
+    region: '{cipher}AWS_REGION'
+    endpoint: '{cipher}AWS_ENDPOINT'
+    path-style-access: '{cipher}AWS_PATH_STYLE_ACCESS'
+
+  minio:
+    endpoint: http://localhost:9000
+    access-key: minioadmin
+    secret-key: minioadmin
+    secure: false

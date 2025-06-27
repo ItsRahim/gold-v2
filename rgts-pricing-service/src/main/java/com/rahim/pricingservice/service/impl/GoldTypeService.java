@@ -13,6 +13,7 @@ import com.rahim.pricingservice.service.IGoldTypeService;
 import com.rahim.pricingservice.service.IQueryGoldPurityService;
 import com.rahim.pricingservice.service.IQueryGoldTypeService;
 import com.rahim.pricingservice.service.IUpdateGoldPriceService;
+import com.rahim.storageservice.service.MinioStorageService;
 import java.math.BigDecimal;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -22,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author Rahim Ahmed
@@ -36,18 +38,20 @@ public class GoldTypeService implements IGoldTypeService {
   private final IQueryGoldPurityService goldPurityQueryService;
   private final IUpdateGoldPriceService updateGoldPriceService;
   private final GoldTypeRepository goldTypeRepository;
+  private final MinioStorageService storageService;
 
+  private static final String BUCKET_NAME = "gold-types";
   private static final String CARAT_REGEX = "^([1-9]|1[0-9]|2[0-4])[Kk]?$";
   private static final Pattern pattern = Pattern.compile(CARAT_REGEX);
 
   @Override
-  public void addGoldType(AddGoldTypeRequest request) {
+  public void addGoldType(AddGoldTypeRequest request, MultipartFile file) {
     if (request == null) {
       log.error("Received null AddGoldTypeRequest");
       throw new BadRequestException("Request body cannot be null");
     }
 
-    validateAddGoldTypeRequest(request);
+    validateAddGoldTypeRequest(request, file);
 
     try {
       GoldPurity purity = goldPurityQueryService.getGoldPurityByCaratLabel(request.getPurity());
@@ -66,7 +70,13 @@ public class GoldTypeService implements IGoldTypeService {
               .description(request.getDescription())
               .build();
 
-      goldTypeRepository.save(goldType);
+      GoldType savedGoldType = goldTypeRepository.save(goldType);
+
+      String objectKey = generateObjectKeyFromId(savedGoldType.getId(), file);
+      String imageUrl = storageService.uploadImage(BUCKET_NAME, objectKey, file);
+
+      savedGoldType.setImageUrl(imageUrl);
+      goldTypeRepository.save(savedGoldType);
 
       log.info(
           "Added new gold type: '{}', Carat: '{}', Price: {}",
@@ -96,7 +106,11 @@ public class GoldTypeService implements IGoldTypeService {
     goldTypeRepository.delete(goldType);
   }
 
-  private void validateAddGoldTypeRequest(AddGoldTypeRequest request) {
+  private void validateAddGoldTypeRequest(AddGoldTypeRequest request, MultipartFile file) {
+    if (file == null || file.isEmpty()) {
+      throw new BadRequestException("No image file provided");
+    }
+
     if (request.getName() == null || request.getName().isEmpty()) {
       throw new BadRequestException("Gold type name is required");
     }
@@ -131,5 +145,29 @@ public class GoldTypeService implements IGoldTypeService {
 
     Matcher matcher = pattern.matcher(input);
     return matcher.matches();
+  }
+
+  private String generateObjectKeyFromId(UUID id, MultipartFile file) {
+    String extension = getFileExtension(file);
+    return id.toString() + extension;
+  }
+
+  private String getFileExtension(MultipartFile file) {
+    String originalFilename = file.getOriginalFilename();
+    if (originalFilename != null && originalFilename.contains(".")) {
+      return originalFilename.substring(originalFilename.lastIndexOf("."));
+    }
+
+    String contentType = file.getContentType();
+    if (contentType != null) {
+      return switch (contentType) {
+        case "image/png" -> ".png";
+        case "image/gif" -> ".gif";
+        case "image/webp" -> ".webp";
+        default -> ".jpg";
+      };
+    }
+
+    return ".jpg";
   }
 }

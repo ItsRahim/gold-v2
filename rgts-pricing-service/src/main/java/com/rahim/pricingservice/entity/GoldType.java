@@ -49,4 +49,8 @@ public class GoldType {
   @NotNull
   @Column(name = "price", nullable = false, precision = 10, scale = 2)
   private BigDecimal price;
+
+  @NotNull
+  @Column(name = "image_url", length = 512)
+  private String imageUrl;
 }

@@ -25,6 +25,10 @@ spring:
     schemas: ${spring.application.name}
     default-schema: ${spring.application.name}
 
+storage:
+  provider: MINIO
+  default-bucket: default-bucket
+
 eureka:
   client:
     enabled: false

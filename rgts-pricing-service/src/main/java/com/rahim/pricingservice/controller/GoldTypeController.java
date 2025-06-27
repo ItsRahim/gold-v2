@@ -14,7 +14,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author Rahim Ahmed
@@ -36,19 +36,20 @@ import org.springframework.web.bind.annotation.*;
 public class GoldTypeController {
   private final IGoldTypeService goldTypeService;
   private final IQueryGoldTypeService queryGoldTypeService;
+  private final GoldResponseMapper goldResponseMapper;
 
   @Operation(
       summary = "Add a new gold type",
-      description = "Creates a new gold type with the provided details")
+      description = "Creates a new gold type with the provided details and optional image file")
   @ApiResponses(
       value = {
         @ApiResponse(
-            responseCode = "200",
-            description = "Gold type added successfully",
+            responseCode = "201",
+            description = "Gold type created successfully",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)),
         @ApiResponse(
             responseCode = "400",
-            description = "Invalid gold type details or gold type already exists",
+            description = "Invalid request or duplicate gold type",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)),
         @ApiResponse(
             responseCode = "500",
@@ -56,14 +57,17 @@ public class GoldTypeController {
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
       })
   @PostMapping(
-      consumes = MediaType.APPLICATION_JSON_VALUE,
+      consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<GoldTypeResponseDTO> addGoldType(
-      @Valid @Parameter(description = "Gold type details", required = true) @RequestBody
-          AddGoldTypeRequest request) {
-    goldTypeService.addGoldType(request);
+      @Parameter(description = "Gold type details (JSON)", required = true) @RequestPart("request")
+          AddGoldTypeRequest request,
+      @Parameter(description = "Image file for the gold type") @RequestPart(value = "file")
+          MultipartFile file) {
+    goldTypeService.addGoldType(request, file);
+
     GoldTypeResponseDTO response = queryGoldTypeService.getGoldTypeByName(request.getName());
-    return ResponseEntity.status(HttpStatus.OK).body(response);
+    return ResponseEntity.status(HttpStatus.CREATED).body(response);
   }
 
   @Operation(
@@ -123,7 +127,7 @@ public class GoldTypeController {
           @PathVariable("id")
           UUID id) {
     GoldType goldType = queryGoldTypeService.getGoldTypeById(id);
-    GoldTypeResponseDTO response = GoldResponseMapper.mapToGoldType(goldType);
+    GoldTypeResponseDTO response = goldResponseMapper.mapToGoldType(goldType);
     return ResponseEntity.status(HttpStatus.OK).body(response);
   }
 
