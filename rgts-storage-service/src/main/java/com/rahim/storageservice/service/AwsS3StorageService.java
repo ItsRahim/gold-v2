@@ -11,8 +11,8 @@ import org.springframework.web.multipart.MultipartFile;
  * @author Rahim Ahmed
  */
 @Slf4j
-@Service
 @RequiredArgsConstructor
+@Service("AWS_S3")
 public class AwsS3StorageService implements StorageService {
   //  private final S3Client s3Client;
 

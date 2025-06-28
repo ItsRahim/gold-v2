@@ -15,8 +15,8 @@ import org.springframework.web.multipart.MultipartFile;
  * @author Rahim Ahmed
  */
 @Slf4j
-@Service
 @RequiredArgsConstructor
+@Service("MINIO")
 public class MinioStorageService implements StorageService {
   private final MinioClient minioClient;
   private final String minioUrl;
