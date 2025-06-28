@@ -30,6 +30,22 @@ function allGoldPurities() {
   );
 }
 
+// Helper function to truncate filename while preserving extension
+function truncateFilename(filename: string, maxLength: number = 25): string {
+  if (filename.length <= maxLength) return filename;
+
+  const lastDotIndex = filename.lastIndexOf('.');
+  if (lastDotIndex === -1) {
+    return filename.substring(0, maxLength - 3) + '...';
+  }
+
+  const extension = filename.substring(lastDotIndex);
+  const nameWithoutExt = filename.substring(0, lastDotIndex);
+  const truncatedName = nameWithoutExt.substring(0, maxLength - extension.length - 3) + '...';
+
+  return truncatedName + extension;
+}
+
 export function AddGoldDialog({ open, setOpen, onSubmit }: AddGoldDialogProps) {
   const [purity, setPurity] = useState<string>('');
   const [weightUnit, setWeightUnit] = useState<string>('');
@@ -157,7 +173,7 @@ export function AddGoldDialog({ open, setOpen, onSubmit }: AddGoldDialogProps) {
                 accept='image/*'
                 ref={fileInputRef}
                 onChange={handleFileChange}
-                className='file:border-0 file:bg-transparent file:text-sm file:font-medium'
+                className='file:border-0 file:bg-transparent file:text-sm file:font-medium flex-1 min-w-0'
                 required
               />
               {selectedFile && (
@@ -167,10 +183,12 @@ export function AddGoldDialog({ open, setOpen, onSubmit }: AddGoldDialogProps) {
               )}
             </div>
             {selectedFile && (
-              <div className='flex items-center gap-2 text-sm text-muted-foreground'>
-                <Upload className='w-4 h-4' />
-                <span>{selectedFile.name}</span>
-                <span>({(selectedFile.size / 1024).toFixed(1)} KB)</span>
+              <div className='flex items-center gap-2 text-sm text-muted-foreground min-w-0'>
+                <Upload className='w-4 h-4 shrink-0' />
+                <span className='truncate flex-1 min-w-0' title={selectedFile.name}>
+                  {truncateFilename(selectedFile.name)}
+                </span>
+                <span className='shrink-0'>({(selectedFile.size / 1024).toFixed(1)} KB)</span>
               </div>
             )}
           </div>
