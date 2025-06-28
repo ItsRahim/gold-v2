@@ -13,12 +13,12 @@ import com.rahim.pricingservice.service.IGoldTypeService;
 import com.rahim.pricingservice.service.IQueryGoldPurityService;
 import com.rahim.pricingservice.service.IQueryGoldTypeService;
 import com.rahim.pricingservice.service.IUpdateGoldPriceService;
-import com.rahim.storageservice.service.MinioStorageService;
+import com.rahim.storageservice.service.StorageService;
+import com.rahim.storageservice.service.StorageServiceFactory;
 import java.math.BigDecimal;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
@@ -31,14 +31,26 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @Slf4j
 @Service
-@RequiredArgsConstructor
 @Transactional(rollbackFor = {BadRequestException.class, ServiceException.class})
 public class GoldTypeService implements IGoldTypeService {
   private final IQueryGoldTypeService queryGoldTypeService;
   private final IQueryGoldPurityService goldPurityQueryService;
   private final IUpdateGoldPriceService updateGoldPriceService;
   private final GoldTypeRepository goldTypeRepository;
-  private final MinioStorageService storageService;
+  private final StorageService storageService;
+
+  public GoldTypeService(
+      IQueryGoldTypeService queryGoldTypeService,
+      IQueryGoldPurityService goldPurityQueryService,
+      IUpdateGoldPriceService updateGoldPriceService,
+      GoldTypeRepository goldTypeRepository,
+      StorageServiceFactory factory) {
+    this.queryGoldTypeService = queryGoldTypeService;
+    this.goldPurityQueryService = goldPurityQueryService;
+    this.updateGoldPriceService = updateGoldPriceService;
+    this.goldTypeRepository = goldTypeRepository;
+    this.storageService = factory.getStorageService();
+  }
 
   private static final String BUCKET_NAME = "gold-types";
   private static final String CARAT_REGEX = "^([1-9]|1[0-9]|2[0-4])[Kk]?$";
