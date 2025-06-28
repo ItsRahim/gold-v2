@@ -30,7 +30,6 @@ function allGoldPurities() {
   );
 }
 
-// Helper function to truncate filename while preserving extension
 function truncateFilename(filename: string, maxLength: number = 25): string {
   if (filename.length <= maxLength) return filename;
 
@@ -56,7 +55,6 @@ export function AddGoldDialog({ open, setOpen, onSubmit }: AddGoldDialogProps) {
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    // Validate that a file is selected
     if (!selectedFile) {
       alert('Please select an image file');
       return;
