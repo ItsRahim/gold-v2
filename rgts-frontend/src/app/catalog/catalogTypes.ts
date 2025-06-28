@@ -5,21 +5,21 @@ export type GoldItem = {
   weight: string;
   description: string;
   price: number;
+  imageUrl: string;
 };
 
-export interface GoldType {
+export interface AddGoldTypeRequest {
   name: string;
   weight: number;
   purity: string;
   unit: string;
   description: string;
-  price?: number;
 }
 
 export interface AddGoldDialogProps {
   open: boolean;
   setOpen: (open: boolean) => void;
-  onSubmit: (goldType: GoldType) => void;
+  onSubmit: (goldType: AddGoldTypeRequest, file: File) => void;
 }
 
 export interface GoldTypeCardProps {
