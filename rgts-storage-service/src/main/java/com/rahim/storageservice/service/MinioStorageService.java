@@ -110,7 +110,6 @@ public class MinioStorageService implements StorageService {
     String objectKey = null;
     try (InputStream inputStream = file.getInputStream()) {
       objectKey = StorageUrlUtils.generateObjectKeyFromId(id, file);
-      log.debug("Generated object key: {}", objectKey);
 
       if (objectExists(bucketName, objectKey)) {
         log.warn(
