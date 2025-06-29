@@ -4,6 +4,8 @@ import com.rahim.common.exception.MappingException;
 import com.rahim.pricingservice.dto.response.GoldTypeResponseDTO;
 import com.rahim.pricingservice.entity.GoldType;
 import com.rahim.storageservice.service.MinioStorageService;
+import com.rahim.storageservice.service.StorageService;
+import com.rahim.storageservice.service.StorageServiceFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -14,9 +16,12 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public final class GoldResponseMapper {
-  private final MinioStorageService storageService;
+  private final StorageService storageService;
+
+  public GoldResponseMapper(StorageServiceFactory factory) {
+    this.storageService = factory.getStorageService();
+  }
 
   public GoldTypeResponseDTO mapToGoldType(GoldType goldType) {
     try {
