@@ -1,6 +1,6 @@
 kafka:
   security-protocol: PLAINTEXT
-  bootstrap-servers: '{cipher}60cd81b26915799a66e0c1bdfd4476710cc05ee42783df63ce429a2371a893fc'
+  bootstrap-servers: '{cipher}65b2ae22361a3e171775a362cd6323dd112d321b3d756ff94be303b93e7cc1f9'
   ssl:
     key-store-location: file://location-to-keystore-file
     key-password: '{cipher}password'
