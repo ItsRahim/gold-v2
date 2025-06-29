@@ -13,9 +13,9 @@ COPY rgts-config-server/pom.xml rgts-config-server/
 COPY rgts-email-service/pom.xml rgts-email-service/
 COPY rgts-eureka-server/pom.xml rgts-eureka-server/
 COPY rgts-gateway-service/pom.xml rgts-gateway-service/
-COPY rgts-portfolio-service/pom.xml rgts-portfolio-service/
 COPY rgts-kafka-service/pom.xml rgts-kafka-service/
 COPY rgts-notification-service/pom.xml rgts-notification-service/
+COPY rgts-portfolio-service/pom.xml rgts-portfolio-service/
 COPY rgts-pricing-service/pom.xml rgts-pricing-service/
 COPY rgts-proto-service/pom.xml rgts-proto-service/
 COPY rgts-storage-service/pom.xml rgts-storage-service/
@@ -28,8 +28,8 @@ COPY rgts-common/src rgts-common/src
 COPY rgts-cache-manager/src rgts-cache-manager/src
 COPY rgts-kafka-service/src rgts-kafka-service/src
 COPY rgts-proto-service/src rgts-proto-service/src
-COPY rgts-storage-service/pom.xml rgts-storage-service/
 COPY rgts-pricing-service/src rgts-pricing-service/src
+COPY rgts-storage-service/src rgts-storage-service/src
 
 # Package the target service and dependencies
 RUN mvn clean package -pl rgts-pricing-service -am -DskipTests
