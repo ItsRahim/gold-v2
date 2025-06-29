@@ -16,9 +16,13 @@ import com.rahim.pricingservice.entity.GoldType;
 import com.rahim.pricingservice.enums.WeightUnit;
 import com.rahim.pricingservice.repository.GoldTypeRepository;
 import com.rahim.pricingservice.service.impl.GoldTypeService;
-import com.rahim.storageservice.service.MinioStorageService;
+
 import java.math.BigDecimal;
 import java.util.UUID;
+
+import com.rahim.storageservice.service.MinioStorageService;
+import com.rahim.storageservice.service.StorageService;
+import com.rahim.storageservice.service.StorageServiceFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -28,14 +32,14 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.web.multipart.MultipartFile;
 
 class GoldTypeServiceTest extends BaseTestConfiguration {
   @Autowired @InjectMocks private GoldTypeService goldTypeService;
   @Autowired private GoldTypeRepository goldTypeRepository;
   @Mock private IUpdateGoldPriceService updateGoldPriceService;
   @Mock private RedisService redisService;
-  @Mock private MinioStorageService storageService;
+  @Mock private StorageServiceFactory storageServiceFactory;
+  @Mock private MinioStorageService minioStorageService;
 
   private MockMultipartFile validImageFile;
 
@@ -48,9 +52,7 @@ class GoldTypeServiceTest extends BaseTestConfiguration {
     validImageFile =
         new MockMultipartFile(
             "file", "test-image.jpg", MediaType.IMAGE_JPEG_VALUE, "test image content".getBytes());
-
-    when(storageService.uploadImage(anyString(), anyString(), any(MultipartFile.class)))
-        .thenReturn("https://minio-server/bucket/test-image.jpg");
+    when(storageServiceFactory.getStorageService()).thenReturn(minioStorageService);
   }
 
   @Test

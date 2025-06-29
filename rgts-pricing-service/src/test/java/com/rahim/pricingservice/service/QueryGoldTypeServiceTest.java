@@ -11,50 +11,70 @@ import com.rahim.pricingservice.entity.GoldType;
 import com.rahim.pricingservice.enums.WeightUnit;
 import com.rahim.pricingservice.repository.GoldTypeRepository;
 import com.rahim.pricingservice.service.impl.QueryGoldTypeService;
+import com.rahim.storageservice.service.MinioStorageService;
+
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.data.domain.Page;
 
 class QueryGoldTypeServiceTest extends BaseTestConfiguration {
-  @Autowired private QueryGoldTypeService queryGoldTypeService;
+
+  @Autowired @InjectMocks private QueryGoldTypeService queryGoldTypeService;
+
   @Autowired private GoldTypeRepository goldTypeRepository;
 
+  @Autowired private MinioStorageService minioStorageService;
+
   private GoldType goldType1;
+  private GoldPurity purity;
+  private MockMultipartFile imageFile;
+  private final String bucketName = "bucket";
 
   @BeforeEach
   void setup() {
     goldTypeRepository.deleteAll();
 
-    GoldPurity purity =
-        GoldPurity.builder().id(1).label("22K").numerator(22).denominator(24).build();
+    purity = GoldPurity.builder().id(1).label("22K").numerator(22).denominator(24).build();
+
+    imageFile =
+        new MockMultipartFile(
+            "file", "test-image.jpg", MediaType.IMAGE_JPEG_VALUE, "test image content".getBytes());
 
     goldType1 =
+        saveGoldTypeWithImage(
+            "Gold Ring", new BigDecimal("10.5"), new BigDecimal("550.75"), "22K Gold Ring");
+    saveGoldTypeWithImage(
+        "Gold Necklace", new BigDecimal("25.0"), new BigDecimal("1350.50"), "22K Gold Necklace");
+  }
+
+  private GoldType saveGoldTypeWithImage(
+      String name, BigDecimal weight, BigDecimal price, String description) {
+    GoldType goldType =
         GoldType.builder()
-            .name("Gold Ring")
+            .name(name)
             .purity(purity)
-            .weight(new BigDecimal("10.5"))
+            .weight(weight)
             .unit(WeightUnit.GRAM)
-            .price(new BigDecimal("550.75"))
-            .description("22K Gold Ring")
-            .imageUrl("https://minio-server/bucket/gold-ring.jpg")
-            .build();
-    GoldType goldType2 =
-        GoldType.builder()
-            .name("Gold Necklace")
-            .purity(purity)
-            .weight(new BigDecimal("25.0"))
-            .unit(WeightUnit.GRAM)
-            .price(new BigDecimal("1350.50"))
-            .description("22K Gold Necklace")
-            .imageUrl("https://minio-server/bucket/gold-necklace.jpg")
+            .price(price)
+            .description(description)
             .build();
 
-    goldTypeRepository.saveAll(List.of(goldType1, goldType2));
+    goldType = goldTypeRepository.save(goldType);
+
+    String imageUrl =
+        minioStorageService.uploadImage(bucketName, goldType.getId().toString(), imageFile);
+    goldType.setImageUrl(imageUrl);
+
+    return goldTypeRepository.save(goldType);
   }
 
   @Test
@@ -99,13 +119,15 @@ class QueryGoldTypeServiceTest extends BaseTestConfiguration {
     List<GoldType> result = queryGoldTypeService.getAllGoldTypes();
 
     assertThat(result).isNotNull().hasSize(2);
-    assertThat(result.get(0).getName()).isEqualTo("Gold Ring");
-    assertThat(result.get(1).getName()).isEqualTo("Gold Necklace");
+    assertThat(result)
+        .extracting(GoldType::getName)
+        .containsExactlyInAnyOrder("Gold Ring", "Gold Necklace");
   }
 
   @Test
   void shouldReturnEmptyListWhenNoGoldTypes() {
     goldTypeRepository.deleteAll();
+
     List<GoldType> result = queryGoldTypeService.getAllGoldTypes();
 
     assertThat(result).isEmpty();
@@ -116,7 +138,7 @@ class QueryGoldTypeServiceTest extends BaseTestConfiguration {
     GoldType newType =
         GoldType.builder()
             .name("Gold Bracelet")
-            .purity(goldType1.getPurity())
+            .purity(purity)
             .weight(new BigDecimal("15.0"))
             .unit(WeightUnit.GRAM)
             .price(new BigDecimal("700.00"))

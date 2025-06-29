@@ -27,7 +27,6 @@ spring:
 
 storage:
   provider: MINIO
-  default-bucket: default-bucket
 
 eureka:
   client:

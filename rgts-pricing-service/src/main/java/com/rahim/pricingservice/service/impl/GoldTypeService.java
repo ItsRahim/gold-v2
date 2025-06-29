@@ -2,6 +2,7 @@ package com.rahim.pricingservice.service.impl;
 
 import com.rahim.common.exception.BadRequestException;
 import com.rahim.common.exception.DuplicateEntityException;
+import com.rahim.common.exception.EntityNotFoundException;
 import com.rahim.common.exception.ServiceException;
 import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
 import com.rahim.pricingservice.entity.GoldPurity;
@@ -158,6 +159,8 @@ public class GoldTypeService implements IGoldTypeService {
       goldTypeRepository.delete(goldType);
       log.info("Successfully deleted gold type: {} (ID: {})", goldType.getName(), id);
 
+    } catch (EntityNotFoundException e) {
+      throw e;
     } catch (StorageException | MinioStorageException e) {
       log.error(
           "Storage operation failed while deleting gold type with ID '{}': {}", id, e.getMessage());
