@@ -14,7 +14,7 @@ public interface StorageService {
 
   boolean bucketExists(String bucketName);
 
-  String uploadImage(String bucketName, String objectKey, MultipartFile file);
+  String uploadImage(String bucketName, String id, MultipartFile file);
 
   InputStream download(String bucketName, String objectKey);
 
@@ -22,5 +22,5 @@ public interface StorageService {
 
   boolean objectExists(String bucketName, String objectKey);
 
-  void deleteObject(String bucketName, String objectKey);
+  void deleteObject(String bucketName, String url);
 }

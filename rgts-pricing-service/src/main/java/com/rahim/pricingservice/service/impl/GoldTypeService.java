@@ -2,6 +2,7 @@ package com.rahim.pricingservice.service.impl;
 
 import com.rahim.common.exception.BadRequestException;
 import com.rahim.common.exception.DuplicateEntityException;
+import com.rahim.common.exception.EntityNotFoundException;
 import com.rahim.common.exception.ServiceException;
 import com.rahim.pricingservice.dto.request.AddGoldTypeRequest;
 import com.rahim.pricingservice.entity.GoldPurity;
@@ -13,6 +14,8 @@ import com.rahim.pricingservice.service.IGoldTypeService;
 import com.rahim.pricingservice.service.IQueryGoldPurityService;
 import com.rahim.pricingservice.service.IQueryGoldTypeService;
 import com.rahim.pricingservice.service.IUpdateGoldPriceService;
+import com.rahim.storageservice.exception.MinioStorageException;
+import com.rahim.storageservice.exception.StorageException;
 import com.rahim.storageservice.service.StorageService;
 import com.rahim.storageservice.service.StorageServiceFactory;
 import java.math.BigDecimal;
@@ -66,6 +69,8 @@ public class GoldTypeService implements IGoldTypeService {
     validateAddGoldTypeRequest(request, file);
 
     try {
+      log.info("Starting gold type creation process for: {}", request.getName());
+
       GoldPurity purity = goldPurityQueryService.getGoldPurityByCaratLabel(request.getPurity());
       WeightUnit unit = WeightUnit.fromValue(request.getUnit());
 
@@ -82,40 +87,89 @@ public class GoldTypeService implements IGoldTypeService {
               .description(request.getDescription())
               .build();
 
+      log.debug("Saving gold type entity to database");
       GoldType savedGoldType = goldTypeRepository.save(goldType);
 
-      String objectKey = generateObjectKeyFromId(savedGoldType.getId(), file);
-      String imageUrl = storageService.uploadImage(BUCKET_NAME, objectKey, file);
+      log.info(
+          "Uploading image for gold type: {} to bucket: {}", savedGoldType.getName(), BUCKET_NAME);
+      String imageUrl =
+          storageService.uploadImage(BUCKET_NAME, savedGoldType.getId().toString(), file);
 
       savedGoldType.setImageUrl(imageUrl);
       goldTypeRepository.save(savedGoldType);
 
       log.info(
-          "Added new gold type: '{}', Carat: '{}', Price: {}",
+          "Successfully added new gold type: '{}', Carat: '{}', Price: {}, Image URL: {}",
           request.getName(),
           purity.getLabel(),
-          price);
+          price,
+          imageUrl);
+
     } catch (GoldPriceCalculationException e) {
       log.error(
           "Failed to calculate gold price for new gold type '{}': {}",
           request.getName(),
           e.getMessage(),
           e);
-      throw new BadRequestException("Could not add gold type: " + e.getMessage());
+      throw new BadRequestException("Could not add gold type due to price calculation error");
+    } catch (StorageException e) {
+      log.error(
+          "Storage operation failed while adding gold type '{}': {}",
+          request.getName(),
+          e.getMessage());
+      throw new ServiceException("Failed to upload image for gold type");
+    } catch (MinioStorageException e) {
+      log.error(
+          "MinIO storage operation failed while adding gold type '{}': {}",
+          request.getName(),
+          e.getMessage());
+      throw new ServiceException("Failed to upload image to storage");
     } catch (IllegalArgumentException e) {
-      log.error("Invalid weight unit provided: {}", e.getMessage());
+      log.error(
+          "Invalid weight unit provided for gold type '{}': {}", request.getName(), e.getMessage());
       throw new BadRequestException("Invalid weight unit: " + request.getUnit());
     } catch (Exception e) {
       log.error(
-          "Unexpected error while adding gold type '{}': {}", request.getName(), e.getMessage());
+          "Unexpected error while adding gold type '{}': {}", request.getName(), e.getMessage(), e);
       throw new ServiceException("Unexpected error occurred while adding gold type");
     }
   }
 
   @Override
   public void deleteGoldTypeById(UUID id) {
-    GoldType goldType = queryGoldTypeService.getGoldTypeById(id);
-    goldTypeRepository.delete(goldType);
+    log.info("Attempting to delete gold type with ID: {}", id);
+
+    try {
+      GoldType goldType = queryGoldTypeService.getGoldTypeById(id);
+
+      if (goldType.getImageUrl() != null && !goldType.getImageUrl().trim().isEmpty()) {
+        log.info("Deleting image from storage for gold type: {}", goldType.getName());
+        try {
+          storageService.deleteObject(BUCKET_NAME, goldType.getImageUrl());
+          log.info("Successfully deleted image from storage for gold type: {}", goldType.getName());
+        } catch (StorageException | MinioStorageException e) {
+          log.warn(
+              "Failed to delete image from storage for gold type '{}': {}. Proceeding with entity deletion.",
+              goldType.getName(),
+              e.getMessage());
+          throw new ServiceException("Failed to delete image from storage for gold type");
+        }
+      }
+
+      goldTypeRepository.delete(goldType);
+      log.info("Successfully deleted gold type: {} (ID: {})", goldType.getName(), id);
+
+    } catch (EntityNotFoundException e) {
+      throw e;
+    } catch (StorageException | MinioStorageException e) {
+      log.error(
+          "Storage operation failed while deleting gold type with ID '{}': {}", id, e.getMessage());
+      throw new ServiceException("Failed to delete associated image: " + e.getMessage());
+    } catch (Exception e) {
+      log.error(
+          "Unexpected error while deleting gold type with ID '{}': {}", id, e.getMessage(), e);
+      throw new ServiceException("Unexpected error occurred while deleting gold type");
+    }
   }
 
   private void validateAddGoldTypeRequest(AddGoldTypeRequest request, MultipartFile file) {
@@ -157,29 +211,5 @@ public class GoldTypeService implements IGoldTypeService {
 
     Matcher matcher = pattern.matcher(input);
     return matcher.matches();
-  }
-
-  private String generateObjectKeyFromId(UUID id, MultipartFile file) {
-    String extension = getFileExtension(file);
-    return id.toString() + extension;
-  }
-
-  private String getFileExtension(MultipartFile file) {
-    String originalFilename = file.getOriginalFilename();
-    if (originalFilename != null && originalFilename.contains(".")) {
-      return originalFilename.substring(originalFilename.lastIndexOf("."));
-    }
-
-    String contentType = file.getContentType();
-    if (contentType != null) {
-      return switch (contentType) {
-        case "image/png" -> ".png";
-        case "image/gif" -> ".gif";
-        case "image/webp" -> ".webp";
-        default -> ".jpg";
-      };
-    }
-
-    return ".jpg";
   }
 }

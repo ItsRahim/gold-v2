@@ -1,9 +1,9 @@
 spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: '{cipher}66452d7a1419b7e1bef328c9c31ed9354462d10d049cf38d0a87aa8fc4bf59e1d8aa427f36ce24ee226fcf2904be0c8e762c919c0b5b4e20dcaa5f719439f3f7'
-    username: '{cipher}47996f7df37d35a90f5166c6e312f0a0cf0316709cf3c767d897ccf1c1accc84'
-    password: '{cipher}5441b5882f415b2ba9944576fd8045597fb2ee50984b920cfc3b2f1b14fbec83'
+    url: '{cipher}b6d59072142ba74dfcd6ad83b802ffc0d3c85d4cb645a88c8e03ae2ea841510f76af5fca4359335741a4cae633285ac5db5a9288a5040ac30291ae3ab360f93c'
+    username: '{cipher}ac09d5514be7de857462e6c8711037c5e1b3a1864db3ff9390c67f2f07978a01'
+    password: '{cipher}8945a03544d4b5f8d836a12d5cb1ff265aebb8d23ff3cd56609e76ea6bb7d2f6'
     driver-class-name: org.postgresql.Driver
     hikari:
       connection-timeout: 30000

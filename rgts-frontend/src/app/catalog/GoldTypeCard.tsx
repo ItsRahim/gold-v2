@@ -79,13 +79,12 @@ export function GoldTypeCard({ item, onDelete }: GoldTypeCardProps) {
             <p className='text-sm text-muted-foreground'>
               Are you sure you want to delete <span className='font-semibold text-foreground'>"{item.name}"</span>?
             </p>
-            <p className='text-sm text-muted-foreground mt-2'>This action cannot be undone.</p>
           </div>
           <DialogFooter className='gap-2'>
-            <Button variant='outline' onClick={handleCancel}>
+            <Button variant='outline' className='cursor-pointer' onClick={handleCancel}>
               Cancel
             </Button>
-            <Button variant='destructive' onClick={handleConfirm}>
+            <Button variant='destructive' className='opacity-80 hover:opacity-100 transition-opacity cursor-pointer' onClick={handleConfirm}>
               Delete
             </Button>
           </DialogFooter>

@@ -48,5 +48,5 @@ public class AwsS3StorageService implements StorageService {
   }
 
   @Override
-  public void deleteObject(String bucketName, String objectKey) {}
+  public void deleteObject(String bucketName, String url) {}
 }
