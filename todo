@@ -10,13 +10,15 @@ Gold types price history daily, weekly, monthly, and yearly stored in mongodb
 Gold price updates to send percentage change to frontend (daily)
 
 -- Email Service --
-Button to verify email to go to frontend and then make a call to the backend to verify the email
+Button to verify email to go to frontend and then make a call to the backend to verify the email (On Hold authentication-service and frontend work pending)
 
--- Authentication Service --
+-- Authentication Service (On Hold)--
 Tests for everything
 
 -- Frontend --
 Implement tests for the frontend
+Implement Playwright for e2e testing
 
 -- Storage Service --
 Implement tests for the storage service (MinIO)
+Implement functionality for AWS S3 storage service (Pending AWS work to begin)
