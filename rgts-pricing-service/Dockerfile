@@ -28,6 +28,7 @@ COPY rgts-common/src rgts-common/src
 COPY rgts-cache-manager/src rgts-cache-manager/src
 COPY rgts-kafka-service/src rgts-kafka-service/src
 COPY rgts-proto-service/src rgts-proto-service/src
+COPY rgts-storage-service/pom.xml rgts-storage-service/
 COPY rgts-pricing-service/src rgts-pricing-service/src
 
 # Package the target service and dependencies
