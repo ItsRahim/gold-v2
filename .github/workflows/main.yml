@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - '.github/**'
+      - 'rgts-cache-manager/**'
       - 'rgts-common/**'
       - 'rgts-config-server/**'
       - 'rgts-email-service/**'
@@ -15,13 +16,14 @@ on:
       - 'rgts-pricing-service/**'
       - 'rgts-proto-service/**'
       - 'rgts-python-api/**'
+      - 'rgts-storage-service/**'
 
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        folder: [ "rgts-config-server", "rgts-eureka-server", "rgts-gateway-service", "rgts-pricing-service" ]
+        folder: [ "rgts-authentication-service", "rgts-cache-manager", "rgts-common", "rgts-config-server", "rgts-email-service", "rgts-eureka-server", "rgts-gateway-service", "rgts-pricing-service", "rgts-storage-service" ]
 
     steps:
       - name: Checkout code
@@ -51,7 +53,7 @@ jobs:
     needs: build
     strategy:
       matrix:
-        folder: [ "rgts-eureka-server", "rgts-gateway-service", "rgts-pricing-service", "rgts-python-api" ]
+        folder: [ "rgts-authentication-service", "rgts-config-server", "rgts-email-service", "rgts-eureka-server", "rgts-gateway-service", "rgts-pricing-service", "rgts-python-api" ]
 
     steps:
       - name: Checkout code
