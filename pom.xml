@@ -57,7 +57,7 @@
         <module>rgts-email-service</module>
         <module>rgts-eureka-server</module>
         <module>rgts-gateway-service</module>
-        <module>rgts-holdings-service</module>
+        <module>rgts-portfolio-service</module>
         <module>rgts-kafka-service</module>
         <module>rgts-notification-service</module>
         <module>rgts-pricing-service</module>

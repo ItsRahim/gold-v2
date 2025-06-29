@@ -9,6 +9,6 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>rgts-holdings-service</artifactId>
+    <artifactId>rgts-investment-service</artifactId>
 
 </project>

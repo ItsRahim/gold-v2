@@ -13,7 +13,7 @@ COPY rgts-config-server/pom.xml rgts-config-server/
 COPY rgts-email-service/pom.xml rgts-email-service/
 COPY rgts-eureka-server/pom.xml rgts-eureka-server/
 COPY rgts-gateway-service/pom.xml rgts-gateway-service/
-COPY rgts-holdings-service/pom.xml rgts-holdings-service/
+COPY rgts-portfolio-service/pom.xml rgts-portfolio-service/
 COPY rgts-kafka-service/pom.xml rgts-kafka-service/
 COPY rgts-notification-service/pom.xml rgts-notification-service/
 COPY rgts-pricing-service/pom.xml rgts-pricing-service/
