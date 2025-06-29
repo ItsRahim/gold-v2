@@ -1,7 +1,8 @@
 # 🪙 RGTS Gold v2
+This is a **rebuild** of the original [RGTS Gold project](https://github.com/ItsRahim/gold-tracker-project), focusing on modularity, scalability, and maintainability.
 
 A distributed, event-driven microservices trading platform built with **Java (Spring Boot)**, **Kafka**, **Docker**, and
-**Python** — designed to simulate real-world financial systems, async workflows, and full-stack service orchestration.
+**Python** — designed to track live gold prices and track user investments
 
 ---
 
@@ -14,9 +15,6 @@ A distributed, event-driven microservices trading platform built with **Java (Sp
 - Python-based API layer
 - Docker Compose orchestration
 - Observability and quality tooling
-
-> Built to explore scalable microservice design, distributed event handling, and modern DevOps practices.
-
 ---
 
 ## 🧱 System Architecture
@@ -30,31 +28,30 @@ A distributed, event-driven microservices trading platform built with **Java (Sp
                +----------+-----------+
                |       API Gateway     |
                +----+-----------+-----+
-                    |           |
-        +-----------+--+     +--+------------+
-        | Authentication |   | Holdings     |
-        | Service         |   | Service      |
-        +-----------------+   +--------------+
+                          |
+                  +-------+---------+  
+                  | Authentication  | 
+                  |     Service     |
+                  +-----------------+
                     |           |
                     v           v
                Kafka Topics / Async Events
-                    |
-    +---------------+-------------------+
-    | Notification / Pricing / Email   |
-    |       Services via Kafka         |
-    +----------------+-----------------+
-                     |
-           +---------v--------+
-           | Config + Eureka  |
-           +------------------+
+                          |
+          +---------------+------------------+
+          | Notification / Pricing / Email   |
+          |       Services via Kafka         |
+          +----------------+-----------------+
+                            |
+                  +---------v--------+
+                  | Config + Eureka  |
+                  +------------------+
 ```
 
 ---
 
 ## 📩 Admin Messaging with Kafka & Protobuf
 
-A centralised [`admin.proto`](./protos/admin.proto) schema enables consistent, event-driven communication between
-services using **Kafka**.
+A centralised [`admin.proto`] schema enables consistent, event-driven communication between services using **Kafka**.
 
 ### 🧱 Message Design
 
@@ -76,6 +73,14 @@ Each Kafka message is wrapped in an `Envelope`, containing:
 ### 📦 Example `admin.proto`
 
 ```proto
+message UserCreated {
+  string userId = 1;
+}
+
+message UserDeleted {
+  string userId = 1;
+}
+
 enum DestinationService {
   UNKNOWN = 0;
   PRICING_SERVICE = 1;
@@ -98,7 +103,6 @@ message Envelope {
   oneof payload {
     UserCreated userCreated = 2;
     UserDeleted userDeleted = 3;
-    InvestmentCreated investmentCreated = 4;
   }
 }
 ```
@@ -117,7 +121,7 @@ This ensures **clean separation**, minimal coupling, and avoids topic bloat.
 
 ## ⚙️ Tech Stack
 
-- **Java 17** / Spring Boot
+- **Java 21** / Spring Boot
 - **Python 3.x**
 - **Apache Kafka** (async messaging)
 - **Docker Compose** (local orchestration)
@@ -126,6 +130,9 @@ This ensures **clean separation**, minimal coupling, and avoids topic bloat.
 - **Prometheus** (monitoring)
 - **SonarQube** + **OWASP** (code quality + security)
 - **Renovate** (automated dependency management)
+- **MinIO** / **AWS S3** (object storage)
+- **Protobuf** (message serialization)
+- **React** (frontend UI)
 
 ---
 
@@ -134,7 +141,7 @@ This ensures **clean separation**, minimal coupling, and avoids topic bloat.
 ### 📦 Prerequisites
 
 - [Docker + Docker Compose](https://docs.docker.com/get-docker/)
-- Java 17
+- Java 21
 - Python 3.x
 
 ### 🔧 Run Full Stack
@@ -156,8 +163,7 @@ This launches:
 
 ```bash
 cd rgts-python-api
-pip install -r requirements.txt
-python app.py
+./startup.sh
 ```
 
 ---
@@ -168,14 +174,15 @@ python app.py
 |-------------------------------|---------------------------------------|
 | `rgts-authentication-service` | Manages auth, JWTs, and user sessions |
 | `rgts-cache-manager`          | Caching layer for performance         |
-| `rgts-config-server`          | Spring Cloud centralized config       |
+| `rgts-config-server`          | Spring Cloud centralised config       |
+| `rgts-email-service`          | Sends out emails to users             |
 | `rgts-eureka-server`          | Service registry via Eureka           |
-| `rgts-gateway-service`        | Routes frontend/API traffic           |
-| `rgts-pricing-service`        | Real-time pricing engine              |
-| `rgts-kafka-service`          | Kafka setup and topic handling        |
-| `rgts-notification-service`   | Email/alerts service                  |
 | `rgts-frontend`               | Web UI interface                      |
-| `rgts-python-api`             | External Python API gateway           |
+| `rgts-gateway-service`        | Routes frontend/API traffic           |
+| `rgts-kafka-service`          | Kafka setup and topic handling        |
+| `rgts-pricing-service`        | Real-time pricing engine              |
+| `rgts-python-api`             | Web scraper to fetch price updates    |
+| `rgts-storage-service`        | Manages MinIO/AWS S3 Bucket storage   |
 
 ---
 
@@ -195,7 +202,6 @@ Includes tooling to enforce standards:
 ```bash
 ./format.sh     # Auto-format source
 ./owasp.sh      # OWASP security check
-./scan.sh       # Run Sonar static analysis
 ```
 
 ---

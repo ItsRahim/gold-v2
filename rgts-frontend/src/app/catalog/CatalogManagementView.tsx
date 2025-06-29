@@ -1,91 +1,33 @@
 import { useEffect, useState } from 'react';
-import type { GoldItem, AddGoldTypeRequest } from '@/app/catalog/catalogTypes.ts';
-import { addGoldType, deleteGoldType, getAllGoldTypes } from '@/services/gold.ts';
-import { showToast, TOAST_TYPES } from '@/components/shared/ToastNotification.ts';
+import type { AddGoldTypeRequest } from '@/app/catalog/catalogTypes.ts';
 import { PageHeader } from '@/components/shared/PageHeader.tsx';
 import { AddGoldDialog } from '@/app/catalog/AddGoldTypeDialog.tsx';
 import { RefreshButton } from '@/components/shared/RefreshButton.tsx';
 import { GoldTypeCard } from '@/app/catalog/GoldTypeCard.tsx';
+import { useGoldTypeStore } from '@/stores/GoldTypeStore.ts';
 
 export default function CatalogManagementView() {
-  const [goldItems, setGoldItems] = useState<GoldItem[]>([]);
   const [open, setOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const { goldTypes, isRefreshing, fetchGoldTypes, addGoldType, deleteGoldType, refreshGoldTypes } = useGoldTypeStore();
 
   useEffect(() => {
-    fetchGoldItems();
-  }, []);
+    fetchGoldTypes();
+  }, [fetchGoldTypes]);
 
-  async function fetchGoldItems(isRefresh = false) {
-    if (isRefresh) {
-      setIsRefreshing(true);
-    }
+  const handleAddGoldType = async (goldType: AddGoldTypeRequest, file: File) => {
+    await addGoldType(goldType, file);
+  };
 
-    try {
-      const res = await getAllGoldTypes();
-      setGoldItems(res.content);
-    } catch (err) {
-      console.error('Failed to fetch gold types:', err);
-      showToast(TOAST_TYPES.ERROR, 'Failed to load gold items. Please try again.');
-    } finally {
-      setIsLoading(false);
-      if (isRefresh) {
-        setIsRefreshing(false);
-      }
-    }
-  }
+  const handleDeleteGoldType = async (id: number, name: string) => {
+    await deleteGoldType(id, name);
+  };
 
-  async function handleAddGoldType(goldType: AddGoldTypeRequest, file: File) {
-    const result = await addGoldType(goldType, file);
+  const handleRefresh = () => {
+    refreshGoldTypes();
+  };
 
-    if (result && 'name' in result) {
-      fetchGoldItems();
-      showToast(TOAST_TYPES.SUCCESS, `Gold type "${result.name}" added successfully!`);
-    } else if (result && 'message' in result) {
-      showToast(TOAST_TYPES.ERROR, result.message);
-    } else {
-      showToast(TOAST_TYPES.ERROR, 'Failed to add gold type. Please try again.');
-    }
-  }
-
-  async function handleDeleteGoldType(id: number, name: string) {
-    const result = await deleteGoldType(id.toString());
-
-    if (result) {
-      showToast(TOAST_TYPES.ERROR, `Failed to delete gold type: "${name}"`);
-    } else {
-      fetchGoldItems();
-      showToast(TOAST_TYPES.SUCCESS, `Successfully deleted gold type "${name}"`);
-    }
-  }
-
-  function handleRefresh() {
-    fetchGoldItems(true);
-  }
-
-  if (isLoading) {
-    return (
-      <div className='p-6 space-y-6'>
-        <PageHeader
-          title='Gold Market'
-          actions={
-            <div className='flex space-x-2'>
-              <AddGoldDialog open={open} setOpen={setOpen} onSubmit={handleAddGoldType} />
-              <RefreshButton onClick={handleRefresh} label='Refresh Gold Items' disabled />
-            </div>
-          }
-        />
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
-          {Array.from({ length: 6 }).map((_, index) => (
-            <div key={index} className='h-48 bg-muted rounded-lg animate-pulse' />
-          ))}
-        </div>
-      </div>
-    );
-  }
-
-  const hasGoldItems = goldItems && goldItems.length > 0;
+  const hasGoldItems = goldTypes && goldTypes.length > 0;
 
   return (
     <div className='p-6 space-y-6'>
@@ -110,7 +52,7 @@ export default function CatalogManagementView() {
         </div>
       ) : (
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
-          {goldItems.map((item) => (
+          {goldTypes.map((item) => (
             <GoldTypeCard key={item.id} item={item} onDelete={handleDeleteGoldType} />
           ))}
         </div>
