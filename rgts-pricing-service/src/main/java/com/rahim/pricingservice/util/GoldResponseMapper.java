@@ -3,10 +3,8 @@ package com.rahim.pricingservice.util;
 import com.rahim.common.exception.MappingException;
 import com.rahim.pricingservice.dto.response.GoldTypeResponseDTO;
 import com.rahim.pricingservice.entity.GoldType;
-import com.rahim.storageservice.service.MinioStorageService;
 import com.rahim.storageservice.service.StorageService;
 import com.rahim.storageservice.service.StorageServiceFactory;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
