@@ -144,16 +144,8 @@ public class GoldTypeService implements IGoldTypeService {
 
       if (goldType.getImageUrl() != null && !goldType.getImageUrl().trim().isEmpty()) {
         log.info("Deleting image from storage for gold type: {}", goldType.getName());
-        try {
-          storageService.deleteObject(BUCKET_NAME, goldType.getImageUrl());
-          log.info("Successfully deleted image from storage for gold type: {}", goldType.getName());
-        } catch (StorageException | MinioStorageException e) {
-          log.warn(
-              "Failed to delete image from storage for gold type '{}': {}. Proceeding with entity deletion.",
-              goldType.getName(),
-              e.getMessage());
-          throw new ServiceException("Failed to delete image from storage for gold type");
-        }
+        storageService.deleteObject(BUCKET_NAME, goldType.getImageUrl());
+        log.info("Successfully deleted image from storage for gold type: {}", goldType.getName());
       }
 
       goldTypeRepository.delete(goldType);
@@ -162,12 +154,13 @@ public class GoldTypeService implements IGoldTypeService {
     } catch (EntityNotFoundException e) {
       throw e;
     } catch (StorageException | MinioStorageException e) {
-      log.error(
-          "Storage operation failed while deleting gold type with ID '{}': {}", id, e.getMessage());
-      throw new ServiceException("Failed to delete associated image: " + e.getMessage());
+      log.warn(
+              "Failed to delete image from storage for gold type with ID '{}': {}. Proceeding with entity deletion.",
+              id, e.getMessage());
+      throw new ServiceException("Failed to delete image from storage for gold type");
     } catch (Exception e) {
       log.error(
-          "Unexpected error while deleting gold type with ID '{}': {}", id, e.getMessage(), e);
+              "Unexpected error while deleting gold type with ID '{}': {}", id, e.getMessage(), e);
       throw new ServiceException("Unexpected error occurred while deleting gold type");
     }
   }
