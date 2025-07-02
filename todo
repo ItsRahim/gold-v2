@@ -22,3 +22,12 @@ Implement Playwright for e2e testing
 -- Storage Service --
 Implement tests for the storage service (MinIO)
 Implement functionality for AWS S3 storage service (Pending AWS work to begin)
+
+-- Common --
+Implement tests for DateUtil using different timezones etc to ensure it works correctly
+
+-- Feature Ideas --
+Implement a leaderboard to compare/view portfolio using various metrics (performance, value, etc)
+Leaderboard group between users, friends, and groups
+Allow users to add their own gold types (only they can view it)
+Implement user deletion with email alerts, cron jobs to check user status and account status and so forth
