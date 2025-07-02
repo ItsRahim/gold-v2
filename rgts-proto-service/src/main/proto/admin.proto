@@ -1,0 +1,27 @@
+package com.rahim.proto.protobuf.admin;
+
+message UserCreated {
+  required string userId = 1;
+  required string email = 2;
+}
+
+message UserDeleted {
+  required string userId = 1;
+}
+
+message Metadata {
+  required string eventId = 1;
+  required string eventType = 2;
+  required string occurredAt = 3;
+  required string aggregateId = 4;
+  required string correlationId = 5;
+  required string causationId = 6;
+}
+
+message Envelope {
+  required Metadata metadata = 1;
+  oneof payload {
+    UserCreated user_created = 2;
+    UserDeleted user_deleted = 3;
+  }
+}
