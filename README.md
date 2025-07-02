@@ -59,16 +59,17 @@ Each Kafka message is wrapped in an `Envelope`, containing:
 
 #### 🔹 Header (Metadata)
 
-- `subject`: Event type (`USER_CREATED`, `USER_DELETED`, etc.)
-- `destinationService`: Enum to route the message to the intended service
-- `sourceService`: Originating microservice
-- `timestamp`, `traceId`, `correlationId`: For observability & distributed tracing
-- `userId`: Optional, scoped to user-specific events
+- `eventId`: Unique identifier for the event (UUID)
+- `eventType`: Event type (e.g., `user.created`, `user.deleted`)
+- `occurredAt`: Timestamp when the event occurred
+- `aggregateId`: Identifier of the aggregate root related to the event (often the `userId`)
+- `correlationId`: Used for tracing the flow across services
+- `causationId`: ID of the event or action that caused this event
 
 #### 🔹 Payload
 
 - A `oneof` payload block containing event-specific objects:
-    - `UserCreated`, `UserDeleted`, `InvestmentCreated`, etc.
+    - `UserCreated`, `UserDeleted`, etc.
 
 ### 📦 Example `admin.proto`
 
