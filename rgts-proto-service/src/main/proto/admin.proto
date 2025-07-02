@@ -9,6 +9,15 @@ message UserDeleted {
   required string userId = 1;
 }
 
+message GoldTypePriceUpdated {
+  required string goldTypeId = 1;
+  required string price = 2;
+}
+
+message GoldTypeDeleted {
+  required string goldTypeId = 1;
+}
+
 message Metadata {
   required string eventId = 1;
   required string eventType = 2;
@@ -21,7 +30,7 @@ message Metadata {
 message Envelope {
   required Metadata metadata = 1;
   oneof payload {
-    UserCreated user_created = 2;
-    UserDeleted user_deleted = 3;
+    UserCreated userCreated = 2;
+    UserDeleted userDeleted = 3;
   }
 }

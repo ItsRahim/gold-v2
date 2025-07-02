@@ -73,33 +73,28 @@ Each Kafka message is wrapped in an `Envelope`, containing:
 ### 📦 Example `admin.proto`
 
 ```proto
+package com.rahim.proto.protobuf.admin;
+
 message UserCreated {
-  string userId = 1;
+  required string userId = 1;
+  required string email = 2;
 }
 
 message UserDeleted {
-  string userId = 1;
+  required string userId = 1;
 }
 
-enum DestinationService {
-  UNKNOWN = 0;
-  PRICING_SERVICE = 1;
-  INVESTMENT_SERVICE = 2;
-}
-
-message Header {
-  string subject = 1;
-  DestinationService destinationService = 2;
-  string sourceService = 3;
-  string timestamp = 4;
-  string correlationId = 5;
-  string traceId = 6;
-  string userId = 7;
+message Metadata {
+  required string eventId = 1;
+  required string eventType = 2;
+  required string occurredAt = 3;
+  required string aggregateId = 4;
+  required string correlationId = 5;
+  required string causationId = 6;
 }
 
 message Envelope {
-  Header header = 1;
-
+  required Metadata metadata = 1;
   oneof payload {
     UserCreated userCreated = 2;
     UserDeleted userDeleted = 3;
@@ -109,14 +104,22 @@ message Envelope {
 
 ### 🔄 Routing Logic
 
-Each service consumes from a shared Kafka topic and processes messages **only if**:
+All microservices consume from a shared Kafka topic and decide whether to process a message by checking 
+the payload type inside the `Envelope`. Each service processes messages only if the payload matches the events it handles.
 
 ```java
-header.getDestinationService().name().equalsIgnoreCase(thisServiceName)
+Envelope envelope = Envelope.parseFrom(kafkaMessage.getValue());
+
+switch (envelope.getPayloadCase()) {
+    case USERCREATED:
+        if (thisServiceHandlesUserEvents) {
+            // Process UserCreated event
+        }
+        break;
+    default:
+        break;
+}
 ```
-
-This ensures **clean separation**, minimal coupling, and avoids topic bloat.
-
 ---
 
 ## ⚙️ Tech Stack
