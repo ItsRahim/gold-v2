@@ -89,7 +89,7 @@ message Metadata {
   required string eventId = 1;
   required string eventType = 2;
   required string occurredAt = 3;
-  required string aggregateId = 4;
+  optional string aggregateId = 4;
   required string correlationId = 5;
   required string causationId = 6;
 }
