@@ -155,12 +155,13 @@ public class GoldTypeService implements IGoldTypeService {
       throw e;
     } catch (StorageException | MinioStorageException e) {
       log.warn(
-              "Failed to delete image from storage for gold type with ID '{}': {}. Proceeding with entity deletion.",
-              id, e.getMessage());
+          "Failed to delete image from storage for gold type with ID '{}': {}. Proceeding with entity deletion.",
+          id,
+          e.getMessage());
       throw new ServiceException("Failed to delete image from storage for gold type");
     } catch (Exception e) {
       log.error(
-              "Unexpected error while deleting gold type with ID '{}': {}", id, e.getMessage(), e);
+          "Unexpected error while deleting gold type with ID '{}': {}", id, e.getMessage(), e);
       throw new ServiceException("Unexpected error occurred while deleting gold type");
     }
   }
