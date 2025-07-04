@@ -98,9 +98,12 @@ class DateUtilTest {
     ZoneId jstZone = ZoneId.of("Asia/Tokyo");
     ZoneId istZone = ZoneId.of("Asia/Kolkata");
 
-    String formattedEst = instant.atZone(estZone).format(DateTimeFormatter.ofPattern(DateUtil.DATE_TIME_PATTERN));
-    String formattedJst = instant.atZone(jstZone).format(DateTimeFormatter.ofPattern(DateUtil.DATE_TIME_PATTERN));
-    String formattedIst = instant.atZone(istZone).format(DateTimeFormatter.ofPattern(DateUtil.DATE_TIME_PATTERN));
+    String formattedEst =
+        instant.atZone(estZone).format(DateTimeFormatter.ofPattern(DateUtil.DATE_TIME_PATTERN));
+    String formattedJst =
+        instant.atZone(jstZone).format(DateTimeFormatter.ofPattern(DateUtil.DATE_TIME_PATTERN));
+    String formattedIst =
+        instant.atZone(istZone).format(DateTimeFormatter.ofPattern(DateUtil.DATE_TIME_PATTERN));
 
     assertEquals("2025-06-01 08:34:56", formattedEst);
     assertEquals("2025-06-01 21:34:56", formattedJst);
@@ -110,7 +113,8 @@ class DateUtilTest {
   @Test
   void testNowUtcWithDifferentTimezones() {
     OffsetDateTime utcNow = DateUtil.nowUtc();
-    OffsetDateTime estTime = utcNow.atZoneSameInstant(ZoneId.of("America/New_York")).toOffsetDateTime();
+    OffsetDateTime estTime =
+        utcNow.atZoneSameInstant(ZoneId.of("America/New_York")).toOffsetDateTime();
     OffsetDateTime jstTime = utcNow.atZoneSameInstant(ZoneId.of("Asia/Tokyo")).toOffsetDateTime();
     OffsetDateTime istTime = utcNow.atZoneSameInstant(ZoneId.of("Asia/Kolkata")).toOffsetDateTime();
 
@@ -129,8 +133,10 @@ class DateUtilTest {
     OffsetDateTime utcBase = OffsetDateTime.of(2025, 6, 1, 12, 0, 0, 0, ZoneOffset.UTC);
     OffsetDateTime utcPlus60 = DateUtil.addMinutesToNowUtc(utcBase, 60);
 
-    OffsetDateTime estPlus60 = utcPlus60.atZoneSameInstant(ZoneId.of("America/New_York")).toOffsetDateTime();
-    OffsetDateTime jstPlus60 = utcPlus60.atZoneSameInstant(ZoneId.of("Asia/Tokyo")).toOffsetDateTime();
+    OffsetDateTime estPlus60 =
+        utcPlus60.atZoneSameInstant(ZoneId.of("America/New_York")).toOffsetDateTime();
+    OffsetDateTime jstPlus60 =
+        utcPlus60.atZoneSameInstant(ZoneId.of("Asia/Tokyo")).toOffsetDateTime();
 
     assertEquals("2025-06-01 13:00:00", DateUtil.formatOffsetDateTime(utcPlus60));
     assertEquals("2025-06-01 09:00:00", DateUtil.formatOffsetDateTime(estPlus60));
