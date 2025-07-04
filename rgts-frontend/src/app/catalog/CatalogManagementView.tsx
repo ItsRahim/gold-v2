@@ -9,7 +9,7 @@ import { useGoldTypeStore } from '@/stores/GoldTypeStore.ts';
 export default function CatalogManagementView() {
   const [open, setOpen] = useState(false);
 
-  const { goldTypes, isRefreshing, fetchGoldTypes, addGoldType, deleteGoldType, refreshGoldTypes } = useGoldTypeStore();
+  const { goldTypes, isRefreshing, fetchGoldTypes, addGoldType, deleteGoldType } = useGoldTypeStore();
 
   useEffect(() => {
     fetchGoldTypes();
@@ -24,7 +24,7 @@ export default function CatalogManagementView() {
   };
 
   const handleRefresh = () => {
-    refreshGoldTypes();
+    fetchGoldTypes();
   };
 
   const hasGoldItems = goldTypes && goldTypes.length > 0;

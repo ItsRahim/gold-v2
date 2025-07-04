@@ -137,20 +137,16 @@ public class GoldTypeService implements IGoldTypeService {
 
   @Override
   public void deleteGoldTypeById(UUID id) {
-    log.info("Attempting to delete gold type with ID: {}", id);
-
     try {
       GoldType goldType = queryGoldTypeService.getGoldTypeById(id);
 
       if (goldType.getImageUrl() != null && !goldType.getImageUrl().trim().isEmpty()) {
         log.info("Deleting image from storage for gold type: {}", goldType.getName());
         storageService.deleteObject(BUCKET_NAME, goldType.getImageUrl());
-        log.info("Successfully deleted image from storage for gold type: {}", goldType.getName());
       }
 
       goldTypeRepository.delete(goldType);
       log.info("Successfully deleted gold type: {} (ID: {})", goldType.getName(), id);
-
     } catch (EntityNotFoundException e) {
       throw e;
     } catch (StorageException | MinioStorageException e) {

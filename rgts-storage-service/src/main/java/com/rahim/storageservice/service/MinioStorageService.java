@@ -27,23 +27,22 @@ public class MinioStorageService implements StorageService {
   @Override
   public void createBucket(String bucketName) {
     validateBucketName(bucketName);
-    log.info("Attempting to create bucket: {}", bucketName);
+    log.debug("Creating bucket: {}", bucketName);
 
     try {
       if (bucketExists(bucketName)) {
-        log.info("Bucket '{}' already exists, skipping creation", bucketName);
+        log.debug("Bucket '{}' already exists, skipping creation", bucketName);
         return;
       }
 
       minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
-      log.info("Successfully created bucket: {}", bucketName);
+      log.info("Created bucket: {}", bucketName);
 
     } catch (StorageException | MinioStorageException e) {
-      log.error(
-          "Storage operation failed while creating bucket '{}': {}", bucketName, e.getMessage());
+      log.error("Failed to create bucket '{}': {}", bucketName, e.getMessage());
       throw e;
     } catch (Exception e) {
-      log.error("Failed to create bucket '{}': {}", bucketName, e.getMessage(), e);
+      log.error("Unexpected error creating bucket '{}': {}", bucketName, e.getMessage(), e);
       throw new MinioStorageException("Failed to create bucket: " + bucketName);
     }
   }
@@ -51,7 +50,7 @@ public class MinioStorageService implements StorageService {
   @Override
   public void deleteBucket(String bucketName) {
     validateBucketName(bucketName);
-    log.info("Attempting to delete bucket: {}", bucketName);
+    log.debug("Deleting bucket: {}", bucketName);
 
     try {
       if (!bucketExists(bucketName)) {
@@ -60,14 +59,13 @@ public class MinioStorageService implements StorageService {
       }
 
       minioClient.removeBucket(RemoveBucketArgs.builder().bucket(bucketName).build());
-      log.info("Successfully deleted bucket: {}", bucketName);
+      log.info("Deleted bucket: {}", bucketName);
 
     } catch (StorageException | MinioStorageException e) {
-      log.error(
-          "Storage operation failed while deleting bucket '{}': {}", bucketName, e.getMessage());
+      log.error("Failed to delete bucket '{}': {}", bucketName, e.getMessage());
       throw e;
     } catch (Exception e) {
-      log.error("Failed to delete bucket '{}': {}", bucketName, e.getMessage(), e);
+      log.error("Unexpected error deleting bucket '{}': {}", bucketName, e.getMessage(), e);
       throw new MinioStorageException("Failed to delete bucket: " + bucketName);
     }
   }
@@ -84,7 +82,8 @@ public class MinioStorageService implements StorageService {
       return exists;
 
     } catch (Exception e) {
-      log.error("Failed to check if bucket '{}' exists: {}", bucketName, e.getMessage(), e);
+      log.error(
+          "Unexpected error checking bucket '{}' existence: {}", bucketName, e.getMessage(), e);
       throw new MinioStorageException("Failed to check bucket existence: " + bucketName);
     }
   }
@@ -95,15 +94,10 @@ public class MinioStorageService implements StorageService {
     validateUploadParameters(id, file);
 
     log.info(
-        "Starting image upload - Bucket: {}, ID: {}, FileName: {}, FileSize: {} bytes, ContentType: {}",
-        bucketName,
-        id,
-        file.getOriginalFilename(),
-        file.getSize(),
-        file.getContentType());
+        "Uploading image - Bucket: {}, ID: {}, Size: {} bytes", bucketName, id, file.getSize());
 
     if (!bucketExists(bucketName)) {
-      log.info("Bucket '{}' does not exist. Creating it now.", bucketName);
+      log.info("Creating bucket '{}' as it does not exist", bucketName);
       createBucket(bucketName);
     }
 
@@ -112,8 +106,7 @@ public class MinioStorageService implements StorageService {
       objectKey = StorageUrlUtils.generateObjectKeyFromId(id, file);
 
       if (objectExists(bucketName, objectKey)) {
-        log.warn(
-            "Object '{}' already exists in bucket '{}', will overwrite", objectKey, bucketName);
+        log.warn("Overwriting existing object '{}' in bucket '{}'", objectKey, bucketName);
       }
 
       minioClient.putObject(
@@ -123,30 +116,19 @@ public class MinioStorageService implements StorageService {
               .build());
 
       String imageUrl = String.format("%s/%s/%s", minioUrl, bucketName, objectKey);
-      log.info(
-          "Successfully uploaded image - Bucket: {}, ObjectKey: {}, URL: {}",
-          bucketName,
-          objectKey,
-          imageUrl);
+      log.info("Uploaded image - Bucket: {}, ObjectKey: {}", bucketName, objectKey);
       return imageUrl;
 
-    } catch (StorageException e) {
+    } catch (StorageException | MinioStorageException e) {
       log.error(
-          "Upload failed due to storage utility error - Bucket: {}, ObjectKey: {}, Error: {}",
-          bucketName,
-          objectKey,
-          e.getMessage());
-      throw e;
-    } catch (MinioStorageException e) {
-      log.error(
-          "Upload failed due to MinIO error - Bucket: {}, ObjectKey: {}, Error: {}",
+          "Failed to upload to bucket '{}' with key '{}': {}",
           bucketName,
           objectKey,
           e.getMessage());
       throw e;
     } catch (Exception e) {
       log.error(
-          "Failed to upload object to bucket '{}' with key '{}': {}",
+          "Unexpected error uploading to bucket '{}' with key '{}': {}",
           bucketName,
           objectKey,
           e.getMessage(),
@@ -160,7 +142,7 @@ public class MinioStorageService implements StorageService {
     validateBucketName(bucketName);
     validateObjectKey(objectKey);
 
-    log.info("Attempting to download object - Bucket: {}, ObjectKey: {}", bucketName, objectKey);
+    log.debug("Downloading object - Bucket: {}, ObjectKey: {}", bucketName, objectKey);
 
     try {
       if (!objectExists(bucketName, objectKey)) {
@@ -172,20 +154,19 @@ public class MinioStorageService implements StorageService {
           minioClient.getObject(
               GetObjectArgs.builder().bucket(bucketName).object(objectKey).build());
 
-      log.info(
-          "Successfully initiated download - Bucket: {}, ObjectKey: {}", bucketName, objectKey);
+      log.debug("Downloaded object - Bucket: {}, ObjectKey: {}", bucketName, objectKey);
       return inputStream;
 
     } catch (MinioStorageException e) {
       log.error(
-          "MinIO operation failed while downloading object '{}' from bucket '{}': {}",
+          "Failed to download object '{}' from bucket '{}': {}",
           objectKey,
           bucketName,
           e.getMessage());
       throw e;
     } catch (Exception e) {
       log.error(
-          "Failed to download object '{}' from bucket '{}': {}",
+          "Unexpected error downloading object '{}' from bucket '{}': {}",
           objectKey,
           bucketName,
           e.getMessage(),
@@ -197,22 +178,9 @@ public class MinioStorageService implements StorageService {
   @Override
   public String getPresignedUrl(String imageUrl) {
     validateImageUrl(imageUrl);
-    log.info("Generating presigned URL for: {}", imageUrl);
 
     try {
       BucketAndKey bucketAndKey = MinioUrlUtils.extractBucketAndKey(imageUrl);
-      log.debug(
-          "Extracted bucket and key - Bucket: {}, Key: {}",
-          bucketAndKey.getBucketName(),
-          bucketAndKey.getObjectKey());
-
-      if (!objectExists(bucketAndKey.getBucketName(), bucketAndKey.getObjectKey())) {
-        log.warn(
-            "Object '{}' does not exist in bucket '{}'",
-            bucketAndKey.getObjectKey(),
-            bucketAndKey.getBucketName());
-        throw new MinioStorageException("Object does not exist for URL: " + imageUrl);
-      }
 
       String presignedUrl =
           minioClient.getPresignedObjectUrl(
@@ -223,20 +191,18 @@ public class MinioStorageService implements StorageService {
                   .expiry(60 * 60)
                   .build());
 
-      log.info(
-          "Successfully generated presigned URL for object - Bucket: {}, Key: {}",
+      log.trace(
+          "Generated presigned URL for object - Bucket: {}, Key: {}",
           bucketAndKey.getBucketName(),
           bucketAndKey.getObjectKey());
       return presignedUrl;
 
     } catch (StorageException | MinioStorageException e) {
-      log.error(
-          "Storage operation failed while generating presigned URL for '{}': {}",
-          imageUrl,
-          e.getMessage());
+      log.error("Failed to generate presigned URL for '{}': {}", imageUrl, e.getMessage());
       throw e;
     } catch (Exception e) {
-      log.error("Failed to generate presigned URL for '{}': {}", imageUrl, e.getMessage(), e);
+      log.error(
+          "Unexpected error generating presigned URL for '{}': {}", imageUrl, e.getMessage(), e);
       throw new MinioStorageException("Failed to generate presigned URL");
     }
   }
@@ -246,13 +212,9 @@ public class MinioStorageService implements StorageService {
     validateBucketName(bucketName);
     validateObjectKey(objectKey);
 
-    log.debug("Checking if object exists - Bucket: {}, ObjectKey: {}", bucketName, objectKey);
-
     try {
       minioClient.statObject(StatObjectArgs.builder().bucket(bucketName).object(objectKey).build());
-      log.debug("Object '{}' exists in bucket '{}'", objectKey, bucketName);
       return true;
-
     } catch (Exception e) {
       log.debug(
           "Object '{}' does not exist in bucket '{}': {}", objectKey, bucketName, e.getMessage());
@@ -265,7 +227,7 @@ public class MinioStorageService implements StorageService {
     validateBucketName(bucketName);
     validateImageUrl(url);
 
-    log.info("Attempting to delete object from bucket '{}' using URL: {}", bucketName, url);
+    log.debug("Deleting object from bucket '{}' using URL: {}", bucketName, url);
 
     try {
       String objectKey = StorageUrlUtils.extractObjectKeyFromUrl(url);
@@ -282,17 +244,14 @@ public class MinioStorageService implements StorageService {
       minioClient.removeObject(
           RemoveObjectArgs.builder().bucket(bucketName).object(objectKey).build());
 
-      log.info("Successfully deleted object '{}' from bucket '{}'", objectKey, bucketName);
+      log.info("Deleted object '{}' from bucket '{}'", objectKey, bucketName);
 
     } catch (StorageException | MinioStorageException e) {
-      log.error(
-          "Storage operation failed while deleting object from bucket '{}': {}",
-          bucketName,
-          e.getMessage());
+      log.error("Failed to delete object from bucket '{}': {}", bucketName, e.getMessage());
       throw e;
     } catch (Exception e) {
       log.error(
-          "Failed to delete object from bucket '{}' using URL '{}': {}",
+          "Unexpected error deleting object from bucket '{}' using URL '{}': {}",
           bucketName,
           url,
           e.getMessage(),
@@ -303,43 +262,36 @@ public class MinioStorageService implements StorageService {
 
   private void validateBucketName(String bucketName) {
     if (bucketName == null || bucketName.trim().isEmpty()) {
-      log.warn("Bucket name validation failed: bucket name is null or empty");
       throw new MinioStorageException("Bucket name cannot be null or empty");
     }
   }
 
   private void validateObjectKey(String objectKey) {
     if (objectKey == null || objectKey.trim().isEmpty()) {
-      log.warn("Object key validation failed: object key is null or empty");
       throw new MinioStorageException("Object key cannot be null or empty");
     }
   }
 
   private void validateImageUrl(String url) {
     if (url == null || url.trim().isEmpty()) {
-      log.warn("URL validation failed: URL is null or empty");
       throw new MinioStorageException("URL cannot be null or empty");
     }
   }
 
   private void validateUploadParameters(String id, MultipartFile file) {
     if (id == null || id.trim().isEmpty()) {
-      log.warn("Upload validation failed: ID is null or empty");
       throw new MinioStorageException("ID cannot be null or empty");
     }
 
     if (file == null) {
-      log.warn("Upload validation failed: file is null");
       throw new MinioStorageException("File cannot be null");
     }
 
     if (file.isEmpty()) {
-      log.warn("Upload validation failed: file is empty");
       throw new MinioStorageException("File cannot be empty");
     }
 
     if (file.getSize() <= 0) {
-      log.warn("Upload validation failed: file size is {} bytes", file.getSize());
       throw new MinioStorageException("File size must be greater than 0");
     }
   }

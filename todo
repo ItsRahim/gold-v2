@@ -22,6 +22,7 @@ Implement Playwright for e2e testing
 -- Storage Service --
 Implement tests for the storage service (MinIO)
 Implement functionality for AWS S3 storage service (Pending AWS work to begin)
+Reduce spammy logs
 
 -- Common --
 Implement tests for DateUtil using different timezones etc to ensure it works correctly
