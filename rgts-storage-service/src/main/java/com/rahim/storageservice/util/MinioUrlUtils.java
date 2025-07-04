@@ -13,8 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 public class MinioUrlUtils {
 
   public static BucketAndKey extractBucketAndKey(String url) {
-    log.debug("Extracting bucket and key from URL: {}", url);
-
     if (url == null || url.trim().isEmpty()) {
       log.error("URL extraction failed: URL is null or empty");
       throw new MinioStorageException("MinIO URL cannot be null or empty");
@@ -41,9 +39,7 @@ public class MinioUrlUtils {
       String bucketName = parts[0].trim();
       String objectKey = parts[1].trim();
 
-      log.debug("Successfully extracted - Bucket: {}, ObjectKey: {}", bucketName, objectKey);
       return new BucketAndKey(bucketName, objectKey);
-
     } catch (MinioStorageException e) {
       throw e;
     } catch (Exception e) {
