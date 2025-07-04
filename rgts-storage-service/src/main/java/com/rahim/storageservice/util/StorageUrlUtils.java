@@ -93,8 +93,6 @@ public class StorageUrlUtils {
   }
 
   public static String extractObjectKeyFromUrl(String url) {
-    log.debug("Extracting object key from URL: {}", url);
-
     if (url == null || url.trim().isEmpty()) {
       log.error("Object key extraction failed: URL is null or empty");
       throw new StorageException("URL cannot be null or empty");
@@ -122,9 +120,7 @@ public class StorageUrlUtils {
         throw new StorageException("Invalid URL format - object key is empty");
       }
 
-      log.debug("Successfully extracted object key: {}", objectKey);
       return objectKey.trim();
-
     } catch (StorageException e) {
       throw e;
     } catch (Exception e) {
