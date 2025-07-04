@@ -17,6 +17,3 @@ spring:
         enabled: true
         service-id: CONFIG-SERVER
       enabled: true
-
-storage:
-  provider: MINIO

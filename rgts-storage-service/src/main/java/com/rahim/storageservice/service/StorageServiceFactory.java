@@ -1,8 +1,8 @@
 package com.rahim.storageservice.service;
 
-import java.util.Map;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 /**
@@ -10,20 +10,19 @@ import org.springframework.stereotype.Component;
  * @author Rahim Ahmed
  */
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class StorageServiceFactory {
-  private final Map<String, StorageService> storageServices;
+  private final ApplicationContext applicationContext;
 
   @Value("${storage.provider}")
-  private final String storageProvider;
+  private String storageProvider;
 
   public StorageService getStorageService() {
-    StorageService storageService = storageServices.get(storageProvider);
-    if (storageService == null) {
+    try {
+      return applicationContext.getBean(storageProvider, StorageService.class);
+    } catch (Exception e) {
       throw new IllegalArgumentException(
-          "No storage service found for provider: " + storageProvider);
+          "No storage service found for provider: " + storageProvider, e);
     }
-
-    return storageService;
   }
 }

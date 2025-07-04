@@ -2,7 +2,7 @@ import { Menu } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { SidebarGroupLabel, SidebarTrigger } from '../ui/sidebar';
 import { SIDEBAR_CLASSES, getFlexLayout, TOOLTIP_CONFIG } from '@/styles/sidebar';
-import { cn } from '@/lib/utils';
+import { cn } from '@/shared/utils.ts';
 
 interface SidebarHeaderProps {
   isCollapsed: boolean;

@@ -3,7 +3,7 @@ import { SidebarHeader } from './SidebarHeader';
 import { SidebarFooter } from './SidebarFooter';
 import { SidebarContent } from '@/components/sidebar/SidebarContent.tsx';
 import { SIDEBAR_CLASSES, getSidebarWidth } from '@/styles/sidebar';
-import { cn } from '@/lib/utils';
+import { cn } from '@/shared/utils.ts';
 
 export function AppSidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
