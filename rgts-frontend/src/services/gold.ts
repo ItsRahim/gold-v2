@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { API_ENDPOINTS } from '@/lib/api/endpoints.ts';
+import { API_ENDPOINTS } from '@/api/endpoints.ts';
 import type { AddGoldTypeRequest } from '@/app/catalog/catalogTypes.ts';
 
 export interface ApiError {

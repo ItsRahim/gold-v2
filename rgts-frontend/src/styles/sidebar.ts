@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils';
+import { cn } from '@/shared/utils.ts';
 
 export const SIDEBAR_COLORS = {
   background: 'bg-background/95 backdrop-blur-md',
