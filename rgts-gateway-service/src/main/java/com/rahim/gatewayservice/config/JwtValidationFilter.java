@@ -1,10 +1,10 @@
 package com.rahim.gatewayservice.config;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -24,47 +24,63 @@ import java.util.Map;
 @Component
 @RequiredArgsConstructor
 public class JwtValidationFilter implements GlobalFilter, Ordered {
+
+  private static final String AUTH_SERVICE_URL =
+      "lb://authentication-service/api/v2/auth/validate-token";
+  private static final String BEARER_PREFIX = "Bearer ";
+
   private final WebClient.Builder webClientBuilder;
 
   @Override
   public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-    String authHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
-
-    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-      exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-      return exchange.getResponse().setComplete();
+    String token = extractToken(exchange.getRequest().getHeaders());
+    if (token == null) {
+      return unauthorized(exchange);
     }
 
+    return validateTokenWithAuthService(token)
+        .flatMap(userData -> enrichRequest(exchange, chain, userData))
+        .onErrorResume(e -> unauthorized(exchange));
+  }
+
+  private String extractToken(HttpHeaders headers) {
+    String authHeader = headers.getFirst(HttpHeaders.AUTHORIZATION);
+    return (authHeader != null && authHeader.startsWith(BEARER_PREFIX)) ? authHeader : null;
+  }
+
+  private Mono<Map<String, Object>> validateTokenWithAuthService(String authHeader) {
     return webClientBuilder
         .build()
         .post()
-        .uri("lb://authentication-service/api/v2/auth/validate-token")
+        .uri(AUTH_SERVICE_URL)
         .header(HttpHeaders.AUTHORIZATION, authHeader)
         .retrieve()
         .onStatus(
-            HttpStatusCode::isError, response -> Mono.error(new RuntimeException("Invalid token")))
-        .bodyToMono(Map.class)
-        .flatMap(
-            userData -> {
-              @SuppressWarnings("unchecked")
-              List<String> roles = (List<String>) userData.get("roles");
-              String username = (String) userData.get("username");
+            HttpStatusCode::isError,
+            response -> Mono.error(new RuntimeException("Token validation failed")))
+        .bodyToMono(new ParameterizedTypeReference<>() {});
+  }
 
-              ServerHttpRequest mutatedRequest =
-                  exchange
-                      .getRequest()
-                      .mutate()
-                      .header("X-Auth-Username", username)
-                      .header("X-Auth-Roles", String.join(",", roles))
-                      .build();
+  private Mono<Void> enrichRequest(
+      ServerWebExchange exchange, GatewayFilterChain chain, Map<String, Object> userData) {
+    @SuppressWarnings("unchecked")
+    List<String> roles = (List<String>) userData.get("roles");
+    String username = (String) userData.get("username");
 
-              return chain.filter(exchange.mutate().request(mutatedRequest).build());
-            })
-        .onErrorResume(
-            e -> {
-              exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-              return exchange.getResponse().setComplete();
-            });
+    ServerHttpRequest mutatedRequest =
+        exchange
+            .getRequest()
+            .mutate()
+            .header("X-Auth-Username", username)
+            .header("X-Auth-Roles", String.join(",", roles))
+            .build();
+
+    return chain.filter(exchange.mutate().request(mutatedRequest).build());
+  }
+
+  private Mono<Void> unauthorized(ServerWebExchange exchange) {
+    exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+    return exchange.getResponse().setComplete();
   }
 
   @Override
