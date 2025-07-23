@@ -19,7 +19,7 @@
         <spring-security-test.version>6.5.1</spring-security-test.version>
         <spring-cloud.version>4.2.1</spring-cloud.version>
         <spring-doc.version>2.8.9</spring-doc.version>
-        <spring-kafka.version>3.3.7</spring-kafka.version>
+        <spring-kafka.version>3.3.8</spring-kafka.version>
         <protobuf-java.version>4.31.1</protobuf-java.version>
         <apache.version>3.18.0</apache.version>
         <lombok.version>1.18.38</lombok.version>
