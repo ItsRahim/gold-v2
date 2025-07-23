@@ -2,18 +2,16 @@ package com.rahim.authenticationservice.service.authentication.impl;
 
 import com.rahim.authenticationservice.dto.enums.ResponseStatus;
 import com.rahim.authenticationservice.dto.request.AuthRequest;
-import com.rahim.authenticationservice.dto.response.AuthResponse;
+import com.rahim.authenticationservice.dto.response.*;
 import com.rahim.authenticationservice.dto.request.RegisterRequest;
 import com.rahim.authenticationservice.dto.request.VerificationRequest;
-import com.rahim.authenticationservice.dto.response.RegisterResponse;
-import com.rahim.authenticationservice.dto.response.UserData;
-import com.rahim.authenticationservice.dto.response.VerificationResponse;
 import com.rahim.authenticationservice.entity.User;
 import com.rahim.authenticationservice.entity.UserRole;
 import com.rahim.authenticationservice.enums.Role;
 import com.rahim.authenticationservice.enums.VerificationType;
 import com.rahim.authenticationservice.exception.UnauthorisedException;
 import com.rahim.authenticationservice.repository.UserRepository;
+import com.rahim.authenticationservice.service.authentication.ClaimKeys;
 import com.rahim.authenticationservice.service.authentication.IAuthenticationService;
 import com.rahim.authenticationservice.service.role.IRoleService;
 import com.rahim.authenticationservice.service.verification.IVerificationService;
@@ -22,6 +20,7 @@ import com.rahim.authenticationservice.util.JwtUtil;
 import com.rahim.authenticationservice.util.RequestUtil;
 import com.rahim.common.exception.*;
 import com.rahim.common.util.DateUtil;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.OffsetDateTime;
 import java.util.*;
@@ -29,6 +28,8 @@ import java.util.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -201,12 +202,30 @@ public class AuthenticationService implements IAuthenticationService {
     List<String> roles =
         user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
     Map<String, Object> claims = new HashMap<>();
-    claims.put("userId", user.getId());
-    claims.put("roles", roles);
+    claims.put(ClaimKeys.USER_ID, user.getId());
+    claims.put(ClaimKeys.ROLES, roles);
 
     String jwt = jwtUtil.generateToken(claims, user.getUsername());
 
     return new AuthResponse(jwt);
+  }
+
+  @Override
+  public ValidationResponse validateToken(String authHeader) {
+    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+      throw new UnauthorisedException("Missing or invalid Authorization header");
+    }
+
+    String token = authHeader.substring(7);
+
+    Claims claims = jwtUtil.extractAllClaims(token);
+    String username = claims.getSubject();
+    String userId = claims.get(ClaimKeys.USER_ID).toString();
+
+    @SuppressWarnings("unchecked")
+    List<String> roles = claims.get(ClaimKeys.ROLES, List.class);
+
+    return new ValidationResponse(userId, username, roles);
   }
 
   // ------------------------ Private Helpers ------------------------

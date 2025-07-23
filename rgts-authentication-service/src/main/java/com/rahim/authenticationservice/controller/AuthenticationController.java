@@ -7,6 +7,7 @@ import com.rahim.authenticationservice.dto.response.AuthResponse;
 import com.rahim.authenticationservice.dto.request.RegisterRequest;
 import com.rahim.authenticationservice.dto.request.VerificationRequest;
 import com.rahim.authenticationservice.dto.response.RegisterResponse;
+import com.rahim.authenticationservice.dto.response.ValidationResponse;
 import com.rahim.authenticationservice.dto.response.VerificationResponse;
 import com.rahim.authenticationservice.service.authentication.IAuthenticationService;
 import com.rahim.authenticationservice.util.JwtUtil;
@@ -97,23 +98,17 @@ public class AuthenticationController {
     return ResponseEntity.status(HttpStatus.OK).body(accessToken);
   }
 
+  @Operation(
+      summary = "Validate a JWT token",
+      description =
+          "Validates a JWT token and returns user details such as userId, username, and roles")
+  @ApiResponse(responseCode = "200", description = "Token is valid and user data is returned")
+  @ApiResponse(responseCode = "401", description = "Unauthorized - token is missing or invalid")
+  @ApiResponse(responseCode = "400", description = "Bad Request - malformed token")
   @PostMapping(VALIDATE_TOKEN)
-  public ResponseEntity<?> validateToken(@RequestHeader("Authorization") String authHeader) {
-    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-          .body("Missing or invalid Authorization header");
-    }
-
-    String token = authHeader.substring(7);
-
-    Claims claims = jwtUtil.extractAllClaims(token);
-    String username = claims.getSubject();
-    @SuppressWarnings("unchecked")
-    List<String> roles = claims.get("roles", List.class);
-
-    return ResponseEntity.ok(
-        Map.of(
-            "username", username,
-            "roles", roles));
+  public ResponseEntity<ValidationResponse> validateToken(
+      @RequestHeader("Authorization") String authHeader) {
+    ValidationResponse validationResponse = authenticationService.validateToken(authHeader);
+    return ResponseEntity.status(HttpStatus.OK).body(validationResponse);
   }
 }

@@ -5,6 +5,7 @@ import com.rahim.authenticationservice.dto.response.AuthResponse;
 import com.rahim.authenticationservice.dto.request.RegisterRequest;
 import com.rahim.authenticationservice.dto.request.VerificationRequest;
 import com.rahim.authenticationservice.dto.response.RegisterResponse;
+import com.rahim.authenticationservice.dto.response.ValidationResponse;
 import com.rahim.authenticationservice.dto.response.VerificationResponse;
 import com.rahim.authenticationservice.entity.User;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,4 +28,6 @@ public interface IAuthenticationService {
   Optional<User> findByUsername(String username);
 
   AuthResponse login(AuthRequest authRequest, HttpServletRequest request);
+
+  ValidationResponse validateToken(String authHeader);
 }
