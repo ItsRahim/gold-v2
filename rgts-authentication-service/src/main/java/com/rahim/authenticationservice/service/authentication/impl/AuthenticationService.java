@@ -6,12 +6,11 @@ import com.rahim.authenticationservice.dto.response.*;
 import com.rahim.authenticationservice.dto.request.RegisterRequest;
 import com.rahim.authenticationservice.dto.request.VerificationRequest;
 import com.rahim.authenticationservice.entity.User;
-import com.rahim.authenticationservice.entity.UserRole;
 import com.rahim.authenticationservice.enums.Role;
 import com.rahim.authenticationservice.enums.VerificationType;
 import com.rahim.authenticationservice.exception.UnauthorisedException;
 import com.rahim.authenticationservice.repository.UserRepository;
-import com.rahim.authenticationservice.service.authentication.ClaimKeys;
+import com.rahim.common.constants.JwtConstants;
 import com.rahim.authenticationservice.service.authentication.IAuthenticationService;
 import com.rahim.authenticationservice.service.role.IRoleService;
 import com.rahim.authenticationservice.service.verification.IVerificationService;
@@ -28,8 +27,6 @@ import java.util.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -202,8 +199,8 @@ public class AuthenticationService implements IAuthenticationService {
     List<String> roles =
         user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
     Map<String, Object> claims = new HashMap<>();
-    claims.put(ClaimKeys.USER_ID, user.getId());
-    claims.put(ClaimKeys.ROLES, roles);
+    claims.put(JwtConstants.USER_ID, user.getId());
+    claims.put(JwtConstants.ROLES, roles);
 
     String jwt = jwtUtil.generateToken(claims, user.getUsername());
 
@@ -212,7 +209,7 @@ public class AuthenticationService implements IAuthenticationService {
 
   @Override
   public ValidationResponse validateToken(String authHeader) {
-    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+    if (authHeader == null || !authHeader.startsWith(JwtConstants.BEARER_PREFIX)) {
       throw new UnauthorisedException("Missing or invalid Authorization header");
     }
 
@@ -220,10 +217,10 @@ public class AuthenticationService implements IAuthenticationService {
 
     Claims claims = jwtUtil.extractAllClaims(token);
     String username = claims.getSubject();
-    String userId = claims.get(ClaimKeys.USER_ID).toString();
+    String userId = claims.get(JwtConstants.USER_ID).toString();
 
     @SuppressWarnings("unchecked")
-    List<String> roles = claims.get(ClaimKeys.ROLES, List.class);
+    List<String> roles = claims.get(JwtConstants.ROLES, List.class);
 
     return new ValidationResponse(userId, username, roles);
   }

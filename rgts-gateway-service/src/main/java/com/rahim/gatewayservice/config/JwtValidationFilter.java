@@ -1,5 +1,6 @@
 package com.rahim.gatewayservice.config;
 
+import com.rahim.common.constants.JwtConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -27,8 +28,6 @@ public class JwtValidationFilter implements GlobalFilter, Ordered {
 
   private static final String AUTH_SERVICE_URL =
       "lb://authentication-service/api/v2/auth/validate-token";
-  private static final String BEARER_PREFIX = "Bearer ";
-
   private final WebClient.Builder webClientBuilder;
 
   @Override
@@ -45,7 +44,7 @@ public class JwtValidationFilter implements GlobalFilter, Ordered {
 
   private String extractToken(HttpHeaders headers) {
     String authHeader = headers.getFirst(HttpHeaders.AUTHORIZATION);
-    return (authHeader != null && authHeader.startsWith(BEARER_PREFIX)) ? authHeader : null;
+    return (authHeader != null && authHeader.startsWith(JwtConstants.BEARER_PREFIX)) ? authHeader : null;
   }
 
   private Mono<Map<String, Object>> validateTokenWithAuthService(String authHeader) {
@@ -63,9 +62,9 @@ public class JwtValidationFilter implements GlobalFilter, Ordered {
 
   private Mono<Void> enrichRequest(
       ServerWebExchange exchange, GatewayFilterChain chain, Map<String, Object> userData) {
+    String username = (String) userData.get(JwtConstants.USERNAME);
     @SuppressWarnings("unchecked")
-    List<String> roles = (List<String>) userData.get("roles");
-    String username = (String) userData.get("username");
+    List<String> roles = (List<String>) userData.get(JwtConstants.ROLES);
 
     ServerHttpRequest mutatedRequest =
         exchange
