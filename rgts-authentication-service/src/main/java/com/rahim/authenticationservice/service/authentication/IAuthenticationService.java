@@ -1,5 +1,7 @@
 package com.rahim.authenticationservice.service.authentication;
 
+import com.rahim.authenticationservice.dto.request.AuthRequest;
+import com.rahim.authenticationservice.dto.response.AuthResponse;
 import com.rahim.authenticationservice.dto.request.RegisterRequest;
 import com.rahim.authenticationservice.dto.request.VerificationRequest;
 import com.rahim.authenticationservice.dto.response.RegisterResponse;
@@ -23,4 +25,6 @@ public interface IAuthenticationService {
       String verificationCode, UUID verificationId, HttpServletRequest request);
 
   Optional<User> findByUsername(String username);
+
+  AuthResponse login(AuthRequest authRequest, HttpServletRequest request);
 }

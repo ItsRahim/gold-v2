@@ -20,9 +20,10 @@ public final class Endpoints {
   public static final String REGISTER_ENDPOINT = AUTH_SERVICE + REGISTER;
 
   // Token management endpoints
-  public static final String TOKENS = AUTH_SERVICE + "/tokens";
-  public static final String REFRESH_TOKEN = TOKENS + "/refresh";
-  public static final String VALIDATE_TOKEN = TOKENS + "/validate";
+  public static final String REFRESH_TOKEN = "/refresh-token";
+  public static final String REFRESH_TOKEN_ENDPOINT = AUTH_SERVICE + REFRESH_TOKEN;
+  public static final String VALIDATE_TOKEN = "/validate-token";
+  public static final String VALIDATE_TOKEN_ENDPOINT = AUTH_SERVICE + VALIDATE_TOKEN;
 
   // Documentation endpoints
   public static final String API_DOCS = "/v3/api-docs/**";

@@ -1,5 +1,5 @@
 server:
-  port: ${SERVER_PORT:9000}
+  port: ${SERVER_PORT:9999}
 
 spring:
   application:
@@ -23,6 +23,11 @@ app:
       - "X-Requested-With"
       - "Cache-Control"
     allow-credentials: true
+
+jwt:
+  secret: SOME_VERY_LONG_KEY_THAT_I_NEED_TO_CHANGE
+  expiration:
+    ms: 86400000
 
 verification:
   email:

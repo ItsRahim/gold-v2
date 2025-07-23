@@ -1,29 +1,35 @@
 package com.rahim.authenticationservice.service.authentication.impl;
 
 import com.rahim.authenticationservice.dto.enums.ResponseStatus;
+import com.rahim.authenticationservice.dto.request.AuthRequest;
+import com.rahim.authenticationservice.dto.response.AuthResponse;
 import com.rahim.authenticationservice.dto.request.RegisterRequest;
 import com.rahim.authenticationservice.dto.request.VerificationRequest;
 import com.rahim.authenticationservice.dto.response.RegisterResponse;
 import com.rahim.authenticationservice.dto.response.UserData;
 import com.rahim.authenticationservice.dto.response.VerificationResponse;
 import com.rahim.authenticationservice.entity.User;
+import com.rahim.authenticationservice.entity.UserRole;
 import com.rahim.authenticationservice.enums.Role;
 import com.rahim.authenticationservice.enums.VerificationType;
+import com.rahim.authenticationservice.exception.UnauthorisedException;
 import com.rahim.authenticationservice.repository.UserRepository;
 import com.rahim.authenticationservice.service.authentication.IAuthenticationService;
 import com.rahim.authenticationservice.service.role.IRoleService;
 import com.rahim.authenticationservice.service.verification.IVerificationService;
 import com.rahim.authenticationservice.util.EmailFormatUtil;
-import com.rahim.authenticationservice.util.RequestUtils;
+import com.rahim.authenticationservice.util.JwtUtil;
+import com.rahim.authenticationservice.util.RequestUtil;
 import com.rahim.common.exception.*;
 import com.rahim.common.util.DateUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.OffsetDateTime;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,6 +46,9 @@ public class AuthenticationService implements IAuthenticationService {
   private final IRoleService roleService;
   private final IVerificationService verificationService;
   private final BCryptPasswordEncoder passwordEncoder;
+  private final RequestUtil requestUtil;
+  private final EmailFormatUtil emailFormatUtil;
+  private final JwtUtil jwtUtil;
 
   @Override
   @Transactional(rollbackFor = Exception.class)
@@ -78,7 +87,7 @@ public class AuthenticationService implements IAuthenticationService {
     String email = verificationRequest.getEmail();
     String verificationCode = verificationRequest.getVerificationCode();
 
-    if (EmailFormatUtil.isInvalidEmail(email)) {
+    if (emailFormatUtil.isInvalidEmail(email)) {
       log.error("Invalid email: {}", email);
       throw new BadRequestException("Invalid email format provided");
     }
@@ -153,10 +162,57 @@ public class AuthenticationService implements IAuthenticationService {
     return userRepository.findByUsername(username);
   }
 
+  // TODO: Need to audit successful and failed login attempts
+  @Override
+  public AuthResponse login(AuthRequest authRequest, HttpServletRequest request) {
+    String username = authRequest.getUsername();
+    String password = authRequest.getPassword();
+
+    if (StringUtils.isBlank(username) || StringUtils.isBlank(password)) {
+      log.warn("Username or password is blank");
+      throw new BadRequestException("Username and password are required");
+    }
+
+    User user =
+        findByUsername(username)
+            .orElseThrow(
+                () -> new EntityNotFoundException("User not found with username: " + username));
+
+    if (!passwordEncoder.matches(password, user.getPassword())) {
+      log.warn("Invalid password attempt for user: {}", username);
+      throw new UnauthorisedException("Invalid username or password");
+    }
+
+    if (!user.isEmailVerified()) {
+      log.warn("User email not verified: {}", username);
+      throw new UnauthorisedException("Email not verified for user: " + username);
+    }
+
+    if (user.isAccountLocked()) {
+      log.warn("User account is locked: {}", username);
+      throw new UnauthorisedException("Account is locked for user: " + username);
+    }
+
+    if (user.isAccountExpired()) {
+      log.warn("User account is expired: {}", username);
+      throw new UnauthorisedException("Account is expired for user: " + username);
+    }
+
+    List<String> roles =
+        user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
+    Map<String, Object> claims = new HashMap<>();
+    claims.put("userId", user.getId());
+    claims.put("roles", roles);
+
+    String jwt = jwtUtil.generateToken(claims, user.getUsername());
+
+    return new AuthResponse(jwt);
+  }
+
   // ------------------------ Private Helpers ------------------------
 
   private void validateRegisterRequest(RegisterRequest request) {
-    if (EmailFormatUtil.isInvalidEmail(request.getEmail())) {
+    if (emailFormatUtil.isInvalidEmail(request.getEmail())) {
       throw new BadRequestException("Invalid email format provided");
     }
 
@@ -210,8 +266,8 @@ public class AuthenticationService implements IAuthenticationService {
             .phoneNumber(request.getPhoneNumber())
             .emailVerified(false)
             .phoneVerified(false)
-            .locale(RequestUtils.getClientLocale(httpRequest))
-            .timezone(RequestUtils.getClientTimezone(httpRequest))
+            .locale(requestUtil.getClientLocale(httpRequest))
+            .timezone(requestUtil.getClientTimezone(httpRequest))
             .createdAt(OffsetDateTime.now())
             .updatedAt(OffsetDateTime.now())
             .accountExpired(false)

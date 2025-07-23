@@ -2,15 +2,22 @@ package com.rahim.authenticationservice.controller;
 
 import static com.rahim.authenticationservice.constants.Endpoints.*;
 
+import com.rahim.authenticationservice.dto.request.AuthRequest;
+import com.rahim.authenticationservice.dto.response.AuthResponse;
 import com.rahim.authenticationservice.dto.request.RegisterRequest;
 import com.rahim.authenticationservice.dto.request.VerificationRequest;
 import com.rahim.authenticationservice.dto.response.RegisterResponse;
 import com.rahim.authenticationservice.dto.response.VerificationResponse;
 import com.rahim.authenticationservice.service.authentication.IAuthenticationService;
+import com.rahim.authenticationservice.util.JwtUtil;
+import io.jsonwebtoken.Claims;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +36,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Authentication", description = "Authentication and user management endpoints")
 public class AuthenticationController {
   private final IAuthenticationService authenticationService;
+  private final JwtUtil jwtUtil;
 
   @Operation(
       summary = "Register a new user",
@@ -73,6 +81,39 @@ public class AuthenticationController {
       HttpServletRequest request) {
     VerificationResponse verificationResponse =
         authenticationService.verifyEmail(verificationCode, verificationId, request);
-    return ResponseEntity.ok(verificationResponse);
+    return ResponseEntity.status(HttpStatus.OK).body(verificationResponse);
+  }
+
+  @Operation(
+      summary = "Login a user",
+      description = "Authenticates a user and returns an access token")
+  @ApiResponse(responseCode = "200", description = "User logged in successfully")
+  @ApiResponse(responseCode = "400", description = "Invalid login credentials")
+  @ApiResponse(responseCode = "401", description = "Unauthorized - invalid credentials")
+  @PostMapping(LOGIN)
+  public ResponseEntity<AuthResponse> loginUser(
+      @RequestBody AuthRequest authRequest, HttpServletRequest request) {
+    AuthResponse accessToken = authenticationService.login(authRequest, request);
+    return ResponseEntity.status(HttpStatus.OK).body(accessToken);
+  }
+
+  @PostMapping(VALIDATE_TOKEN)
+  public ResponseEntity<?> validateToken(@RequestHeader("Authorization") String authHeader) {
+    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+          .body("Missing or invalid Authorization header");
+    }
+
+    String token = authHeader.substring(7);
+
+    Claims claims = jwtUtil.extractAllClaims(token);
+    String username = claims.getSubject();
+    @SuppressWarnings("unchecked")
+    List<String> roles = claims.get("roles", List.class);
+
+    return ResponseEntity.ok(
+        Map.of(
+            "username", username,
+            "roles", roles));
   }
 }
