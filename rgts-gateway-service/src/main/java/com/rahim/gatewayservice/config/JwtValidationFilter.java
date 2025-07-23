@@ -1,6 +1,8 @@
 package com.rahim.gatewayservice.config;
 
 import com.rahim.common.constants.JwtConstants;
+import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -14,9 +16,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * @created 23/07/2025
@@ -44,7 +43,9 @@ public class JwtValidationFilter implements GlobalFilter, Ordered {
 
   private String extractToken(HttpHeaders headers) {
     String authHeader = headers.getFirst(HttpHeaders.AUTHORIZATION);
-    return (authHeader != null && authHeader.startsWith(JwtConstants.BEARER_PREFIX)) ? authHeader : null;
+    return (authHeader != null && authHeader.startsWith(JwtConstants.BEARER_PREFIX))
+        ? authHeader
+        : null;
   }
 
   private Mono<Map<String, Object>> validateTokenWithAuthService(String authHeader) {
