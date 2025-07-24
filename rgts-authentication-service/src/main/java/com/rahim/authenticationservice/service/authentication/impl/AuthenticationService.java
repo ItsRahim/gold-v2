@@ -8,6 +8,7 @@ import com.rahim.authenticationservice.dto.response.*;
 import com.rahim.authenticationservice.entity.User;
 import com.rahim.authenticationservice.enums.Role;
 import com.rahim.authenticationservice.enums.VerificationType;
+import com.rahim.authenticationservice.exception.AccountExistsException;
 import com.rahim.authenticationservice.exception.UnauthorisedException;
 import com.rahim.authenticationservice.repository.UserRepository;
 import com.rahim.authenticationservice.service.authentication.IAuthenticationService;
@@ -255,17 +256,17 @@ public class AuthenticationService implements IAuthenticationService {
 
   private void checkUserUniqueness(RegisterRequest request) {
     if (userRepository.existsByUsername(request.getUsername())) {
-      throw new DuplicateEntityException(
+      throw new AccountExistsException(
           "User with username " + request.getUsername() + " already exists.");
     }
 
     if (userRepository.existsByEmail(request.getEmail())) {
-      throw new DuplicateEntityException(
+      throw new AccountExistsException(
           "User with email " + request.getEmail() + " already exists.");
     }
 
     if (userRepository.existsByPhoneNumber(request.getPhoneNumber())) {
-      throw new DuplicateEntityException(
+      throw new AccountExistsException(
           "User with phone number " + request.getPhoneNumber() + " already exists.");
     }
   }
