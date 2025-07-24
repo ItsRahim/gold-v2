@@ -14,7 +14,6 @@ export default function RootLayout() {
             <Outlet />
           </div>
         </main>
-        <Toaster position='bottom-right' />
       </SidebarProvider>
     </div>
   );

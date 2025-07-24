@@ -6,7 +6,7 @@ import PortfolioManagementView from '@/app/portfolio/PortfolioManagementView';
 import AlertsManagementView from '@/app/alerts/AlertsManagementView';
 import ProtectedRoute from '@/shared/auth/ProtectedRoute.tsx';
 import { LoginView } from '@/app/auth/LoginView.tsx';
-import {RegisterView} from "@/app/auth/RegisterView.tsx";
+import { RegisterView } from '@/app/auth/RegisterView.tsx';
 
 export default function App() {
   return (
