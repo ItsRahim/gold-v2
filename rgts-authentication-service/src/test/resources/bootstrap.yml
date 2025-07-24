@@ -28,3 +28,8 @@ spring:
 eureka:
   client:
     enabled: false
+
+jwt:
+  secret: SOME_VERY_LONG_KEY_THAT_I_NEED_TO_CHANGE
+  expiration:
+    ms: 86400000
