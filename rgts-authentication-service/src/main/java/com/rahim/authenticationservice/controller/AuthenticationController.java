@@ -10,7 +10,6 @@ import com.rahim.authenticationservice.dto.response.RegisterResponse;
 import com.rahim.authenticationservice.dto.response.ValidationResponse;
 import com.rahim.authenticationservice.dto.response.VerificationResponse;
 import com.rahim.authenticationservice.service.authentication.IAuthenticationService;
-import com.rahim.authenticationservice.util.JwtUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
