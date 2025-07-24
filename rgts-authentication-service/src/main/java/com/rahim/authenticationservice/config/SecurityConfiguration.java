@@ -1,6 +1,5 @@
 package com.rahim.authenticationservice.config;
 
-import com.rahim.authenticationservice.constants.CorsConstants;
 import com.rahim.authenticationservice.constants.Endpoints;
 import com.rahim.authenticationservice.constants.HttpHeaderConstants;
 import java.time.Duration;
@@ -14,6 +13,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
@@ -33,18 +33,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SecurityConfiguration {
   private final AuthenticationProvider authenticationProvider;
 
-  @Value("${app.cors.allowed-origins:}")
-  private List<String> allowedOrigins;
-
-  @Value("${app.cors.allowed-methods:}")
-  private List<String> allowedMethods;
-
-  @Value("${app.cors.allowed-headers:}")
-  private List<String> allowedHeaders;
-
-  @Value("${app.cors.allow-credentials:true}")
-  private boolean allowCredentials;
-
   private static final String[] ALLOWED_MATCHERS = {
     Endpoints.LOGIN_ENDPOINT,
     Endpoints.VERIFY_ENDPOINT,
@@ -60,7 +48,7 @@ public class SecurityConfiguration {
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    return http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
+    return http.cors(AbstractHttpConfigurer::disable)
         .csrf(csrf -> csrf.ignoringRequestMatchers(ALLOWED_MATCHERS))
         .authorizeHttpRequests(
             auth -> auth.requestMatchers(ALLOWED_MATCHERS).permitAll().anyRequest().authenticated())
@@ -81,32 +69,5 @@ public class SecurityConfiguration {
                     .contentSecurityPolicy(csp -> csp.policyDirectives("default-src 'self'")))
         .authenticationProvider(authenticationProvider)
         .build();
-  }
-
-  @Bean
-  public CorsConfigurationSource corsConfigurationSource() {
-    CorsConfiguration configuration = new CorsConfiguration();
-
-    configuration.setAllowedOrigins(
-        allowedOrigins.isEmpty() ? CorsConstants.DEFAULT_ALLOWED_ORIGINS : allowedOrigins);
-    configuration.setAllowedMethods(
-        allowedMethods.isEmpty() ? CorsConstants.DEFAULT_ALLOWED_METHODS : allowedMethods);
-    configuration.setAllowedHeaders(
-        allowedHeaders.isEmpty() ? List.of(CorsConstants.ALL_HEADERS) : allowedHeaders);
-
-    configuration.setAllowCredentials(allowCredentials);
-    configuration.setMaxAge(Duration.ofHours(1));
-    configuration.setExposedHeaders(
-        Arrays.asList(
-            HttpHeaderConstants.AUTHORIZATION,
-            HttpHeaderConstants.CACHE_CONTROL,
-            HttpHeaderConstants.CONTENT_TYPE,
-            HttpHeaderConstants.X_TOTAL_COUNT,
-            HttpHeaderConstants.X_RATE_LIMIT_REMAINING,
-            HttpHeaderConstants.X_RATE_LIMIT_RESET));
-    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration("/**", configuration);
-
-    return source;
   }
 }

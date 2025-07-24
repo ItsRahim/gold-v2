@@ -5,10 +5,14 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/shared/utils';
 import type { ComponentProps } from 'react';
-import { Link } from 'react-router-dom';
-import { showToast, TOAST_TYPES } from '@/components/shared/ToastNotification.ts';
+import { Link, useNavigate } from 'react-router-dom';
+import { showToast, TOAST_TYPES } from '@/components/shared/ToastNotification';
+import { useAuthStore } from '@/stores/AuthStore';
 
 export function RegisterView({ className, ...props }: ComponentProps<'div'>) {
+  const navigate = useNavigate();
+  const { register } = useAuthStore();
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -21,19 +25,28 @@ export function RegisterView({ className, ...props }: ComponentProps<'div'>) {
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
-
     let updatedValue = value;
 
     if (id === 'firstName' || id === 'lastName') {
       updatedValue = value.charAt(0).toUpperCase() + value.slice(1);
     }
 
-    setFormData({ ...formData, [id]: updatedValue });
+    setFormData((prev) => ({ ...prev, [id]: updatedValue }));
   };
 
   const isValidPhone = (phone: string) => /^[\d\s-]+$/.test(phone);
 
-  const handleSubmit = (e: FormEvent) => {
+  const getInputType = (field: string): string => {
+    const typeMap: Record<string, string> = {
+      email: 'email',
+      phoneNumber: 'tel',
+      password: 'password',
+      confirmPassword: 'password',
+    };
+    return typeMap[field] || 'text';
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     if (!isValidPhone(formData.phoneNumber)) {
@@ -46,7 +59,16 @@ export function RegisterView({ className, ...props }: ComponentProps<'div'>) {
       return;
     }
 
-    showToast(TOAST_TYPES.SUCCESS, 'Successfully registered!');
+    setLoading(true);
+    const { confirmPassword, ...requestData } = formData;
+
+    const success = await register(requestData);
+
+    setLoading(false);
+
+    if (success) {
+      navigate('/login');
+    }
   };
 
   return (
@@ -59,36 +81,26 @@ export function RegisterView({ className, ...props }: ComponentProps<'div'>) {
         <CardContent>
           <form className='space-y-6' onSubmit={handleSubmit}>
             <div className='grid gap-4'>
-              <div className='grid gap-2'>
-                <Label htmlFor='firstName'>First Name</Label>
-                <Input id='firstName' value={formData.firstName} onChange={handleChange} required />
-              </div>
-              <div className='grid gap-2'>
-                <Label htmlFor='lastName'>Last Name</Label>
-                <Input id='lastName' value={formData.lastName} onChange={handleChange} required />
-              </div>
-              <div className='grid gap-2'>
-                <Label htmlFor='email'>Email</Label>
-                <Input id='email' type='email' value={formData.email} onChange={handleChange} required />
-              </div>
-              <div className='grid gap-2'>
-                <Label htmlFor='username'>Username</Label>
-                <Input id='username' value={formData.username} onChange={handleChange} required />
-              </div>
-              <div className='grid gap-2'>
-                <Label htmlFor='phoneNumber'>Phone Number</Label>
-                <Input id='phoneNumber' type='tel' value={formData.phoneNumber} onChange={handleChange} required />
-              </div>
-              <div className='grid gap-2'>
-                <Label htmlFor='password'>Password</Label>
-                <Input id='password' type='password' value={formData.password} onChange={handleChange} required />
-              </div>
-              <div className='grid gap-2'>
-                <Label htmlFor='confirmPassword'>Confirm Password</Label>
-                <Input id='confirmPassword' type='password' value={formData.confirmPassword} onChange={handleChange} required />
-              </div>
-              <Button type='submit' className='w-full'>
-                Register
+              {['firstName', 'lastName', 'email', 'username', 'phoneNumber', 'password', 'confirmPassword'].map((field) => (
+                <div key={field} className='grid gap-2'>
+                  <Label htmlFor={field}>
+                    {
+                      {
+                        firstName: 'First Name',
+                        lastName: 'Last Name',
+                        email: 'Email',
+                        username: 'Username',
+                        phoneNumber: 'Phone Number',
+                        password: 'Password',
+                        confirmPassword: 'Confirm Password',
+                      }[field]
+                    }
+                  </Label>
+                  <Input id={field} type={getInputType(field)} value={formData[field as keyof typeof formData]} onChange={handleChange} required />
+                </div>
+              ))}
+              <Button type='submit' className='w-full' disabled={loading}>
+                {loading ? 'Registering...' : 'Register'}
               </Button>
             </div>
           </form>

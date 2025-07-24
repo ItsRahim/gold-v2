@@ -33,7 +33,6 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Authentication", description = "Authentication and user management endpoints")
 public class AuthenticationController {
   private final IAuthenticationService authenticationService;
-  private final JwtUtil jwtUtil;
 
   @Operation(
       summary = "Register a new user",

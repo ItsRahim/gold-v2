@@ -8,7 +8,7 @@ public final class Endpoints {
   private Endpoints() {}
 
   public static final String API_VERSION = "/api/v2";
-  public static final String AUTH_SERVICE = API_VERSION + "/auth";
+  public static final String AUTH_SERVICE = API_VERSION + "/authentication-service";
 
   // Authentication endpoints
   public static final String LOGIN = "/login";

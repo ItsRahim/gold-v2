@@ -5,25 +5,6 @@ spring:
   application:
     name: authentication-service
 
-app:
-  cors:
-    allowed-origins:
-      - ${REACT_URL:http://localhost:3000}
-      - ${API_GATEWAY:http://localhost:8080}
-      - ${DOMAIN_URL:https://rgts.com}
-    allowed-methods:
-      - "GET"
-      - "POST"
-      - "PUT"
-      - "DELETE"
-    allowed-headers:
-      - "Authorization"
-      - "Content-Type"
-      - "Accept"
-      - "X-Requested-With"
-      - "Cache-Control"
-    allow-credentials: true
-
 jwt:
   secret: SOME_VERY_LONG_KEY_THAT_I_NEED_TO_CHANGE
   expiration:

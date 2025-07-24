@@ -1,10 +1,7 @@
 import axios from 'axios';
 import { API_ENDPOINTS } from '@/api/endpoints.ts';
 import type { AddGoldTypeRequest } from '@/app/catalog/catalogTypes.ts';
-
-export interface ApiError {
-  message: string;
-}
+import type { ApiError } from '@/services/apiError.ts';
 
 export async function getAllGoldTypes() {
   const response = await axios.get(API_ENDPOINTS.GOLD_TYPE);
