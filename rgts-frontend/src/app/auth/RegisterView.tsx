@@ -68,7 +68,7 @@ export function RegisterView({ className, ...props }: ComponentProps<'div'>) {
     setLoading(false);
 
     if (success) {
-      navigate('/login');
+      navigate('/verify');
     }
   };
 

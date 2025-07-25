@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { AuthResponse, LoginRequest, RegisterRequest } from '@/services/auth.ts';
+import { type AuthResponse, type LoginRequest, type RegisterRequest, registerVerification, type VerificationRequest } from '@/services/auth.ts';
 import { loginUser, registerUser } from '@/services/auth.ts';
 import { showToast, TOAST_TYPES } from '@/components/shared/ToastNotification.ts';
 import type { ApiError } from '@/services/apiError.ts';
@@ -15,6 +15,7 @@ type AuthState = {
 type AuthActions = {
   login: (data: LoginRequest) => Promise<boolean>;
   register: (data: RegisterRequest) => Promise<boolean>;
+  verify: (data: VerificationRequest) => Promise<boolean>;
   logout: () => void;
   setError: (error: string | null) => void;
   setLoading: (loading: boolean) => void;
@@ -73,6 +74,24 @@ export const useAuthStore = create<AuthStore>((set) => ({
     if ('error' in result || (result as ApiError)?.message?.toLowerCase().includes('fail')) {
       const errorMessage = (result as ApiError).message || 'Registration failed';
       set({ error: errorMessage, isAuthenticated: false });
+      showToast(TOAST_TYPES.ERROR, errorMessage);
+      return false;
+    }
+
+    showToast(TOAST_TYPES.SUCCESS, result.message);
+    return true;
+  },
+
+  verify: async (data: VerificationRequest) => {
+    set({ isLoading: true, error: null });
+
+    const result = await registerVerification(data);
+
+    set({ isLoading: false });
+
+    if ('error' in result || (result as ApiError)?.message?.toLowerCase().includes('fail')) {
+      const errorMessage = (result as ApiError).message || 'Verification failed';
+      set({ error: errorMessage });
       showToast(TOAST_TYPES.ERROR, errorMessage);
       return false;
     }

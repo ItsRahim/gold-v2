@@ -223,10 +223,6 @@
         <div class="verification-section">
             <div class="code-label">Verification Code</div>
             <div class="verification-code" th:text="${verificationCode}"></div>
-            <a th:href="@{'http://localhost:9999/api/v2/authentication-service/verify-email?token=' + ${verificationCode} + '&id=' + ${verificationId}}"
-               class="verify-button">
-                Verify
-            </a>
         </div>
 
         <div class="expiration-notice">

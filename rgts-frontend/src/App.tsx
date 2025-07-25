@@ -9,6 +9,7 @@ import { LoginView } from '@/app/auth/LoginView.tsx';
 import { RegisterView } from '@/app/auth/RegisterView.tsx';
 import GuestRoute from '@/shared/auth/GuestRoute.tsx';
 import LogoutRoute from '@/shared/auth/LogoutRoute.tsx';
+import { VerifyView } from '@/app/auth/VerifyView.tsx';
 
 export default function App() {
   return (
@@ -16,6 +17,7 @@ export default function App() {
       <Route element={<GuestRoute />}>
         <Route path='/login' element={<LoginView />} />
         <Route path='/register' element={<RegisterView />} />
+        <Route path='/verify' element={<VerifyView />} />
       </Route>
 
       <Route element={<ProtectedRoute />}>

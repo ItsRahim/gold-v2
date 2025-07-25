@@ -10,6 +10,7 @@ export const AUTH_ENDPOINTS = {
   LOGIN: `${API_ENDPOINTS.AUTH}/login`,
   REGISTER: `${API_ENDPOINTS.AUTH}/register`,
   VALIDATE_TOKEN: `${API_ENDPOINTS.AUTH}/validate-token`,
+  VERIFY: `${API_ENDPOINTS.AUTH}/verify-email`,
 };
 
 export { BASE_URL };

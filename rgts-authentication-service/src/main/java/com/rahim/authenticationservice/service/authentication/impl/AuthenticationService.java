@@ -125,37 +125,6 @@ public class AuthenticationService implements IAuthenticationService {
   }
 
   @Override
-  public VerificationResponse verifyEmail(
-      String verificationCode, UUID verificationId, HttpServletRequest request) {
-    try {
-      UUID userId =
-          verificationService.verifyCode(verificationCode, verificationId, VerificationType.EMAIL);
-
-      User user =
-          userRepository
-              .findById(userId)
-              .orElseThrow(
-                  () ->
-                      new EntityNotFoundException(
-                          "User not found with ID: " + userId + ". Unable to verify email."));
-
-      if (user.isEmailVerified()) {
-        log.warn("Email already verified: {}", user.getEmail());
-        throw new ResourceConflictException(
-            "User with email " + user.getEmail() + " is already verified");
-      }
-
-      updateUserAfterVerification(user);
-      return buildVerificationResponse(user);
-    } catch (EntityNotFoundException e) {
-      throw e;
-    } catch (Exception e) {
-      log.error("Verification error with token: {} - {}", verificationCode, e.getMessage(), e);
-      throw new ServiceException("Failed to verify email");
-    }
-  }
-
-  @Override
   public Optional<User> findByUsername(String username) {
     return userRepository.findByUsername(username);
   }

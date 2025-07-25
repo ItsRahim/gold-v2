@@ -16,6 +16,11 @@ export interface RegisterRequest {
   password: string;
 }
 
+export interface VerificationRequest {
+  email: string;
+  code: string;
+}
+
 export interface AuthResponse {
   accessToken: string;
   username: string;
@@ -25,23 +30,32 @@ export interface AuthResponse {
   roles: string[];
 }
 
+function handleApiError(error: unknown, fallbackMessage: string): ApiError {
+  if (axios.isAxiosError(error)) {
+    return {
+      message: error.response?.data?.message ?? fallbackMessage,
+    };
+  }
+  return { message: 'Network or server error occurred' };
+}
+
+function isValidStatus(status: number): boolean {
+  return [200, 201].includes(status);
+}
+
 export async function loginUser(data: LoginRequest): Promise<AuthResponse | ApiError> {
   try {
     const response = await axios.post(AUTH_ENDPOINTS.LOGIN, data);
 
-    if (response.status !== 200 && response.status !== 201) {
+    if (!isValidStatus(response.status)) {
       return {
-        message: response.data?.message || 'Login failed due to unexpected response status',
+        message: response.data?.message ?? 'Login failed due to unexpected response status',
       };
     }
 
     return response.data as AuthResponse;
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      const message = error.response?.data?.message || 'Invalid credentials or user not found';
-      return { message };
-    }
-    return { message: 'Network or server error occurred' };
+    return handleApiError(error, 'Invalid credentials or user not found');
   }
 }
 
@@ -49,17 +63,34 @@ export async function registerUser(data: RegisterRequest): Promise<{ message: st
   try {
     const response = await axios.post(AUTH_ENDPOINTS.REGISTER, data);
 
-    if (response.status !== 200 && response.status !== 201) {
-      return { message: response?.data?.message || 'Registration failed' };
+    if (!isValidStatus(response.status)) {
+      return {
+        message: response.data?.message ?? 'Registration failed',
+      };
     }
 
-    const message = response.data?.message || 'Registration successful';
-    return { message };
+    return {
+      message: response.data?.message ?? 'Registration successful',
+    };
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      const message = error.response?.data?.message || 'Registration failed';
-      return { message };
+    return handleApiError(error, 'Registration failed');
+  }
+}
+
+export async function registerVerification(data: VerificationRequest): Promise<{ message: string } | ApiError> {
+  try {
+    const response = await axios.post(AUTH_ENDPOINTS.VERIFY, data);
+
+    if (!isValidStatus(response.status)) {
+      return {
+        message: response.data?.message ?? 'Verification failed',
+      };
     }
-    return { message: 'Network or server error occurred' };
+
+    return {
+      message: response.data?.message ?? 'Verification successful',
+    };
+  } catch (error) {
+    return handleApiError(error, 'Verification failed');
   }
 }

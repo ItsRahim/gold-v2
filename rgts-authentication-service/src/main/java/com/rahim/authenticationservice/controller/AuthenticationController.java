@@ -63,23 +63,6 @@ public class AuthenticationController {
   }
 
   @Operation(
-      summary = "Verify user email via secure link",
-      description =
-          "Verifies the user's email address using a secure hashed token provided via a verification link.")
-  @ApiResponse(responseCode = "200", description = "Email verified successfully")
-  @ApiResponse(responseCode = "400", description = "Invalid or expired verification token")
-  @ApiResponse(responseCode = "500", description = "Internal server error")
-  @GetMapping(VERIFY_EMAIL)
-  public ResponseEntity<VerificationResponse> verifyEmailWithLink(
-      @RequestParam("token") String verificationCode,
-      @RequestParam("id") UUID verificationId,
-      HttpServletRequest request) {
-    VerificationResponse verificationResponse =
-        authenticationService.verifyEmail(verificationCode, verificationId, request);
-    return ResponseEntity.status(HttpStatus.OK).body(verificationResponse);
-  }
-
-  @Operation(
       summary = "Login a user",
       description = "Authenticates a user and returns an access token")
   @ApiResponse(responseCode = "200", description = "User logged in successfully")
