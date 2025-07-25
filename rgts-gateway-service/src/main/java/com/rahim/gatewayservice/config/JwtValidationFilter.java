@@ -32,7 +32,7 @@ public class JwtValidationFilter implements GlobalFilter, Ordered {
   @Override
   public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
     String path = exchange.getRequest().getURI().getPath();
-    if (path.startsWith("/auth/register") || path.startsWith("/auth/login")) {
+    if (path.startsWith("/auth/register") || path.startsWith("/auth/login") || path.startsWith("/auth/verify-email")) {
       return chain.filter(exchange);
     }
 

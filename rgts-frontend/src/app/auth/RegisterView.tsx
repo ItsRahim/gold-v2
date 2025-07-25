@@ -8,6 +8,7 @@ import type { ComponentProps } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { showToast, TOAST_TYPES } from '@/components/shared/ToastNotification';
 import { useAuthStore } from '@/stores/AuthStore';
+import { DarkMode } from '@/shared/theme/DarkMode.tsx';
 
 export function RegisterView({ className, ...props }: ComponentProps<'div'>) {
   const navigate = useNavigate();
@@ -110,6 +111,9 @@ export function RegisterView({ className, ...props }: ComponentProps<'div'>) {
             <Link to='/login' className='font-medium text-primary hover:underline'>
               Log in
             </Link>
+          </div>
+          <div className='absolute top-4 right-4'>
+            <DarkMode />
           </div>
         </CardContent>
       </Card>

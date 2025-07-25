@@ -9,10 +9,11 @@ type AuthState = {
   isLoading: boolean;
   error: string | null;
   token: string | null;
+  isAuthenticated: boolean;
 };
 
 type AuthActions = {
-  login: (data: LoginRequest) => Promise<void>;
+  login: (data: LoginRequest) => Promise<boolean>;
   register: (data: RegisterRequest) => Promise<boolean>;
   logout: () => void;
   setError: (error: string | null) => void;
@@ -22,11 +23,14 @@ type AuthActions = {
 
 type AuthStore = AuthState & AuthActions;
 
+const initialToken = localStorage.getItem('accessToken');
+
 const initialState: AuthState = {
   user: null,
   isLoading: false,
   error: null,
-  token: localStorage.getItem('accessToken') ?? null,
+  token: initialToken,
+  isAuthenticated: !!initialToken,
 };
 
 export const useAuthStore = create<AuthStore>((set) => ({
@@ -34,24 +38,29 @@ export const useAuthStore = create<AuthStore>((set) => ({
 
   login: async (data: LoginRequest) => {
     set({ isLoading: true, error: null });
+
     const result = await loginUser(data);
 
-    if (!result) {
-      set({ isLoading: false });
-      showToast(TOAST_TYPES.ERROR, 'Something went wrong');
-      return;
-    }
-
-    if ('accessToken' in result) {
-      localStorage.setItem('accessToken', result.accessToken);
-      set({ user: result, token: result.accessToken });
-      showToast(TOAST_TYPES.SUCCESS, `Welcome back, ${result.username}!`);
-    } else {
-      set({ error: result.message });
-      showToast(TOAST_TYPES.ERROR, result.message);
-    }
-
     set({ isLoading: false });
+
+    if (!result || !('accessToken' in result)) {
+      const errorMessage = (result as ApiError)?.message || 'Login failed. Please try again.';
+      set({ error: errorMessage, isAuthenticated: false });
+      showToast(TOAST_TYPES.ERROR, errorMessage);
+      return false;
+    }
+
+    localStorage.setItem('accessToken', result.accessToken);
+
+    set({
+      user: result,
+      token: result.accessToken,
+      isAuthenticated: true,
+    });
+
+    const fullName = `${result.firstName} ${result.lastName}`;
+    showToast(TOAST_TYPES.SUCCESS, `Welcome back, ${fullName}!`);
+    return true;
   },
 
   register: async (data: RegisterRequest) => {
@@ -63,7 +72,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
 
     if ('error' in result || (result as ApiError)?.message?.toLowerCase().includes('fail')) {
       const errorMessage = (result as ApiError).message || 'Registration failed';
-      set({ error: errorMessage });
+      set({ error: errorMessage, isAuthenticated: false });
       showToast(TOAST_TYPES.ERROR, errorMessage);
       return false;
     }
@@ -74,7 +83,13 @@ export const useAuthStore = create<AuthStore>((set) => ({
 
   logout: () => {
     localStorage.removeItem('accessToken');
-    set({ ...initialState, token: null });
+    set({
+      user: null,
+      token: null,
+      isAuthenticated: false,
+      isLoading: false,
+      error: null,
+    });
   },
 
   setError: (error: string | null) => set({ error }),

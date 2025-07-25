@@ -14,7 +14,7 @@ public final class Endpoints {
   public static final String LOGIN = "/login";
   public static final String LOGIN_ENDPOINT = AUTH_SERVICE + LOGIN;
   public static final String VERIFY_EMAIL = "/verify-email";
-  public static final String VERIFY_ENDPOINT = AUTH_SERVICE + VERIFY_EMAIL;
+  public static final String VERIFY_ENDPOINT = AUTH_SERVICE + VERIFY_EMAIL + "/**";
 
   public static final String REGISTER = "/register";
   public static final String REGISTER_ENDPOINT = AUTH_SERVICE + REGISTER;

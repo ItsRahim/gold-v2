@@ -71,7 +71,7 @@ public class AuthenticationService implements IAuthenticationService {
     }
 
     return RegisterResponse.builder()
-        .message("User registered successfully. Please check your email to verify your account.")
+        .message("Please check your email to verify your account.")
         .status(ResponseStatus.PENDING)
         .id(user.getId())
         .username(user.getUsername())
@@ -204,7 +204,7 @@ public class AuthenticationService implements IAuthenticationService {
 
     String jwt = jwtUtil.generateToken(claims, user.getUsername());
 
-    return new AuthResponse(jwt);
+    return new AuthResponse(jwt, user.getUsername(), user.getId().toString(), user.getFirstName(), user.getLastName(), roles);
   }
 
   @Override
