@@ -7,7 +7,6 @@ import com.rahim.authenticationservice.dto.request.VerificationRequest;
 import com.rahim.authenticationservice.dto.response.*;
 import com.rahim.authenticationservice.entity.User;
 import com.rahim.authenticationservice.enums.Role;
-import com.rahim.authenticationservice.enums.VerificationType;
 import com.rahim.authenticationservice.exception.AccountExistsException;
 import com.rahim.authenticationservice.exception.UnauthorisedException;
 import com.rahim.authenticationservice.repository.UserRepository;
@@ -173,7 +172,13 @@ public class AuthenticationService implements IAuthenticationService {
 
     String jwt = jwtUtil.generateToken(claims, user.getUsername());
 
-    return new AuthResponse(jwt, user.getUsername(), user.getId().toString(), user.getFirstName(), user.getLastName(), roles);
+    return new AuthResponse(
+        jwt,
+        user.getUsername(),
+        user.getId().toString(),
+        user.getFirstName(),
+        user.getLastName(),
+        roles);
   }
 
   @Override

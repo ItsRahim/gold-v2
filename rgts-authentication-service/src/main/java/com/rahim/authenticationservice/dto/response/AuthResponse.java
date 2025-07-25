@@ -1,9 +1,8 @@
 package com.rahim.authenticationservice.dto.response;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-
-import java.util.List;
 
 /**
  * @created 08/06/2025
