@@ -1,7 +1,6 @@
 package com.rahim.gatewayservice.config;
 
 import com.rahim.cachemanager.service.RedisService;
-
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
@@ -79,9 +78,7 @@ public class JwtValidationFilter implements GlobalFilter, Ordered {
 
   private String extractToken(HttpHeaders headers) {
     String authHeader = headers.getFirst(HttpHeaders.AUTHORIZATION);
-    return (authHeader != null && authHeader.startsWith("Bearer "))
-        ? authHeader
-        : null;
+    return (authHeader != null && authHeader.startsWith("Bearer ")) ? authHeader : null;
   }
 
   private Mono<Map<String, Object>> validateTokenWithAuthService(String authHeader) {
