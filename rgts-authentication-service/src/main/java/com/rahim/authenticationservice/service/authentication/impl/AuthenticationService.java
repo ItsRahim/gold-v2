@@ -16,7 +16,6 @@ import com.rahim.authenticationservice.service.verification.IVerificationService
 import com.rahim.authenticationservice.util.EmailFormatUtil;
 import com.rahim.authenticationservice.util.JwtUtil;
 import com.rahim.authenticationservice.util.RequestUtil;
-import com.rahim.common.constants.JwtConstants;
 import com.rahim.common.exception.*;
 import com.rahim.common.util.DateUtil;
 import io.jsonwebtoken.Claims;
@@ -167,8 +166,8 @@ public class AuthenticationService implements IAuthenticationService {
     List<String> roles =
         user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
     Map<String, Object> claims = new HashMap<>();
-    claims.put(JwtConstants.USER_ID, user.getId());
-    claims.put(JwtConstants.ROLES, roles);
+    claims.put("userId", user.getId());
+    claims.put("roles", roles);
 
     String jwt = jwtUtil.generateToken(claims, user.getUsername());
 
@@ -183,7 +182,7 @@ public class AuthenticationService implements IAuthenticationService {
 
   @Override
   public ValidationResponse validateToken(String authHeader) {
-    if (authHeader == null || !authHeader.startsWith(JwtConstants.BEARER_PREFIX)) {
+    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
       throw new UnauthorisedException("Missing or invalid Authorization header");
     }
 
@@ -191,12 +190,13 @@ public class AuthenticationService implements IAuthenticationService {
 
     Claims claims = jwtUtil.extractAllClaims(token);
     String username = claims.getSubject();
-    String userId = claims.get(JwtConstants.USER_ID).toString();
+    String userId = claims.get("userId").toString();
+    Date expiry = claims.getExpiration();
 
     @SuppressWarnings("unchecked")
-    List<String> roles = claims.get(JwtConstants.ROLES, List.class);
+    List<String> roles = claims.get("roles", List.class);
 
-    return new ValidationResponse(userId, username, roles);
+    return new ValidationResponse(userId, username, roles, expiry);
   }
 
   // ------------------------ Private Helpers ------------------------

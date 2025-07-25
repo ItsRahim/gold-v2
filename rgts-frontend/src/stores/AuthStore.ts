@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { AuthResponse, LoginRequest, RegisterRequest, VerificationRequest } from '@/services/auth';
-import { loginUser, registerUser, registerVerification } from '@/services/auth';
+import { loginUser, registerUser, registerVerification, logoutUser } from '@/services/auth';
 import { showToast, TOAST_TYPES } from '@/components/shared/ToastNotification';
 import type { ApiError } from '@/services/apiError';
 
@@ -17,7 +17,7 @@ type AuthActions = {
   login: (data: LoginRequest) => Promise<boolean>;
   register: (data: RegisterRequest) => Promise<boolean>;
   verify: (data: VerificationRequest) => Promise<boolean>;
-  logout: () => void;
+  logout: () => Promise<void>;
   setError: (error: string | null) => void;
   setLoading: (loading: boolean) => void;
   reset: () => void;
@@ -87,14 +87,24 @@ export const useAuthStore = create<AuthStore>()(
         }
       },
 
-      logout: () => {
-        set({
-          user: null,
-          token: null,
-          isAuthenticated: false,
-          isLoading: false,
-          error: null,
-        });
+      logout: async () => {
+        try {
+          const { token } = useAuthStore.getState();
+          if (token) {
+            await logoutUser(token);
+          }
+        } catch (err: any) {
+          showToast(TOAST_TYPES.ERROR, 'Logout failed on server');
+        } finally {
+          set({
+            user: null,
+            token: null,
+            isAuthenticated: false,
+            isLoading: false,
+            error: null,
+          });
+          showToast(TOAST_TYPES.SUCCESS, 'Logged out successfully');
+        }
       },
 
       setError: (error) => set({ error }),

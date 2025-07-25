@@ -1,6 +1,8 @@
 package com.rahim.gatewayservice.config;
 
-import com.rahim.common.constants.JwtConstants;
+import com.rahim.cachemanager.service.RedisService;
+
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -24,9 +26,12 @@ import reactor.core.publisher.Mono;
 @Component
 @RequiredArgsConstructor
 public class JwtValidationFilter implements GlobalFilter, Ordered {
+  private final RedisService redisService;
 
   private static final String AUTH_SERVICE_URL =
-      "lb://authentication-service/api/v2/auth/validate-token";
+      "lb://authentication-service/api/v2/authentication-service/validate-token";
+  private static final String TOKEN_CACHE_PREFIX = "jwt:token:";
+  private static final long TOKEN_EXPIRY = 3600;
   private final WebClient.Builder webClientBuilder;
 
   @Override
@@ -38,19 +43,43 @@ public class JwtValidationFilter implements GlobalFilter, Ordered {
       return chain.filter(exchange);
     }
 
+    if (path.startsWith("/auth/logout")) {
+      String token = extractToken(exchange.getRequest().getHeaders());
+
+      if (token != null) {
+        String cacheKey = TOKEN_CACHE_PREFIX + token;
+        redisService.deleteKey(cacheKey);
+      }
+
+      return chain.filter(exchange);
+    }
+
     String token = extractToken(exchange.getRequest().getHeaders());
     if (token == null) {
       return unauthorized(exchange);
     }
 
+    String cacheKey = TOKEN_CACHE_PREFIX + token;
+    Object cached = redisService.getValue(cacheKey);
+
+    if (cached != null) {
+      @SuppressWarnings("unchecked")
+      Map<String, Object> userData = (Map<String, Object>) cached;
+      return enrichRequest(exchange, chain, userData);
+    }
+
     return validateTokenWithAuthService(token)
-        .flatMap(userData -> enrichRequest(exchange, chain, userData))
+        .flatMap(
+            userData -> {
+              saveTokenToCache(cacheKey, userData);
+              return enrichRequest(exchange, chain, userData);
+            })
         .onErrorResume(e -> unauthorized(exchange));
   }
 
   private String extractToken(HttpHeaders headers) {
     String authHeader = headers.getFirst(HttpHeaders.AUTHORIZATION);
-    return (authHeader != null && authHeader.startsWith(JwtConstants.BEARER_PREFIX))
+    return (authHeader != null && authHeader.startsWith("Bearer "))
         ? authHeader
         : null;
   }
@@ -70,9 +99,9 @@ public class JwtValidationFilter implements GlobalFilter, Ordered {
 
   private Mono<Void> enrichRequest(
       ServerWebExchange exchange, GatewayFilterChain chain, Map<String, Object> userData) {
-    String username = (String) userData.get(JwtConstants.USERNAME);
+    String username = (String) userData.get("username");
     @SuppressWarnings("unchecked")
-    List<String> roles = (List<String>) userData.get(JwtConstants.ROLES);
+    List<String> roles = (List<String>) userData.get("roles");
 
     ServerHttpRequest mutatedRequest =
         exchange
@@ -93,5 +122,18 @@ public class JwtValidationFilter implements GlobalFilter, Ordered {
   @Override
   public int getOrder() {
     return -1;
+  }
+
+  private void saveTokenToCache(String cacheKey, Map<String, Object> userData) {
+    try {
+      String expiry = (String) userData.get("expiry");
+      long expiryMillis = Instant.parse(expiry).toEpochMilli();
+      long currentMillis = System.currentTimeMillis();
+      long ttlSeconds = Math.max(1, (expiryMillis - currentMillis) / 1000);
+
+      redisService.setValue(cacheKey, userData, ttlSeconds);
+    } catch (Exception e) {
+      redisService.setValue(cacheKey, userData, TOKEN_EXPIRY);
+    }
   }
 }

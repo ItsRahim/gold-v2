@@ -12,7 +12,7 @@ spring:
 
   cloud:
     config:
-      name: eureka-client-config,zipkin-config,${spring.application.name}
+      name: eureka-client-config,redis-config,zipkin-config,${spring.application.name}
       discovery:
         enabled: true
         service-id: CONFIG-SERVER

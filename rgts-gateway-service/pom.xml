@@ -14,7 +14,7 @@
     <dependencies>
         <dependency>
             <groupId>com.rahim</groupId>
-            <artifactId>rgts-common</artifactId>
+            <artifactId>rgts-cache-manager</artifactId>
             <exclusions>
                 <exclusion>
                     <groupId>org.springframework.boot</groupId>

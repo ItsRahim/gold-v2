@@ -93,3 +93,15 @@ export async function registerVerification(data: VerificationRequest): Promise<{
     throw new Error(errMsg);
   }
 }
+
+export async function logoutUser(token: string): Promise<void> {
+  await axios.post(
+    AUTH_ENDPOINTS.LOGOUT,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+}
