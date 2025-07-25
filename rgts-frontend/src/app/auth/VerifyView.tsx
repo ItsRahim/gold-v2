@@ -1,4 +1,4 @@
-import { useState, useRef, type FormEvent } from 'react';
+import React, { useState, useRef, type FormEvent } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { showToast, TOAST_TYPES } from '@/components/shared/ToastNotification';
 import { DarkMode } from '@/shared/theme/DarkMode.tsx';
 import { useAuthStore } from '@/stores/AuthStore';
+import { ArrowLeft } from 'lucide-react';
 
 export function VerifyView({ className, ...props }: ComponentProps<'div'>) {
   const navigate = useNavigate();
@@ -41,14 +42,14 @@ export function VerifyView({ className, ...props }: ComponentProps<'div'>) {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    const code = codeDigits.join('');
-    if (code.length !== 6) {
+    const verificationCode = codeDigits.join('');
+    if (verificationCode.length !== 6) {
       showToast(TOAST_TYPES.ERROR, 'Please enter the 6-digit verification code.');
       return;
     }
 
     setLoading(true);
-    const success = await verify({ email, code });
+    const success = await verify({ email, verificationCode });
     setLoading(false);
 
     if (success) {
@@ -62,6 +63,9 @@ export function VerifyView({ className, ...props }: ComponentProps<'div'>) {
         <DarkMode />
       </div>
       <Card className='w-full max-w-md shadow-xl'>
+        <button type='button' onClick={() => navigate('/login')} className='absolute top-4 left-4 p-1 rounded hover:bg-accent' aria-label='Go back'>
+          <ArrowLeft className='w-5 h-5' />
+        </button>
         <CardHeader className='text-center'>
           <CardTitle className='text-2xl'>Verify Your Account</CardTitle>
           <CardDescription>Enter the 6-digit code sent to your email</CardDescription>

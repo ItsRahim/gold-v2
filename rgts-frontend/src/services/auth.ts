@@ -18,7 +18,7 @@ export interface RegisterRequest {
 
 export interface VerificationRequest {
   email: string;
-  code: string;
+  verificationCode: string;
 }
 
 export interface AuthResponse {

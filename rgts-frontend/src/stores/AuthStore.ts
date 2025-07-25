@@ -1,8 +1,9 @@
 import { create } from 'zustand';
-import { type AuthResponse, type LoginRequest, type RegisterRequest, registerVerification, type VerificationRequest } from '@/services/auth.ts';
-import { loginUser, registerUser } from '@/services/auth.ts';
-import { showToast, TOAST_TYPES } from '@/components/shared/ToastNotification.ts';
-import type { ApiError } from '@/services/apiError.ts';
+import { persist } from 'zustand/middleware';
+import type { AuthResponse, LoginRequest, RegisterRequest, VerificationRequest } from '@/services/auth';
+import { loginUser, registerUser, registerVerification } from '@/services/auth';
+import { showToast, TOAST_TYPES } from '@/components/shared/ToastNotification';
+import type { ApiError } from '@/services/apiError';
 
 type AuthState = {
   user: AuthResponse | null;
@@ -24,94 +25,97 @@ type AuthActions = {
 
 type AuthStore = AuthState & AuthActions;
 
-const initialToken = localStorage.getItem('accessToken');
-
-const initialState: AuthState = {
-  user: null,
-  isLoading: false,
-  error: null,
-  token: initialToken,
-  isAuthenticated: !!initialToken,
-};
-
-export const useAuthStore = create<AuthStore>((set) => ({
-  ...initialState,
-
-  login: async (data: LoginRequest) => {
-    set({ isLoading: true, error: null });
-
-    const result = await loginUser(data);
-
-    set({ isLoading: false });
-
-    if (!result || !('accessToken' in result)) {
-      const errorMessage = (result as ApiError)?.message || 'Login failed. Please try again.';
-      set({ error: errorMessage, isAuthenticated: false });
-      showToast(TOAST_TYPES.ERROR, errorMessage);
-      return false;
-    }
-
-    localStorage.setItem('accessToken', result.accessToken);
-
-    set({
-      user: result,
-      token: result.accessToken,
-      isAuthenticated: true,
-    });
-
-    const fullName = `${result.firstName} ${result.lastName}`;
-    showToast(TOAST_TYPES.SUCCESS, `Welcome back, ${fullName}!`);
-    return true;
-  },
-
-  register: async (data: RegisterRequest) => {
-    set({ isLoading: true, error: null });
-
-    const result = await registerUser(data);
-
-    set({ isLoading: false });
-
-    if ('error' in result || (result as ApiError)?.message?.toLowerCase().includes('fail')) {
-      const errorMessage = (result as ApiError).message || 'Registration failed';
-      set({ error: errorMessage, isAuthenticated: false });
-      showToast(TOAST_TYPES.ERROR, errorMessage);
-      return false;
-    }
-
-    showToast(TOAST_TYPES.SUCCESS, result.message);
-    return true;
-  },
-
-  verify: async (data: VerificationRequest) => {
-    set({ isLoading: true, error: null });
-
-    const result = await registerVerification(data);
-
-    set({ isLoading: false });
-
-    if ('error' in result || (result as ApiError)?.message?.toLowerCase().includes('fail')) {
-      const errorMessage = (result as ApiError).message || 'Verification failed';
-      set({ error: errorMessage });
-      showToast(TOAST_TYPES.ERROR, errorMessage);
-      return false;
-    }
-
-    showToast(TOAST_TYPES.SUCCESS, result.message);
-    return true;
-  },
-
-  logout: () => {
-    localStorage.removeItem('accessToken');
-    set({
+export const useAuthStore = create<AuthStore>()(
+  persist(
+    (set) => ({
       user: null,
-      token: null,
-      isAuthenticated: false,
       isLoading: false,
       error: null,
-    });
-  },
+      token: null,
+      isAuthenticated: false,
 
-  setError: (error: string | null) => set({ error }),
-  setLoading: (loading: boolean) => set({ isLoading: loading }),
-  reset: () => set(initialState),
-}));
+      login: async (data) => {
+        set({ isLoading: true, error: null });
+        const result = await loginUser(data);
+        set({ isLoading: false });
+
+        if (!result || !('accessToken' in result)) {
+          const errorMessage = (result as ApiError)?.message || 'Login failed.';
+          set({ error: errorMessage, isAuthenticated: false });
+          showToast(TOAST_TYPES.ERROR, errorMessage);
+          return false;
+        }
+
+        set({
+          user: result,
+          token: result.accessToken,
+          isAuthenticated: true,
+        });
+
+        showToast(TOAST_TYPES.SUCCESS, `Welcome back, ${result.firstName} ${result.lastName}!`);
+        return true;
+      },
+
+      register: async (data) => {
+        set({ isLoading: true, error: null });
+        const result = await registerUser(data);
+        set({ isLoading: false });
+
+        if ('error' in result || (result as ApiError)?.message?.toLowerCase().includes('fail')) {
+          const errorMessage = (result as ApiError).message || 'Registration failed';
+          set({ error: errorMessage, isAuthenticated: false });
+          showToast(TOAST_TYPES.ERROR, errorMessage);
+          return false;
+        }
+
+        showToast(TOAST_TYPES.SUCCESS, result.message);
+        return true;
+      },
+
+      verify: async (data) => {
+        set({ isLoading: true, error: null });
+        const result = await registerVerification(data);
+        set({ isLoading: false });
+
+        if ('error' in result || (result as ApiError)?.message?.toLowerCase().includes('fail')) {
+          const errorMessage = (result as ApiError).message || 'Verification failed';
+          set({ error: errorMessage });
+          showToast(TOAST_TYPES.ERROR, errorMessage);
+          return false;
+        }
+
+        showToast(TOAST_TYPES.SUCCESS, result.message);
+        return true;
+      },
+
+      logout: () => {
+        set({
+          user: null,
+          token: null,
+          isAuthenticated: false,
+          isLoading: false,
+          error: null,
+        });
+      },
+
+      setError: (error) => set({ error }),
+      setLoading: (loading) => set({ isLoading: loading }),
+      reset: () =>
+        set({
+          user: null,
+          token: null,
+          isAuthenticated: false,
+          isLoading: false,
+          error: null,
+        }),
+    }),
+    {
+      name: 'auth-storage',
+      partialize: (state) => ({
+        user: state.user,
+        token: state.token,
+        isAuthenticated: state.isAuthenticated,
+      }),
+    },
+  ),
+);
