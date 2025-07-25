@@ -4,6 +4,9 @@ import com.rahim.cachemanager.service.RedisService;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Stream;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -36,21 +39,17 @@ public class JwtValidationFilter implements GlobalFilter, Ordered {
   @Override
   public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
     String path = exchange.getRequest().getURI().getPath();
-    if (path.startsWith("/auth/register")
-        || path.startsWith("/auth/login")
-        || path.startsWith("/auth/verify-email")) {
+
+    if (Stream.of("/auth/register", "/auth/login", "/auth/verify-email")
+        .anyMatch(path::startsWith)) {
       return chain.filter(exchange);
     }
 
     if (path.startsWith("/auth/logout")) {
-      String token = extractToken(exchange.getRequest().getHeaders());
-
-      if (token != null) {
-        String cacheKey = TOKEN_CACHE_PREFIX + token;
-        redisService.deleteKey(cacheKey);
-      }
-
-      return chain.filter(exchange);
+      Optional.ofNullable(extractToken(exchange.getRequest().getHeaders()))
+          .ifPresent(token -> redisService.deleteKey(TOKEN_CACHE_PREFIX + token));
+      exchange.getResponse().setStatusCode(HttpStatus.NO_CONTENT);
+      return exchange.getResponse().setComplete();
     }
 
     String token = extractToken(exchange.getRequest().getHeaders());
