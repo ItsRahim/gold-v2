@@ -77,20 +77,19 @@ export async function registerUser(data: RegisterRequest): Promise<{ message: st
   }
 }
 
-export async function registerVerification(data: VerificationRequest): Promise<{ message: string } | ApiError> {
+export async function registerVerification(data: VerificationRequest): Promise<{ message: string }> {
   try {
     const response = await axios.post(AUTH_ENDPOINTS.VERIFY, data);
 
-    if (!isValidStatus(response.status)) {
-      return {
-        message: response.data?.message ?? 'Verification failed',
-      };
+    if (response.status < 200 || response.status >= 300) {
+      throw new Error(response.data?.message ?? 'Verification failed');
     }
 
     return {
       message: response.data?.message ?? 'Verification successful',
     };
   } catch (error) {
-    return handleApiError(error, 'Verification failed');
+    const errMsg = axios.isAxiosError(error) ? (error.response?.data?.message ?? 'Verification failed') : 'Network or server error occurred';
+    throw new Error(errMsg);
   }
 }

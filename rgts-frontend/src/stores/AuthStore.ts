@@ -74,18 +74,17 @@ export const useAuthStore = create<AuthStore>()(
 
       verify: async (data) => {
         set({ isLoading: true, error: null });
-        const result = await registerVerification(data);
-        set({ isLoading: false });
-
-        if (!result || ('message' in result && result.message.toLowerCase().includes('fail'))) {
-          const message = (result as ApiError).message || 'Verification failed';
-          set({ error: message });
+        try {
+          const result = await registerVerification(data);
+          set({ isLoading: false });
+          showToast(TOAST_TYPES.SUCCESS, result.message);
+          return true;
+        } catch (err: any) {
+          const message = err.message || 'Verification failed';
+          set({ error: message, isLoading: false });
           showToast(TOAST_TYPES.ERROR, message);
           return false;
         }
-
-        showToast(TOAST_TYPES.SUCCESS, result.message);
-        return true;
       },
 
       logout: () => {

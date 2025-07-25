@@ -50,12 +50,11 @@ export function VerifyView({ className, ...props }: ComponentProps<'div'>) {
 
     setLoading(true);
     const success = await verify({ email, verificationCode });
+    console.log();
     setLoading(false);
 
     if (success) {
       navigate('/login');
-    } else {
-      showToast(TOAST_TYPES.ERROR, 'Verification failed. Please check your code and try again.');
     }
   };
 
