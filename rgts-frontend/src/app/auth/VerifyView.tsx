@@ -54,6 +54,8 @@ export function VerifyView({ className, ...props }: ComponentProps<'div'>) {
 
     if (success) {
       navigate('/login');
+    } else {
+      showToast(TOAST_TYPES.ERROR, 'Verification failed. Please check your code and try again.');
     }
   };
 

@@ -39,10 +39,10 @@ export const useAuthStore = create<AuthStore>()(
         const result = await loginUser(data);
         set({ isLoading: false });
 
-        if (!result || !('accessToken' in result)) {
-          const errorMessage = (result as ApiError)?.message || 'Login failed.';
-          set({ error: errorMessage, isAuthenticated: false });
-          showToast(TOAST_TYPES.ERROR, errorMessage);
+        if (!result || 'message' in result) {
+          const message = (result as ApiError).message || 'Login failed';
+          set({ error: message, isAuthenticated: false });
+          showToast(TOAST_TYPES.ERROR, message);
           return false;
         }
 
@@ -61,10 +61,10 @@ export const useAuthStore = create<AuthStore>()(
         const result = await registerUser(data);
         set({ isLoading: false });
 
-        if ('error' in result || (result as ApiError)?.message?.toLowerCase().includes('fail')) {
-          const errorMessage = (result as ApiError).message || 'Registration failed';
-          set({ error: errorMessage, isAuthenticated: false });
-          showToast(TOAST_TYPES.ERROR, errorMessage);
+        if (!result || ('message' in result && result.message.toLowerCase().includes('fail'))) {
+          const message = (result as ApiError).message || 'Registration failed';
+          set({ error: message, isAuthenticated: false });
+          showToast(TOAST_TYPES.ERROR, message);
           return false;
         }
 
@@ -77,10 +77,10 @@ export const useAuthStore = create<AuthStore>()(
         const result = await registerVerification(data);
         set({ isLoading: false });
 
-        if ('error' in result || (result as ApiError)?.message?.toLowerCase().includes('fail')) {
-          const errorMessage = (result as ApiError).message || 'Verification failed';
-          set({ error: errorMessage });
-          showToast(TOAST_TYPES.ERROR, errorMessage);
+        if (!result || ('message' in result && result.message.toLowerCase().includes('fail'))) {
+          const message = (result as ApiError).message || 'Verification failed';
+          set({ error: message });
+          showToast(TOAST_TYPES.ERROR, message);
           return false;
         }
 
@@ -99,7 +99,7 @@ export const useAuthStore = create<AuthStore>()(
       },
 
       setError: (error) => set({ error }),
-      setLoading: (loading) => set({ isLoading: loading }),
+      setLoading: (isLoading) => set({ isLoading }),
       reset: () =>
         set({
           user: null,

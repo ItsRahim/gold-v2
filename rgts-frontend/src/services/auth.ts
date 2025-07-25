@@ -30,6 +30,10 @@ export interface AuthResponse {
   roles: string[];
 }
 
+function isValidStatus(status: number): boolean {
+  return status >= 200 && status < 300;
+}
+
 function handleApiError(error: unknown, fallbackMessage: string): ApiError {
   if (axios.isAxiosError(error)) {
     return {
@@ -37,10 +41,6 @@ function handleApiError(error: unknown, fallbackMessage: string): ApiError {
     };
   }
   return { message: 'Network or server error occurred' };
-}
-
-function isValidStatus(status: number): boolean {
-  return [200, 201].includes(status);
 }
 
 export async function loginUser(data: LoginRequest): Promise<AuthResponse | ApiError> {
