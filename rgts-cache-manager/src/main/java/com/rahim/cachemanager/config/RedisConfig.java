@@ -38,7 +38,8 @@ public class RedisConfig {
     objectMapper.registerModule(new JavaTimeModule());
     objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 
-    GenericJackson2JsonRedisSerializer jsonSerializer = new GenericJackson2JsonRedisSerializer(objectMapper);
+    GenericJackson2JsonRedisSerializer jsonSerializer =
+        new GenericJackson2JsonRedisSerializer(objectMapper);
     StringRedisSerializer stringSerializer = new StringRedisSerializer();
 
     RedisTemplate<String, Object> template = new RedisTemplate<>();

@@ -3,6 +3,9 @@ package com.rahim.gatewayservice.config;
 import com.rahim.cachemanager.service.RedisService;
 import com.rahim.jwtcore.constants.JwtConstants;
 import com.rahim.jwtcore.response.TokenVerificationResponse;
+import java.util.Date;
+import java.util.Optional;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -15,10 +18,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
-
-import java.util.Date;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 @Component
 @RequiredArgsConstructor

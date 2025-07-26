@@ -5,8 +5,8 @@ package com.rahim.jwtcore.constants;
  * @author Rahim Ahmed
  */
 public class JwtConstants {
-    public static final String BEARER_PREFIX = "Bearer ";
-    public static final String USER_ID_CLAIM = "userId";
-    public static final String USERNAME_CLAIM = "username";
-    public static final String ROLES_CLAIM = "roles";
+  public static final String BEARER_PREFIX = "Bearer ";
+  public static final String USER_ID_CLAIM = "userId";
+  public static final String USERNAME_CLAIM = "username";
+  public static final String ROLES_CLAIM = "roles";
 }

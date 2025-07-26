@@ -1,8 +1,8 @@
 package com.rahim.authenticationservice.service.authentication.impl;
 
 import com.rahim.authenticationservice.dto.request.AuthRequest;
-import com.rahim.authenticationservice.dto.request.RegisterRequest;
 import com.rahim.authenticationservice.dto.request.EmailVerificationRequest;
+import com.rahim.authenticationservice.dto.request.RegisterRequest;
 import com.rahim.authenticationservice.dto.response.*;
 import com.rahim.authenticationservice.entity.User;
 import com.rahim.authenticationservice.enums.Role;

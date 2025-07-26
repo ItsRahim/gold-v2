@@ -3,11 +3,11 @@ package com.rahim.authenticationservice.controller;
 import static com.rahim.authenticationservice.constants.Endpoints.*;
 
 import com.rahim.authenticationservice.dto.request.AuthRequest;
-import com.rahim.authenticationservice.dto.request.RegisterRequest;
 import com.rahim.authenticationservice.dto.request.EmailVerificationRequest;
+import com.rahim.authenticationservice.dto.request.RegisterRequest;
 import com.rahim.authenticationservice.dto.response.AuthResponse;
-import com.rahim.authenticationservice.dto.response.RegisterResponse;
 import com.rahim.authenticationservice.dto.response.EmailVerificationResponse;
+import com.rahim.authenticationservice.dto.response.RegisterResponse;
 import com.rahim.authenticationservice.service.authentication.IAuthenticationService;
 import com.rahim.jwtcore.response.TokenVerificationResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -55,7 +55,7 @@ public class AuthenticationController {
   @ApiResponse(responseCode = "500", description = "Internal server error")
   @PostMapping(VERIFY_EMAIL)
   public ResponseEntity<EmailVerificationResponse> verifyEmailWithBody(
-          @RequestBody EmailVerificationRequest emailVerificationRequest, HttpServletRequest request) {
+      @RequestBody EmailVerificationRequest emailVerificationRequest, HttpServletRequest request) {
     EmailVerificationResponse emailVerificationResponse =
         authenticationService.verifyEmail(emailVerificationRequest, request);
     return ResponseEntity.status(HttpStatus.OK).body(emailVerificationResponse);
@@ -86,7 +86,8 @@ public class AuthenticationController {
   @PostMapping(VALIDATE_TOKEN)
   public ResponseEntity<TokenVerificationResponse> validateToken(
       @RequestHeader("Authorization") String authHeader) {
-    TokenVerificationResponse tokenVerificationResponse = authenticationService.verifyToken(authHeader);
+    TokenVerificationResponse tokenVerificationResponse =
+        authenticationService.verifyToken(authHeader);
     return ResponseEntity.status(HttpStatus.OK).body(tokenVerificationResponse);
   }
 }
