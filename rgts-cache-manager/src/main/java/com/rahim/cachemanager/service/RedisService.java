@@ -1,10 +1,11 @@
 package com.rahim.cachemanager.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.Duration;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.*;
 import org.springframework.stereotype.Service;
 
@@ -13,14 +14,10 @@ import org.springframework.stereotype.Service;
  * @author Rahim Ahmed
  */
 @Service
+@RequiredArgsConstructor
 public class RedisService {
-
   private final RedisTemplate<String, Object> redisTemplate;
-
-  @Autowired
-  public RedisService(RedisTemplate<String, Object> redisTemplate) {
-    this.redisTemplate = redisTemplate;
-  }
+  private final ObjectMapper objectMapper;
 
   public void setValue(String key, Object value) {
     redisTemplate.opsForValue().set(key, value);
@@ -32,6 +29,15 @@ public class RedisService {
 
   public Object getValue(String key) {
     return redisTemplate.opsForValue().get(key);
+  }
+
+  public <T> T getValue(String key, Class<T> type) {
+    Object value = redisTemplate.opsForValue().get(key);
+    if (value == null) {
+      return null;
+    }
+
+    return objectMapper.convertValue(value, type);
   }
 
   public void putHash(String key, String hashKey, Object value) {

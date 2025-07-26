@@ -14,11 +14,15 @@
     <dependencies>
         <dependency>
             <groupId>com.rahim</groupId>
-            <artifactId>rgts-kafka-service</artifactId>
+            <artifactId>rgts-common</artifactId>
         </dependency>
         <dependency>
             <groupId>com.rahim</groupId>
-            <artifactId>rgts-common</artifactId>
+            <artifactId>rgts-jwt-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.rahim</groupId>
+            <artifactId>rgts-kafka-service</artifactId>
         </dependency>
         <dependency>
             <groupId>com.rahim</groupId>
@@ -95,7 +99,18 @@
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-prometheus</artifactId>
-            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

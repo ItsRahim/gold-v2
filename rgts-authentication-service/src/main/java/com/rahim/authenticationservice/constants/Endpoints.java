@@ -8,21 +8,24 @@ public final class Endpoints {
   private Endpoints() {}
 
   public static final String API_VERSION = "/api/v2";
-  public static final String AUTH_SERVICE = API_VERSION + "/auth";
+  public static final String AUTH_SERVICE = API_VERSION + "/authentication-service";
 
   // Authentication endpoints
   public static final String LOGIN = "/login";
   public static final String LOGIN_ENDPOINT = AUTH_SERVICE + LOGIN;
+  public static final String LOGOUT = "/logout";
+  public static final String LOGOUT_ENDPOINT = AUTH_SERVICE + LOGOUT;
   public static final String VERIFY_EMAIL = "/verify-email";
-  public static final String VERIFY_ENDPOINT = AUTH_SERVICE + VERIFY_EMAIL;
+  public static final String VERIFY_ENDPOINT = AUTH_SERVICE + VERIFY_EMAIL + "/**";
 
   public static final String REGISTER = "/register";
   public static final String REGISTER_ENDPOINT = AUTH_SERVICE + REGISTER;
 
   // Token management endpoints
-  public static final String TOKENS = AUTH_SERVICE + "/tokens";
-  public static final String REFRESH_TOKEN = TOKENS + "/refresh";
-  public static final String VALIDATE_TOKEN = TOKENS + "/validate";
+  public static final String REFRESH_TOKEN = "/refresh-token";
+  public static final String REFRESH_TOKEN_ENDPOINT = AUTH_SERVICE + REFRESH_TOKEN;
+  public static final String VALIDATE_TOKEN = "/validate-token";
+  public static final String VALIDATE_TOKEN_ENDPOINT = AUTH_SERVICE + VALIDATE_TOKEN;
 
   // Documentation endpoints
   public static final String API_DOCS = "/v3/api-docs/**";

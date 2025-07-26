@@ -1,1 +1,1 @@
-DELETE FROM python-api.price_sources WHERE id = :id
+DELETE FROM "python-api".price_sources WHERE id = :id

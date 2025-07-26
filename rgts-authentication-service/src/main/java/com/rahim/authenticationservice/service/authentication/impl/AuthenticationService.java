@@ -1,29 +1,32 @@
 package com.rahim.authenticationservice.service.authentication.impl;
 
-import com.rahim.authenticationservice.dto.enums.ResponseStatus;
+import com.rahim.authenticationservice.dto.request.AuthRequest;
+import com.rahim.authenticationservice.dto.request.EmailVerificationRequest;
 import com.rahim.authenticationservice.dto.request.RegisterRequest;
-import com.rahim.authenticationservice.dto.request.VerificationRequest;
-import com.rahim.authenticationservice.dto.response.RegisterResponse;
-import com.rahim.authenticationservice.dto.response.UserData;
-import com.rahim.authenticationservice.dto.response.VerificationResponse;
+import com.rahim.authenticationservice.dto.response.*;
 import com.rahim.authenticationservice.entity.User;
 import com.rahim.authenticationservice.enums.Role;
-import com.rahim.authenticationservice.enums.VerificationType;
+import com.rahim.authenticationservice.exception.AccountExistsException;
+import com.rahim.authenticationservice.exception.UnauthorisedException;
 import com.rahim.authenticationservice.repository.UserRepository;
 import com.rahim.authenticationservice.service.authentication.IAuthenticationService;
 import com.rahim.authenticationservice.service.role.IRoleService;
 import com.rahim.authenticationservice.service.verification.IVerificationService;
 import com.rahim.authenticationservice.util.EmailFormatUtil;
-import com.rahim.authenticationservice.util.RequestUtils;
+import com.rahim.authenticationservice.util.JwtUtil;
+import com.rahim.authenticationservice.util.RequestUtil;
 import com.rahim.common.exception.*;
 import com.rahim.common.util.DateUtil;
+import com.rahim.jwtcore.constants.JwtConstants;
+import com.rahim.jwtcore.response.TokenVerificationResponse;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.OffsetDateTime;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,6 +43,9 @@ public class AuthenticationService implements IAuthenticationService {
   private final IRoleService roleService;
   private final IVerificationService verificationService;
   private final BCryptPasswordEncoder passwordEncoder;
+  private final RequestUtil requestUtil;
+  private final EmailFormatUtil emailFormatUtil;
+  private final JwtUtil jwtUtil;
 
   @Override
   @Transactional(rollbackFor = Exception.class)
@@ -64,8 +70,6 @@ public class AuthenticationService implements IAuthenticationService {
     }
 
     return RegisterResponse.builder()
-        .message("User registered successfully. Please check your email to verify your account.")
-        .status(ResponseStatus.PENDING)
         .id(user.getId())
         .username(user.getUsername())
         .email(user.getEmail())
@@ -73,12 +77,12 @@ public class AuthenticationService implements IAuthenticationService {
   }
 
   @Override
-  public VerificationResponse verifyEmail(
-      VerificationRequest verificationRequest, HttpServletRequest request) {
-    String email = verificationRequest.getEmail();
-    String verificationCode = verificationRequest.getVerificationCode();
+  public EmailVerificationResponse verifyEmail(
+      EmailVerificationRequest emailVerificationRequest, HttpServletRequest request) {
+    String email = emailVerificationRequest.getEmail();
+    String verificationCode = emailVerificationRequest.getVerificationCode();
 
-    if (EmailFormatUtil.isInvalidEmail(email)) {
+    if (emailFormatUtil.isInvalidEmail(email)) {
       log.error("Invalid email: {}", email);
       throw new BadRequestException("Invalid email format provided");
     }
@@ -118,45 +122,86 @@ public class AuthenticationService implements IAuthenticationService {
   }
 
   @Override
-  public VerificationResponse verifyEmail(
-      String verificationCode, UUID verificationId, HttpServletRequest request) {
-    try {
-      UUID userId =
-          verificationService.verifyCode(verificationCode, verificationId, VerificationType.EMAIL);
+  public Optional<User> findByUsername(String username) {
+    return userRepository.findByUsername(username);
+  }
 
-      User user =
-          userRepository
-              .findById(userId)
-              .orElseThrow(
-                  () ->
-                      new EntityNotFoundException(
-                          "User not found with ID: " + userId + ". Unable to verify email."));
+  // TODO: Need to audit successful and failed login attempts
+  @Override
+  public AuthResponse login(AuthRequest authRequest, HttpServletRequest request) {
+    String username = authRequest.getUsername();
+    String password = authRequest.getPassword();
 
-      if (user.isEmailVerified()) {
-        log.warn("Email already verified: {}", user.getEmail());
-        throw new ResourceConflictException(
-            "User with email " + user.getEmail() + " is already verified");
-      }
-
-      updateUserAfterVerification(user);
-      return buildVerificationResponse(user);
-    } catch (EntityNotFoundException e) {
-      throw e;
-    } catch (Exception e) {
-      log.error("Verification error with token: {} - {}", verificationCode, e.getMessage(), e);
-      throw new ServiceException("Failed to verify email");
+    if (StringUtils.isBlank(username) || StringUtils.isBlank(password)) {
+      log.warn("Username or password is blank");
+      throw new BadRequestException("Username and password are required");
     }
+
+    User user =
+        findByUsername(username)
+            .orElseThrow(
+                () -> new EntityNotFoundException("User not found with username: " + username));
+
+    if (!passwordEncoder.matches(password, user.getPassword())) {
+      log.warn("Invalid password attempt for user: {}", username);
+      throw new UnauthorisedException("Invalid username or password");
+    }
+
+    if (!user.isEmailVerified()) {
+      log.warn("User email not verified: {}", username);
+      throw new UnauthorisedException("Email not verified for user: " + username);
+    }
+
+    if (user.isAccountLocked()) {
+      log.warn("User account is locked: {}", username);
+      throw new UnauthorisedException("Account is locked for user: " + username);
+    }
+
+    if (user.isAccountExpired()) {
+      log.warn("User account is expired: {}", username);
+      throw new UnauthorisedException("Account is expired for user: " + username);
+    }
+
+    List<String> roles =
+        user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
+    Map<String, Object> claims = new HashMap<>();
+    claims.put(JwtConstants.USER_ID_CLAIM, user.getId());
+    claims.put(JwtConstants.ROLES_CLAIM, roles);
+
+    String jwt = jwtUtil.generateToken(claims, user.getUsername());
+
+    return new AuthResponse(
+        jwt,
+        user.getUsername(),
+        user.getId().toString(),
+        user.getFirstName(),
+        user.getLastName(),
+        roles);
   }
 
   @Override
-  public Optional<User> findByUsername(String username) {
-    return userRepository.findByUsername(username);
+  public TokenVerificationResponse verifyToken(String authHeader) {
+    if (authHeader == null || !authHeader.startsWith(JwtConstants.BEARER_PREFIX)) {
+      throw new UnauthorisedException("Missing or invalid Authorization header");
+    }
+
+    String token = authHeader.substring(7);
+
+    Claims claims = jwtUtil.extractAllClaims(token);
+    String username = claims.getSubject();
+    String userId = claims.get(JwtConstants.USER_ID_CLAIM).toString();
+    Date expiry = claims.getExpiration();
+
+    @SuppressWarnings("unchecked")
+    List<String> roles = claims.get(JwtConstants.ROLES_CLAIM, List.class);
+
+    return new TokenVerificationResponse(userId, username, roles, expiry);
   }
 
   // ------------------------ Private Helpers ------------------------
 
   private void validateRegisterRequest(RegisterRequest request) {
-    if (EmailFormatUtil.isInvalidEmail(request.getEmail())) {
+    if (emailFormatUtil.isInvalidEmail(request.getEmail())) {
       throw new BadRequestException("Invalid email format provided");
     }
 
@@ -184,17 +229,17 @@ public class AuthenticationService implements IAuthenticationService {
 
   private void checkUserUniqueness(RegisterRequest request) {
     if (userRepository.existsByUsername(request.getUsername())) {
-      throw new DuplicateEntityException(
+      throw new AccountExistsException(
           "User with username " + request.getUsername() + " already exists.");
     }
 
     if (userRepository.existsByEmail(request.getEmail())) {
-      throw new DuplicateEntityException(
+      throw new AccountExistsException(
           "User with email " + request.getEmail() + " already exists.");
     }
 
     if (userRepository.existsByPhoneNumber(request.getPhoneNumber())) {
-      throw new DuplicateEntityException(
+      throw new AccountExistsException(
           "User with phone number " + request.getPhoneNumber() + " already exists.");
     }
   }
@@ -210,8 +255,8 @@ public class AuthenticationService implements IAuthenticationService {
             .phoneNumber(request.getPhoneNumber())
             .emailVerified(false)
             .phoneVerified(false)
-            .locale(RequestUtils.getClientLocale(httpRequest))
-            .timezone(RequestUtils.getClientTimezone(httpRequest))
+            .locale(requestUtil.getClientLocale(httpRequest))
+            .timezone(requestUtil.getClientTimezone(httpRequest))
             .createdAt(OffsetDateTime.now())
             .updatedAt(OffsetDateTime.now())
             .accountExpired(false)
@@ -226,18 +271,11 @@ public class AuthenticationService implements IAuthenticationService {
     userRepository.save(user);
   }
 
-  private VerificationResponse buildVerificationResponse(User user) {
-    UserData userData =
-        UserData.builder()
-            .username(user.getUsername())
-            .email(user.getEmail())
-            .verifiedAt(DateUtil.formatOffsetDateTime(user.getUpdatedAt()))
-            .build();
-
-    return VerificationResponse.builder()
-        .status(ResponseStatus.SUCCESS)
-        .message("Email verified successfully")
-        .userData(userData)
+  private EmailVerificationResponse buildVerificationResponse(User user) {
+    return EmailVerificationResponse.builder()
+        .username(user.getUsername())
+        .email(user.getEmail())
+        .verifiedAt(DateUtil.formatOffsetDateTime(user.getUpdatedAt()))
         .build();
   }
 }

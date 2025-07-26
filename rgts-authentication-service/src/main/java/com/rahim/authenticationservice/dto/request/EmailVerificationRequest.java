@@ -1,7 +1,9 @@
 package com.rahim.authenticationservice.dto.request;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @created 11/06/2025
@@ -9,7 +11,9 @@ import lombok.Data;
  */
 @Data
 @Builder
-public class VerificationRequest {
+@NoArgsConstructor
+@AllArgsConstructor
+public class EmailVerificationRequest {
   private String email;
   private String verificationCode;
 }

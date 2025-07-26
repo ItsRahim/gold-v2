@@ -14,4 +14,13 @@ public final class UriConstants {
   public static final String PRICING_REWRITE_REGEX = "/(?<segment>type|price)(?<remaining>/.*)?";
   public static final String PRICING_REWRITE_REPLACEMENT =
       PRICING_API_BASE + "/${segment}${remaining}";
+
+  public static final String AUTHENTICATION_SERVICE = "authentication-service";
+  public static final String AUTHENTICATION_SERVICE_URI = "lb://authentication-service";
+  public static final String[] AUTHENTICATION_PATHS = {"/auth/**", "/user/**"};
+  public static final String AUTHENTICATION_API_BASE = "/api/v2/authentication-service";
+  public static final String AUTHENTICATION_REWRITE_REGEX =
+      "/(?<segment>auth|user)(?<remaining>/.*)?";
+  public static final String AUTHENTICATION_REWRITE_REPLACEMENT =
+      AUTHENTICATION_API_BASE + "${remaining}";
 }

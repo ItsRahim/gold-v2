@@ -6,7 +6,6 @@ import static org.mockito.Mockito.when;
 
 import com.github.nylle.javafixture.Fixture;
 import com.rahim.authenticationservice.BaseTestConfiguration;
-import com.rahim.authenticationservice.dto.enums.ResponseStatus;
 import com.rahim.authenticationservice.dto.request.RegisterRequest;
 import com.rahim.authenticationservice.dto.response.RegisterResponse;
 import com.rahim.authenticationservice.entity.User;
@@ -57,7 +56,6 @@ class AuthenticationServiceTest extends BaseTestConfiguration {
         userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
 
     assertThat(registerResponse).isNotNull();
-    assertThat(registerResponse.getStatus()).isEqualTo(ResponseStatus.PENDING);
     assertThat(registerResponse.getEmail()).isEqualTo(email);
     assertThat(registerResponse.getUsername()).isEqualTo(username);
     assertThat(registerResponse.getId()).isNotNull();

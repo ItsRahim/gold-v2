@@ -10,7 +10,7 @@ import lombok.experimental.SuperBuilder;
  */
 @Data
 @SuperBuilder
-public class RegisterResponse extends BaseResponse {
+public class RegisterResponse {
   private UUID id;
   private String username;
   private String email;

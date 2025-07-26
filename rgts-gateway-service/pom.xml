@@ -13,6 +13,20 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.rahim</groupId>
+            <artifactId>rgts-cache-manager</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-web</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.rahim</groupId>
+            <artifactId>rgts-jwt-core</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-gateway</artifactId>
         </dependency>

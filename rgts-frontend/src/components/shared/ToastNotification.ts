@@ -5,7 +5,7 @@ import { AlertCircle, CheckCircle, Info } from 'lucide-react';
 export const TOAST_TYPES = {
   SUCCESS: 'success',
   ERROR: 'error',
-  WARNING: 'warning',
+  INFO: 'info',
 } as const;
 
 type ToastType = (typeof TOAST_TYPES)[keyof typeof TOAST_TYPES];
@@ -13,7 +13,7 @@ type ToastType = (typeof TOAST_TYPES)[keyof typeof TOAST_TYPES];
 const iconMap = {
   [TOAST_TYPES.SUCCESS]: CheckCircle,
   [TOAST_TYPES.ERROR]: AlertCircle,
-  [TOAST_TYPES.WARNING]: Info,
+  [TOAST_TYPES.INFO]: Info,
 };
 
 export const showToast = (type: ToastType, message: string): void => {

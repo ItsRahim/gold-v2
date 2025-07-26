@@ -1,13 +1,15 @@
 package com.rahim.authenticationservice.service.authentication;
 
+import com.rahim.authenticationservice.dto.request.AuthRequest;
+import com.rahim.authenticationservice.dto.request.EmailVerificationRequest;
 import com.rahim.authenticationservice.dto.request.RegisterRequest;
-import com.rahim.authenticationservice.dto.request.VerificationRequest;
+import com.rahim.authenticationservice.dto.response.AuthResponse;
+import com.rahim.authenticationservice.dto.response.EmailVerificationResponse;
 import com.rahim.authenticationservice.dto.response.RegisterResponse;
-import com.rahim.authenticationservice.dto.response.VerificationResponse;
 import com.rahim.authenticationservice.entity.User;
+import com.rahim.jwtcore.response.TokenVerificationResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Optional;
-import java.util.UUID;
 
 /**
  * @created 09/06/2025
@@ -16,11 +18,12 @@ import java.util.UUID;
 public interface IAuthenticationService {
   RegisterResponse register(RegisterRequest registerRequest, HttpServletRequest request);
 
-  VerificationResponse verifyEmail(
-      VerificationRequest verificationRequest, HttpServletRequest request);
-
-  VerificationResponse verifyEmail(
-      String verificationCode, UUID verificationId, HttpServletRequest request);
+  EmailVerificationResponse verifyEmail(
+      EmailVerificationRequest emailVerificationRequest, HttpServletRequest request);
 
   Optional<User> findByUsername(String username);
+
+  AuthResponse login(AuthRequest authRequest, HttpServletRequest request);
+
+  TokenVerificationResponse verifyToken(String authHeader);
 }
