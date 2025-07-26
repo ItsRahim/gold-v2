@@ -35,13 +35,11 @@ public class JwtValidationFilter implements GlobalFilter, Ordered {
   public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
     String path = exchange.getRequest().getURI().getPath();
 
-    // Bypass authentication for public endpoints
     if (Stream.of("/auth/register", "/auth/login", "/auth/verify-email")
         .anyMatch(path::startsWith)) {
       return chain.filter(exchange);
     }
 
-    // Handle logout separately
     if (path.startsWith("/auth/logout")) {
       Optional.ofNullable(extractToken(exchange.getRequest().getHeaders()))
           .ifPresent(token -> redisService.deleteKey(TOKEN_CACHE_PREFIX + token));
@@ -49,7 +47,6 @@ public class JwtValidationFilter implements GlobalFilter, Ordered {
       return exchange.getResponse().setComplete();
     }
 
-    // Extract and validate token
     String token = extractToken(exchange.getRequest().getHeaders());
     if (token == null) {
       return unauthorized(exchange);
