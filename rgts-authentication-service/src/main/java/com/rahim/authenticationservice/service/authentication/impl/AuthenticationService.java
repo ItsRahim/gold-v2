@@ -1,9 +1,8 @@
 package com.rahim.authenticationservice.service.authentication.impl;
 
-import com.rahim.authenticationservice.dto.enums.ResponseStatus;
 import com.rahim.authenticationservice.dto.request.AuthRequest;
 import com.rahim.authenticationservice.dto.request.RegisterRequest;
-import com.rahim.authenticationservice.dto.request.VerificationRequest;
+import com.rahim.authenticationservice.dto.request.EmailVerificationRequest;
 import com.rahim.authenticationservice.dto.response.*;
 import com.rahim.authenticationservice.entity.User;
 import com.rahim.authenticationservice.enums.Role;
@@ -18,6 +17,8 @@ import com.rahim.authenticationservice.util.JwtUtil;
 import com.rahim.authenticationservice.util.RequestUtil;
 import com.rahim.common.exception.*;
 import com.rahim.common.util.DateUtil;
+import com.rahim.jwtcore.constants.JwtConstants;
+import com.rahim.jwtcore.response.TokenVerificationResponse;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.OffsetDateTime;
@@ -69,8 +70,6 @@ public class AuthenticationService implements IAuthenticationService {
     }
 
     return RegisterResponse.builder()
-        .message("Please check your email to verify your account.")
-        .status(ResponseStatus.PENDING)
         .id(user.getId())
         .username(user.getUsername())
         .email(user.getEmail())
@@ -78,10 +77,10 @@ public class AuthenticationService implements IAuthenticationService {
   }
 
   @Override
-  public VerificationResponse verifyEmail(
-      VerificationRequest verificationRequest, HttpServletRequest request) {
-    String email = verificationRequest.getEmail();
-    String verificationCode = verificationRequest.getVerificationCode();
+  public EmailVerificationResponse verifyEmail(
+      EmailVerificationRequest emailVerificationRequest, HttpServletRequest request) {
+    String email = emailVerificationRequest.getEmail();
+    String verificationCode = emailVerificationRequest.getVerificationCode();
 
     if (emailFormatUtil.isInvalidEmail(email)) {
       log.error("Invalid email: {}", email);
@@ -166,8 +165,8 @@ public class AuthenticationService implements IAuthenticationService {
     List<String> roles =
         user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
     Map<String, Object> claims = new HashMap<>();
-    claims.put("userId", user.getId());
-    claims.put("roles", roles);
+    claims.put(JwtConstants.USER_ID_CLAIM, user.getId());
+    claims.put(JwtConstants.ROLES_CLAIM, roles);
 
     String jwt = jwtUtil.generateToken(claims, user.getUsername());
 
@@ -181,8 +180,8 @@ public class AuthenticationService implements IAuthenticationService {
   }
 
   @Override
-  public ValidationResponse validateToken(String authHeader) {
-    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+  public TokenVerificationResponse verifyToken(String authHeader) {
+    if (authHeader == null || !authHeader.startsWith(JwtConstants.BEARER_PREFIX)) {
       throw new UnauthorisedException("Missing or invalid Authorization header");
     }
 
@@ -190,13 +189,13 @@ public class AuthenticationService implements IAuthenticationService {
 
     Claims claims = jwtUtil.extractAllClaims(token);
     String username = claims.getSubject();
-    String userId = claims.get("userId").toString();
+    String userId = claims.get(JwtConstants.USER_ID_CLAIM).toString();
     Date expiry = claims.getExpiration();
 
     @SuppressWarnings("unchecked")
-    List<String> roles = claims.get("roles", List.class);
+    List<String> roles = claims.get(JwtConstants.ROLES_CLAIM, List.class);
 
-    return new ValidationResponse(userId, username, roles, expiry);
+    return new TokenVerificationResponse(userId, username, roles, expiry);
   }
 
   // ------------------------ Private Helpers ------------------------
@@ -272,18 +271,11 @@ public class AuthenticationService implements IAuthenticationService {
     userRepository.save(user);
   }
 
-  private VerificationResponse buildVerificationResponse(User user) {
-    UserData userData =
-        UserData.builder()
-            .username(user.getUsername())
-            .email(user.getEmail())
-            .verifiedAt(DateUtil.formatOffsetDateTime(user.getUpdatedAt()))
-            .build();
-
-    return VerificationResponse.builder()
-        .status(ResponseStatus.SUCCESS)
-        .message("Email verified successfully")
-        .userData(userData)
+  private EmailVerificationResponse buildVerificationResponse(User user) {
+    return EmailVerificationResponse.builder()
+        .username(user.getUsername())
+        .email(user.getEmail())
+        .verifiedAt(DateUtil.formatOffsetDateTime(user.getUpdatedAt()))
         .build();
   }
 }

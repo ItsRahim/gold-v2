@@ -1,5 +1,8 @@
 package com.rahim.cachemanager.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,13 +34,20 @@ public class RedisConfig {
 
   @Bean
   public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
+    ObjectMapper objectMapper = new ObjectMapper();
+    objectMapper.registerModule(new JavaTimeModule());
+    objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+
+    GenericJackson2JsonRedisSerializer jsonSerializer = new GenericJackson2JsonRedisSerializer(objectMapper);
+    StringRedisSerializer stringSerializer = new StringRedisSerializer();
+
     RedisTemplate<String, Object> template = new RedisTemplate<>();
     template.setConnectionFactory(connectionFactory);
-    template.setConnectionFactory(connectionFactory);
-    template.setKeySerializer(new StringRedisSerializer());
-    template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
-    template.setHashKeySerializer(new StringRedisSerializer());
-    template.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
+    template.setKeySerializer(stringSerializer);
+    template.setValueSerializer(jsonSerializer);
+    template.setHashKeySerializer(stringSerializer);
+    template.setHashValueSerializer(jsonSerializer);
+    template.afterPropertiesSet();
     return template;
   }
 }

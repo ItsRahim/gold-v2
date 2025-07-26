@@ -96,13 +96,13 @@ public class UpdateGoldPriceService implements IUpdateGoldPriceService {
     validateInputs(goldPurity, weight, weightUnit);
 
     String carat = goldPurity.getLabel();
-    Object priceObject = redisService.getValue(carat);
+    GoldPrice goldPrice = redisService.getValue(carat, GoldPrice.class);
 
-    if (priceObject instanceof GoldPrice goldPrice) {
-      return goldPriceCalculationService.calculatePrice(goldPrice.getPrice(), weight, weightUnit);
-    } else {
+    if (goldPrice == null) {
       throw new GoldPriceCalculationException("Gold price not available for carat: " + carat);
     }
+
+    return goldPriceCalculationService.calculatePrice(goldPrice.getPrice(), weight, weightUnit);
   }
 
   private void validateInputs(GoldPurity goldPurity, BigDecimal weight, WeightUnit weightUnit) {

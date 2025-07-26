@@ -1,1 +1,1 @@
-SELECT 1 FROM python-api.price_sources WHERE id = :id
+SELECT 1 FROM "python-api".price_sources WHERE id = :id

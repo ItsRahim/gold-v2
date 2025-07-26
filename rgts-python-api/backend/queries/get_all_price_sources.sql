@@ -1,1 +1,1 @@
-SELECT * FROM python-api.price_sources;
+SELECT * FROM "python-api".price_sources;

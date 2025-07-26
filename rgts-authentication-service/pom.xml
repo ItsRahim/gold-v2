@@ -14,11 +14,15 @@
     <dependencies>
         <dependency>
             <groupId>com.rahim</groupId>
-            <artifactId>rgts-kafka-service</artifactId>
+            <artifactId>rgts-common</artifactId>
         </dependency>
         <dependency>
             <groupId>com.rahim</groupId>
-            <artifactId>rgts-common</artifactId>
+            <artifactId>rgts-jwt-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.rahim</groupId>
+            <artifactId>rgts-kafka-service</artifactId>
         </dependency>
         <dependency>
             <groupId>com.rahim</groupId>

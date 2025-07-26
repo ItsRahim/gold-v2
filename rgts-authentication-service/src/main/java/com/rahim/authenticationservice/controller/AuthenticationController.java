@@ -4,12 +4,12 @@ import static com.rahim.authenticationservice.constants.Endpoints.*;
 
 import com.rahim.authenticationservice.dto.request.AuthRequest;
 import com.rahim.authenticationservice.dto.request.RegisterRequest;
-import com.rahim.authenticationservice.dto.request.VerificationRequest;
+import com.rahim.authenticationservice.dto.request.EmailVerificationRequest;
 import com.rahim.authenticationservice.dto.response.AuthResponse;
 import com.rahim.authenticationservice.dto.response.RegisterResponse;
-import com.rahim.authenticationservice.dto.response.ValidationResponse;
-import com.rahim.authenticationservice.dto.response.VerificationResponse;
+import com.rahim.authenticationservice.dto.response.EmailVerificationResponse;
 import com.rahim.authenticationservice.service.authentication.IAuthenticationService;
+import com.rahim.jwtcore.response.TokenVerificationResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -54,11 +54,11 @@ public class AuthenticationController {
   @ApiResponse(responseCode = "400", description = "Invalid verification code or request data")
   @ApiResponse(responseCode = "500", description = "Internal server error")
   @PostMapping(VERIFY_EMAIL)
-  public ResponseEntity<VerificationResponse> verifyEmailWithBody(
-      @RequestBody VerificationRequest verificationRequest, HttpServletRequest request) {
-    VerificationResponse verificationResponse =
-        authenticationService.verifyEmail(verificationRequest, request);
-    return ResponseEntity.status(HttpStatus.OK).body(verificationResponse);
+  public ResponseEntity<EmailVerificationResponse> verifyEmailWithBody(
+          @RequestBody EmailVerificationRequest emailVerificationRequest, HttpServletRequest request) {
+    EmailVerificationResponse emailVerificationResponse =
+        authenticationService.verifyEmail(emailVerificationRequest, request);
+    return ResponseEntity.status(HttpStatus.OK).body(emailVerificationResponse);
   }
 
   @Operation(
@@ -67,6 +67,7 @@ public class AuthenticationController {
   @ApiResponse(responseCode = "200", description = "User logged in successfully")
   @ApiResponse(responseCode = "400", description = "Invalid login credentials")
   @ApiResponse(responseCode = "401", description = "Unauthorized - invalid credentials")
+  @ApiResponse(responseCode = "500", description = "Internal server error")
   @PostMapping(LOGIN)
   public ResponseEntity<AuthResponse> loginUser(
       @RequestBody AuthRequest authRequest, HttpServletRequest request) {
@@ -80,11 +81,12 @@ public class AuthenticationController {
           "Validates a JWT token and returns user details such as userId, username, and roles")
   @ApiResponse(responseCode = "200", description = "Token is valid and user data is returned")
   @ApiResponse(responseCode = "401", description = "Unauthorized - token is missing or invalid")
-  @ApiResponse(responseCode = "400", description = "Bad Request - malformed token")
+  @ApiResponse(responseCode = "401", description = "Unauthorised - token is invalid")
+  @ApiResponse(responseCode = "500", description = "Internal server error")
   @PostMapping(VALIDATE_TOKEN)
-  public ResponseEntity<ValidationResponse> validateToken(
+  public ResponseEntity<TokenVerificationResponse> validateToken(
       @RequestHeader("Authorization") String authHeader) {
-    ValidationResponse validationResponse = authenticationService.validateToken(authHeader);
-    return ResponseEntity.status(HttpStatus.OK).body(validationResponse);
+    TokenVerificationResponse tokenVerificationResponse = authenticationService.verifyToken(authHeader);
+    return ResponseEntity.status(HttpStatus.OK).body(tokenVerificationResponse);
   }
 }

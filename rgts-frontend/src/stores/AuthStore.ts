@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { AuthResponse, LoginRequest, RegisterRequest, VerificationRequest } from '@/services/auth';
+import type { AuthResponse, AuthRequest, RegisterRequest, EmailVerificationRequest } from '@/services/auth';
 import { loginUser, registerUser, registerVerification, logoutUser } from '@/services/auth';
 import { showToast, TOAST_TYPES } from '@/components/shared/ToastNotification';
 import type { ApiError } from '@/services/apiError';
@@ -14,9 +14,9 @@ type AuthState = {
 };
 
 type AuthActions = {
-  login: (data: LoginRequest) => Promise<boolean>;
+  login: (data: AuthRequest) => Promise<boolean>;
   register: (data: RegisterRequest) => Promise<boolean>;
-  verify: (data: VerificationRequest) => Promise<boolean>;
+  verify: (data: EmailVerificationRequest) => Promise<boolean>;
   logout: () => Promise<void>;
   setError: (error: string | null) => void;
   setLoading: (loading: boolean) => void;
@@ -36,6 +36,7 @@ export const useAuthStore = create<AuthStore>()(
 
       login: async (data) => {
         set({ isLoading: true, error: null });
+
         const result = await loginUser(data);
         set({ isLoading: false });
 
@@ -58,43 +59,49 @@ export const useAuthStore = create<AuthStore>()(
 
       register: async (data) => {
         set({ isLoading: true, error: null });
+
         const result = await registerUser(data);
         set({ isLoading: false });
 
-        if (!result || ('message' in result && result.message.toLowerCase().includes('fail'))) {
+        if (!result || 'message' in result) {
           const message = (result as ApiError).message || 'Registration failed';
           set({ error: message, isAuthenticated: false });
           showToast(TOAST_TYPES.ERROR, message);
           return false;
         }
 
-        showToast(TOAST_TYPES.SUCCESS, result.message);
+        showToast(TOAST_TYPES.SUCCESS, 'Registration successful. Please verify your email.');
         return true;
       },
 
       verify: async (data) => {
         set({ isLoading: true, error: null });
-        try {
-          const result = await registerVerification(data);
-          set({ isLoading: false });
-          showToast(TOAST_TYPES.SUCCESS, result.message);
-          return true;
-        } catch (err: any) {
-          const message = err.message || 'Verification failed';
-          set({ error: message, isLoading: false });
+
+        const result = await registerVerification(data);
+        set({ isLoading: false });
+
+        if (!result || 'message' in result) {
+          const message = (result as ApiError).message || 'Email verification failed';
+          set({ error: message });
           showToast(TOAST_TYPES.ERROR, message);
           return false;
         }
+
+        showToast(TOAST_TYPES.SUCCESS, 'Email verified successfully');
+        return true;
       },
 
       logout: async () => {
         try {
           const { token } = useAuthStore.getState();
           if (token) {
-            await logoutUser(token);
+            const result = await logoutUser(token);
+            if (result && 'message' in result) {
+              showToast(TOAST_TYPES.ERROR, result.message || 'Logout failed');
+            }
           }
-        } catch (err: any) {
-          showToast(TOAST_TYPES.ERROR, 'Logout failed on server');
+        } catch {
+          showToast(TOAST_TYPES.ERROR, 'Logout failed. Please try again.');
         } finally {
           set({
             user: null,

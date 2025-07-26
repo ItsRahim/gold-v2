@@ -2,7 +2,7 @@ import axios from 'axios';
 import { AUTH_ENDPOINTS } from '@/api/endpoints.ts';
 import type { ApiError } from '@/services/apiError.ts';
 
-export interface LoginRequest {
+export interface AuthRequest {
   username: string;
   password: string;
 }
@@ -16,7 +16,7 @@ export interface RegisterRequest {
   password: string;
 }
 
-export interface VerificationRequest {
+export interface EmailVerificationRequest {
   email: string;
   verificationCode: string;
 }
@@ -30,6 +30,18 @@ export interface AuthResponse {
   roles: string[];
 }
 
+export interface RegisterResponse {
+  id: string;
+  username: string;
+  email: string;
+}
+
+export interface EmailVerificationResponse {
+  username: string;
+  email: string;
+  verifiedAt: string;
+}
+
 function isValidStatus(status: number): boolean {
   return status >= 200 && status < 300;
 }
@@ -40,68 +52,74 @@ function handleApiError(error: unknown, fallbackMessage: string): ApiError {
       message: error.response?.data?.message ?? fallbackMessage,
     };
   }
-  return { message: 'Network or server error occurred' };
+  return { message: fallbackMessage };
 }
 
-export async function loginUser(data: LoginRequest): Promise<AuthResponse | ApiError> {
+export async function loginUser(data: AuthRequest): Promise<AuthResponse | ApiError> {
   try {
-    const response = await axios.post(AUTH_ENDPOINTS.LOGIN, data);
+    const response = await axios.post(AUTH_ENDPOINTS.LOGIN, data, {
+      validateStatus: () => true,
+    });
 
     if (!isValidStatus(response.status)) {
-      return {
-        message: response.data?.message ?? 'Login failed due to unexpected response status',
-      };
+      return handleApiError(null, 'Login failed. Please check your credentials.');
     }
 
     return response.data as AuthResponse;
   } catch (error) {
-    return handleApiError(error, 'Invalid credentials or user not found');
+    return handleApiError(error, 'Login failed. Please try again.');
   }
 }
 
-export async function registerUser(data: RegisterRequest): Promise<{ message: string } | ApiError> {
+export async function registerUser(data: RegisterRequest): Promise<RegisterResponse | ApiError> {
   try {
-    const response = await axios.post(AUTH_ENDPOINTS.REGISTER, data);
+    const response = await axios.post(AUTH_ENDPOINTS.REGISTER, data, {
+      validateStatus: () => true,
+    });
 
     if (!isValidStatus(response.status)) {
-      return {
-        message: response.data?.message ?? 'Registration failed',
-      };
+      return handleApiError(null, 'Registration failed. Please check your details.');
     }
 
-    return {
-      message: response.data?.message ?? 'Registration successful',
-    };
+    return response.data as RegisterResponse;
   } catch (error) {
-    return handleApiError(error, 'Registration failed');
+    return handleApiError(error, 'Registration failed. Please try again.');
   }
 }
 
-export async function registerVerification(data: VerificationRequest): Promise<{ message: string }> {
+export async function registerVerification(data: EmailVerificationRequest): Promise<EmailVerificationResponse | ApiError> {
   try {
-    const response = await axios.post(AUTH_ENDPOINTS.VERIFY, data);
+    const response = await axios.post(AUTH_ENDPOINTS.VERIFY, data, {
+      validateStatus: () => true,
+    });
 
-    if (response.status < 200 || response.status >= 300) {
-      throw new Error(response.data?.message ?? 'Verification failed');
+    if (!isValidStatus(response.status)) {
+      return handleApiError(null, 'Verification failed. Please try again.');
     }
 
-    return {
-      message: response.data?.message ?? 'Verification successful',
-    };
+    return response.data as EmailVerificationResponse;
   } catch (error) {
-    const errMsg = axios.isAxiosError(error) ? (error.response?.data?.message ?? 'Verification failed') : 'Network or server error occurred';
-    throw new Error(errMsg);
+    return handleApiError(error, 'Verification failed. Please try again.');
   }
 }
 
-export async function logoutUser(token: string): Promise<void> {
-  await axios.post(
-    AUTH_ENDPOINTS.LOGOUT,
-    {},
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
+export async function logoutUser(token: string): Promise<ApiError | void> {
+  try {
+    const response = await axios.post(
+      AUTH_ENDPOINTS.LOGOUT,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        validateStatus: () => true,
       },
-    },
-  );
+    );
+
+    if (!isValidStatus(response.status)) {
+      return handleApiError(null, 'Logout failed. Please try again.');
+    }
+  } catch (error) {
+    return handleApiError(error, 'Logout failed. Please try again.');
+  }
 }

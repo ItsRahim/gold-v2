@@ -1,17 +1,20 @@
-package com.rahim.authenticationservice.dto.response;
+package com.rahim.jwtcore.response;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 import java.util.List;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 
 /**
- * @created 23/07/2025
+ * @created 26/07/2025
  * @author Rahim Ahmed
  */
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
-public class ValidationResponse {
+public class TokenVerificationResponse {
   private String userId;
   private String username;
   private List<String> roles;

@@ -64,16 +64,12 @@
         <module>rgts-pricing-service</module>
         <module>rgts-proto-service</module>
         <module>rgts-storage-service</module>
+        <module>rgts-jwt-core</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
             <!-- Internal Dependencies -->
-            <dependency>
-                <groupId>com.rahim</groupId>
-                <artifactId>rgts-proto-service</artifactId>
-                <version>${rgts.version}</version>
-            </dependency>
             <dependency>
                 <groupId>com.rahim</groupId>
                 <artifactId>rgts-common</artifactId>
@@ -82,6 +78,16 @@
             <dependency>
                 <groupId>com.rahim</groupId>
                 <artifactId>rgts-cache-manager</artifactId>
+                <version>${rgts.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.rahim</groupId>
+                <artifactId>rgts-jwt-core</artifactId>
+                <version>${rgts.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.rahim</groupId>
+                <artifactId>rgts-proto-service</artifactId>
                 <version>${rgts.version}</version>
             </dependency>
             <dependency>

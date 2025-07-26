@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class VerificationRequest {
+public class EmailVerificationRequest {
   private String email;
   private String verificationCode;
 }

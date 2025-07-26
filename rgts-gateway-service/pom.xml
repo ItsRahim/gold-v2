@@ -23,6 +23,10 @@
             </exclusions>
         </dependency>
         <dependency>
+            <groupId>com.rahim</groupId>
+            <artifactId>rgts-jwt-core</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-gateway</artifactId>
         </dependency>
