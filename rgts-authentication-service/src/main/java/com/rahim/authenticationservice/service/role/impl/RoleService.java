@@ -20,33 +20,8 @@ public class RoleService implements IRoleService {
   private final UserRoleRepository userRoleRepository;
 
   @Override
-  public UserRole createRole(String name, String description) {
-    return null;
-  }
-
-  @Override
   public void assignRoleToUser(User userId, Role role) {
     UserRole userRole = UserRole.builder().user(userId).role(role).build();
     userRoleRepository.save(userRole);
-  }
-
-  @Override
-  public void removeRoleFromUser(UUID userId, String roleName) {
-    // TODO: Implement logic to remove role from user
-  }
-
-  @Override
-  public Set<UserRole> getUserRoles(UUID userId) {
-    return Set.of();
-  }
-
-  @Override
-  public boolean hasRole(UUID userId, String roleName) {
-    return false;
-  }
-
-  @Override
-  public Set<UserRole> getDefaultRoles() {
-    return Set.of();
   }
 }

@@ -29,7 +29,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(rollbackFor = Exception.class)
 public class VerificationService implements IVerificationService {
-
   private final VerificationCodeRepository verificationCodeRepository;
   private final BCryptPasswordEncoder passwordEncoder;
   private final IKafkaService kafkaService;
@@ -71,20 +70,9 @@ public class VerificationService implements IVerificationService {
   }
 
   @Override
-  public void sendPhoneVerification(User user) {
-    // TODO: Implement phone verification logic
-  }
-
-  @Override
   @Transactional(noRollbackFor = BadRequestException.class)
   public boolean verifyEmail(UUID userId, String token) {
     return verifyCodeWithUserId(userId, token, VerificationType.EMAIL);
-  }
-
-  @Override
-  @Transactional(noRollbackFor = BadRequestException.class)
-  public boolean verifyPhone(UUID userId, String token) {
-    return verifyCodeWithUserId(userId, token, VerificationType.PHONE);
   }
 
   @Override
@@ -101,16 +89,6 @@ public class VerificationService implements IVerificationService {
   @Override
   public void generateEmailToken(UUID userId) {
     // TODO: Implement email token generation logic
-  }
-
-  @Override
-  public void regeneratePhoneCode(UUID userId) {
-    // TODO: Implement phone code regeneration logic
-  }
-
-  @Override
-  public void generatePhoneCode(UUID userId) {
-    // TODO: Implement phone code generation logic
   }
 
   @Override

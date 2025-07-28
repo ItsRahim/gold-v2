@@ -10,10 +10,14 @@ Gold types price history daily, weekly, monthly, and yearly stored in mongodb
 Gold price updates to send percentage change to frontend (daily)
 
 -- Email Service --
-Button to verify email to go to frontend and then make a call to the backend to verify the email (On Hold authentication-service and frontend work pending)
+Update email template for code verification
 
 -- Authentication Service (On Hold)--
 Tests for everything
+Account locking
+Account deletion
+Resend verification code
+Reset password
 
 -- Frontend --
 Implement tests for the frontend
@@ -32,3 +36,4 @@ Implement a leaderboard to compare/view portfolio using various metrics (perform
 Leaderboard group between users, friends, and groups
 Allow users to add their own gold types (only they can view it)
 Implement user deletion with email alerts, cron jobs to check user status and account status and so forth
+Create a testing library for common functions used in tests and config setups
