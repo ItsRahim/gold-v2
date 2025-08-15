@@ -27,7 +27,7 @@
         <micrometer.version>1.15.2</micrometer.version>
         <micrometer-tracing.version>1.5.2</micrometer-tracing.version>
         <minio.version>8.5.17</minio.version>
-        <aws-sdk.version>2.31.75</aws-sdk.version>
+        <aws-sdk.version>2.32.24</aws-sdk.version>
         <postgres.version>42.7.7</postgres.version>
         <zipkin.version>3.5.1</zipkin.version>
         <flyway.version>11.11.0</flyway.version>
