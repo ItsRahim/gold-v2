@@ -1,11 +1,11 @@
 package com.rahim.authenticationservice.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.rahim.authenticationservice.BaseTestConfiguration;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @created 12/06/2025
