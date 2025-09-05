@@ -1,10 +1,9 @@
 package com.rahim.authenticationservice.service.verification;
 
-import com.rahim.authenticationservice.entity.VerificationCode;
 import com.rahim.authenticationservice.repository.VerificationCodeRepository;
 import com.rahim.common.util.DateUtil;
 import java.time.OffsetDateTime;
-import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -21,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(rollbackFor = Exception.class)
 public class VerificationCleanupService {
   private final VerificationCodeRepository verificationCodeRepository;
-
   private static final String CRON_EXPRESSION = "0 0/30 * * * *";
   private static final int RETENTION_DAYS = 7;
 
@@ -32,19 +30,8 @@ public class VerificationCleanupService {
 
       OffsetDateTime now = DateUtil.nowUtc();
       OffsetDateTime retentionCutoff = now.minusDays(RETENTION_DAYS);
-
-      List<VerificationCode> expiredCodes =
-          verificationCodeRepository.findCodesForCleanup(now, retentionCutoff);
-      if (expiredCodes.isEmpty()) {
-        log.debug("No expired verification codes found for cleanup");
-        return;
-      }
-
-      for (VerificationCode verificationCode : expiredCodes) {
-        verificationCodeRepository.deleteById(verificationCode.getId());
-      }
-
-      log.info("Deleted {} expired verification codes", expiredCodes.size());
+      verificationCodeRepository.deleteAll(
+          verificationCodeRepository.findCodesForCleanup(now, retentionCutoff));
     } catch (Exception e) {
       log.error("Error during verification code cleanup", e);
     }

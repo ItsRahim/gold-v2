@@ -18,6 +18,7 @@ Account locking
 Account deletion
 Resend verification code
 Reset password
+Improve logging
 
 -- Frontend --
 Implement tests for the frontend
