@@ -33,7 +33,7 @@ COPY rgts-email-service/src rgts-email-service/src
 RUN mvn clean package -pl rgts-email-service -am -DskipTests
 
 # Runtime stage
-FROM amazoncorretto:21.0.8-alpine
+FROM amazoncorretto:25.0.0-alpine
 
 RUN addgroup -g 1001 -S appgroup && \
     adduser -u 1001 -S appuser -G appgroup
