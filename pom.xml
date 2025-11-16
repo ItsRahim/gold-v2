@@ -21,7 +21,7 @@
         <spring-doc.version>2.8.12</spring-doc.version>
         <spring-kafka.version>3.3.10</spring-kafka.version>
         <protobuf-java.version>4.32.0</protobuf-java.version>
-        <apache.version>3.18.0</apache.version>
+        <apache.version>3.20.0</apache.version>
         <lombok.version>1.18.42</lombok.version>
         <javax-annotation.version>1.3.2</javax-annotation.version>
         <micrometer.version>1.15.4</micrometer.version>
