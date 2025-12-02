@@ -30,7 +30,7 @@ COPY rgts-config-server/src rgts-config-server/src
 RUN mvn clean package -pl rgts-config-server -am -DskipTests
 
 # Runtime stage
-FROM amazoncorretto:25.0.0-alpine
+FROM amazoncorretto:25.0.1-alpine
 
 RUN addgroup -g 1001 -S appgroup && \
     adduser -u 1001 -S appuser -G appgroup
