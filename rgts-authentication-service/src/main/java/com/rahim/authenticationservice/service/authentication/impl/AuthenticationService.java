@@ -201,6 +201,10 @@ public class AuthenticationService implements IAuthenticationService {
   // ------------------------ Private Helpers ------------------------
 
   private void validateRegisterRequest(RegisterRequest request) {
+    if (StringUtils.isBlank(request.getEmail())) {
+      throw new BadRequestException("Email is required");
+    }
+
     if (emailFormatUtil.isInvalidEmail(request.getEmail())) {
       throw new BadRequestException("Invalid email format provided");
     }

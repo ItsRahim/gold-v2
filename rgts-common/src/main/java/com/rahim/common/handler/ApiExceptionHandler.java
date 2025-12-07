@@ -20,13 +20,13 @@ public class ApiExceptionHandler {
   @ExceptionHandler(ApiException.class)
   public ResponseEntity<ErrorResponse> apiExceptionHandler(ApiException ex) {
     ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), ex.getHttpStatus());
-    return ResponseEntity.status(errorResponse.getStatus()).body(errorResponse);
+    return ResponseEntity.status(errorResponse.status()).body(errorResponse);
   }
 
   @ExceptionHandler(EntityNotFoundException.class)
   public ResponseEntity<ErrorResponse> entityNotFoundHandler(EntityNotFoundException ex) {
     ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), HttpStatus.NOT_FOUND);
-    return ResponseEntity.status(errorResponse.getStatus()).body(errorResponse);
+    return ResponseEntity.status(errorResponse.status()).body(errorResponse);
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)

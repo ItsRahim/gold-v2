@@ -2,10 +2,13 @@ package com.rahim.authenticationservice;
 
 import static com.rahim.authenticationservice.BaseTestContainerConfig.postgres;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rahim.cachemanager.service.RedisService;
 import com.rahim.common.handler.ApiExceptionHandler;
 import javax.sql.DataSource;
+
+import com.rahim.common.response.ErrorResponse;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -26,7 +29,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Import({BaseTestContainerConfig.class, ApiExceptionHandler.class})
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class BaseTestConfiguration {
-
   @Autowired private RedisService redisService;
   @Autowired private DataSource dataSource;
 
@@ -34,6 +36,14 @@ public class BaseTestConfiguration {
 
   public String requestToJson(Object object) throws Exception {
     return objectMapper.writeValueAsString(object);
+  }
+
+  public <T> T responseBodyTo(String response, Class<T> clazz) throws Exception {
+    return objectMapper.readValue(response, clazz);
+  }
+
+  public <T> T responseBodyTo(String response, TypeReference<T> typeReference) throws Exception {
+    return objectMapper.readValue(response, typeReference);
   }
 
   @BeforeAll
@@ -49,6 +59,19 @@ public class BaseTestConfiguration {
     registry.add("spring.flyway.url", postgres::getJdbcUrl);
     registry.add("spring.flyway.user", postgres::getUsername);
     registry.add("spring.flyway.password", postgres::getPassword);
+
+    registry.add(
+        "spring.kafka.producer.key-serializer",
+        () -> "org.apache.kafka.common.serialization.StringSerializer");
+    registry.add(
+        "spring.kafka.producer.value-serializer",
+        () -> "org.apache.kafka.common.serialization.ByteArraySerializer");
+    registry.add(
+        "spring.kafka.consumer.key-deserializer",
+        () -> "org.apache.kafka.common.serialization.StringDeserializer");
+    registry.add(
+        "spring.kafka.consumer.value-deserializer",
+        () -> "org.apache.kafka.common.serialization.ByteArrayDeserializer");
   }
 
   @AfterEach

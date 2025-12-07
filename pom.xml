@@ -38,8 +38,12 @@
         <mockito.version>5.18.0</mockito.version>
         <junit.version>5.13.4</junit.version>
         <java-fixture.version>2.12.1</java-fixture.version>
-        <test-container.version>1.21.3</test-container.version>
-        <redis-test-container.version>2.2.4</redis-test-container.version>
+        <test-container.version>2.0.2</test-container.version>
+        <test-container-postgres.version>1.21.3</test-container-postgres.version>
+        <test-container-kafka.version>1.21.3</test-container-kafka.version>
+        <test-container-minio.version>1.21.3</test-container-minio.version>
+        <test-container-mockserver.version>1.21.3</test-container-mockserver.version>
+        <test-container-redis.version>2.2.4</test-container-redis.version>
 
         <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
         <maven-surefire-plugin.version>3.5.3</maven-surefire-plugin.version>
@@ -402,31 +406,31 @@
             <dependency>
                 <groupId>org.testcontainers</groupId>
                 <artifactId>postgresql</artifactId>
-                <version>${test-container.version}</version>
+                <version>${test-container-postgres.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.testcontainers</groupId>
                 <artifactId>kafka</artifactId>
-                <version>${test-container.version}</version>
+                <version>${test-container-kafka.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.testcontainers</groupId>
                 <artifactId>minio</artifactId>
-                <version>${test-container.version}</version>
+                <version>${test-container-minio.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.testcontainers</groupId>
                 <artifactId>mockserver</artifactId>
-                <version>${test-container.version}</version>
+                <version>${test-container-mockserver.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>com.redis</groupId>
                 <artifactId>testcontainers-redis</artifactId>
-                <version>${redis-test-container.version}</version>
+                <version>${test-container-redis.version}</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
