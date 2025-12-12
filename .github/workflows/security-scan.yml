@@ -64,7 +64,7 @@ jobs:
             -DoutputDirectory=security-reports
 
       - name: Upload OWASP Report as Artifact
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: owasp-html-report
           path: security-reports/dependency-check-report.html
