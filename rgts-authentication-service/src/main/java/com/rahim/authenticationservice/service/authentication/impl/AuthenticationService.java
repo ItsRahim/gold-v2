@@ -113,8 +113,6 @@ public class AuthenticationService implements IAuthenticationService {
 
       updateUserAfterVerification(user);
       return buildVerificationResponse(user);
-    } catch (EntityNotFoundException e) {
-      throw e;
     } catch (Exception e) {
       log.error("Verification error for email {}: {}", email, e.getMessage(), e);
       throw new ServiceException("Failed to verify email");

@@ -8,7 +8,6 @@ import com.rahim.cachemanager.service.RedisService;
 import com.rahim.common.handler.ApiExceptionHandler;
 import javax.sql.DataSource;
 
-import com.rahim.common.response.ErrorResponse;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;

@@ -5,6 +5,8 @@ import com.rahim.authenticationservice.constants.Endpoints;
 import com.rahim.authenticationservice.dto.request.RegisterRequest;
 import com.rahim.authenticationservice.dto.response.RegisterResponse;
 import com.rahim.authenticationservice.repository.UserRepository;
+import com.rahim.authenticationservice.service.authentication.IAuthenticationService;
+import com.rahim.common.exception.ServiceException;
 import com.rahim.common.handler.ApiExceptionHandler;
 import com.rahim.common.response.ErrorResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +18,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
@@ -23,6 +26,9 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -31,9 +37,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author Rahim Ahmed
  */
 class AuthenticationControllerTest extends BaseTestConfiguration {
+  private final IAuthenticationService mockAuthService = mock(IAuthenticationService.class);
   @Autowired private AuthenticationController authenticationController;
+
+  private final AuthenticationController mockAuthController =
+      new AuthenticationController(mockAuthService);
+
+  @Autowired private IAuthenticationService authenticationService;
   @Autowired private UserRepository userRepository;
   private MockMvc mockMvc;
+  private MockMvc localMockMvc;
 
   @BeforeEach
   void setUp() {
@@ -46,6 +59,11 @@ class AuthenticationControllerTest extends BaseTestConfiguration {
         MockMvcBuilders.standaloneSetup(authenticationController)
             .setValidator(validator)
             .setControllerAdvice(new ApiExceptionHandler())
+            .build();
+    localMockMvc =
+        MockMvcBuilders.standaloneSetup(mockAuthController)
+            .setControllerAdvice(new ApiExceptionHandler())
+            .setValidator(validator)
             .build();
   }
 
@@ -115,6 +133,76 @@ class AuthenticationControllerTest extends BaseTestConfiguration {
     assertThat(errorResponse.message()).isEqualTo(expectedResponseMessage);
     assertThat(errorResponse.status()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     assertThat(userExists).isFalse();
+  }
+
+  @ParameterizedTest
+  @MethodSource("validRegistrationRequestPayload")
+  @DisplayName("Should throw conflict when user already exists")
+  void should_throw_conflict_when_user_already_exists(
+      String email,
+      String username,
+      String password,
+      String firstName,
+      String lastName,
+      String phoneNumber)
+      throws Exception {
+    RegisterRequest existingUser =
+        new RegisterRequest(email, username, password, firstName, lastName, phoneNumber);
+    MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
+    httpServletRequest.setAttribute("locale", "en");
+    httpServletRequest.setAttribute("timezone", "UTC");
+    authenticationService.register(existingUser, httpServletRequest);
+
+    String responseBody =
+        mockMvc
+            .perform(
+                post(Endpoints.REGISTER_ENDPOINT)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(requestToJson(existingUser)))
+            .andExpect(status().isConflict())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+    ErrorResponse errorResponse = responseBodyTo(responseBody, ErrorResponse.class);
+
+    assertThat(errorResponse.message())
+        .isEqualTo("User with username " + username + " already exists.");
+    assertThat(errorResponse.status()).isEqualTo(HttpStatus.CONFLICT.value());
+  }
+
+  @ParameterizedTest
+  @MethodSource("validRegistrationRequestPayload")
+  @DisplayName("Should return internal server error when an unexpected error occurs")
+  void should_return_internal_server_error_on_unexpected_exception(
+      String email,
+      String username,
+      String password,
+      String firstName,
+      String lastName,
+      String phoneNumber)
+      throws Exception {
+
+    when(mockAuthService.register(any(), any()))
+        .thenThrow(new ServiceException("An unexpected error occurred."));
+
+    RegisterRequest request =
+        new RegisterRequest(email, username, password, firstName, lastName, phoneNumber);
+
+    String responseBody =
+        localMockMvc
+            .perform(
+                post(Endpoints.REGISTER_ENDPOINT)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(requestToJson(request)))
+            .andExpect(status().isInternalServerError())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+    ErrorResponse errorResponse = responseBodyTo(responseBody, ErrorResponse.class);
+    assertThat(errorResponse.message()).isEqualTo("An unexpected error occurred.");
+    assertThat(errorResponse.status()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
   }
 
   private static Stream<Arguments> validRegistrationRequestPayload() {
