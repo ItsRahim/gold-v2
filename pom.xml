@@ -41,7 +41,7 @@
         <redis-test-container.version>2.2.4</redis-test-container.version>
 
         <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
-        <maven-surefire-plugin.version>3.5.3</maven-surefire-plugin.version>
+        <maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
         <spotify-fmt-plugin.version>2.29</spotify-fmt-plugin.version>
         <jacoco.version>0.8.14</jacoco.version>
 
