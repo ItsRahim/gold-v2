@@ -4,9 +4,6 @@
     "config:recommended"
   ],
   "prHeader": "Renovate Dependency Update",
-  "reviewers": [
-    "ItsRahim"
-  ],
   "labels": [
     "dependency",
     "renovate"
