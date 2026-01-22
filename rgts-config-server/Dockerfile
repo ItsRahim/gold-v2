@@ -1,5 +1,5 @@
 # Multi-stage build for rgts-config-server
-FROM maven:3.9.11-amazoncorretto-21 AS build
+FROM maven:3.9.12-amazoncorretto-21 AS build
 
 WORKDIR /app
 
