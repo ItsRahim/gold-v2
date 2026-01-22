@@ -34,7 +34,7 @@
         <jackson.version>2.19.2</jackson.version>
         <slf4j.version>2.0.17</slf4j.version>
         <logback.version>1.5.18</logback.version>
-        <mockito.version>5.20.0</mockito.version>
+        <mockito.version>5.21.0</mockito.version>
         <junit.version>5.14.1</junit.version>
         <java-fixture.version>2.12.1</java-fixture.version>
         <test-container.version>1.21.3</test-container.version>
