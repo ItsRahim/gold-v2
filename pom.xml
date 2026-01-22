@@ -33,7 +33,7 @@
         <flyway.version>11.18.0</flyway.version>
         <jackson.version>2.19.2</jackson.version>
         <slf4j.version>2.0.17</slf4j.version>
-        <logback.version>1.5.18</logback.version>
+        <logback.version>1.5.25</logback.version>
         <mockito.version>5.20.0</mockito.version>
         <junit.version>5.14.1</junit.version>
         <java-fixture.version>2.12.1</java-fixture.version>
