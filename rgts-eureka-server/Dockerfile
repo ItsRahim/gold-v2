@@ -30,7 +30,7 @@ COPY rgts-eureka-server/src rgts-eureka-server/src
 RUN mvn clean package -pl rgts-eureka-server -am -DskipTests
 
 # Runtime stage
-FROM amazoncorretto:25.0.1-alpine
+FROM amazoncorretto:25.0.2-alpine
 
 RUN addgroup -g 1001 -S appgroup && \
     adduser -u 1001 -S appuser -G appgroup
