@@ -9,7 +9,7 @@
     "renovate"
   ],
   "timezone": "UTC",
-  "prConcurrentLimit": 0,
+  "prConcurrentLimit": 1,
   "prHourlyLimit": 0,
   "platformAutomerge": true,
   "packageRules": [
